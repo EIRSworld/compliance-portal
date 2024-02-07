@@ -9,9 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "arcanedev/log-viewer": "^10.0",
         "bezhansalleh/filament-shield": "^3.2",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
+        "filament/spatie-laravel-settings-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
