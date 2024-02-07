@@ -22,6 +22,7 @@ class ComplianceSubMenu extends Model implements HasMedia
         'renewed_date',
         'expired_date',
         'is_uploaded',
+        'approve_status',
         'status',
     ];
     public function registerMediaCollections(): void
@@ -38,6 +39,6 @@ class ComplianceSubMenu extends Model implements HasMedia
     }
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

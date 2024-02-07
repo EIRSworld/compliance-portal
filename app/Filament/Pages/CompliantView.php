@@ -9,6 +9,7 @@ use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Http\Request;
 
 class CompliantView extends Page implements HasTable
@@ -19,6 +20,11 @@ class CompliantView extends Page implements HasTable
     protected static string $view = 'filament.pages.compliant-view';
     protected static bool $shouldRegisterNavigation = false;
     public $compliant_sub_menu_id,$compliance_sub_menu;
+
+    public function getHeading(): string|Htmlable
+    {
+        return $this->compliance_sub_menu->name . ' view';
+    }
 
     public function mount(Request $request)
     {

@@ -23,6 +23,6 @@ class ComplianceMenu extends Model
     }
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

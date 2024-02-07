@@ -24,7 +24,7 @@ class CountryResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('executive')) {
+        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('compliance_manager')) {
             return true;
         }
         return false;
@@ -55,6 +55,7 @@ class CountryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

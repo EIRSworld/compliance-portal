@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('country_id')->nullable();
             $table->string('name')->nullable();
-            $table->boolean('status')->nullable();
+            $table->boolean('status')->nullable()->default(1);
             $table->auditTrail();
         });
     }

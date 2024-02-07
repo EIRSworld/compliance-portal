@@ -11,7 +11,7 @@
                 <a href="/admin/compliance-list" style="color: #000000;">{{$this->compliance_menu->country->name}}</a>
             </li>
             <li>
-                &nbsp  >> &nbsp
+                &nbsp  > &nbsp
             </li>
             <li>
                 <a href="/admin/compliance-menu-list?country_id={{$this->compliance_menu->country->id}}" style="color: #000000;">{{$this->compliance_menu->name}}</a>

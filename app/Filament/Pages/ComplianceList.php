@@ -40,7 +40,11 @@ class ComplianceList extends Page implements HasTable
                 TextColumn::make('name')->label('Name')->searchable()
                     ->url(fn(Country $record): string => ComplianceMenuList::getUrl(['country_id' => $record->id])),
                 TextColumn::make('updated_at')->label('Updated Date')->date('d-m-Y'),
-                TextColumn::make('user.name')->label('Updated By'),
+                TextColumn::make('user.name')->label('Created By')
+                ->getStateUsing(function(Country $record){
+                    $user = User::find($record->created_by);
+                    return $user->name;
+                }),
             ]);
     }
 }

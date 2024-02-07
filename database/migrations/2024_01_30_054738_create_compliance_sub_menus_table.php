@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->date('renewed_date')->nullable();
             $table->date('expired_date')->nullable();
-            $table->boolean('is_uploaded')->nullable();
-            $table->boolean('status')->nullable();
+            $table->boolean('is_uploaded')->nullable()->default(0);
+            $table->boolean('approve_status')->nullable()->default(0);
+            $table->boolean('status')->nullable()->default(1);
             $table->auditTrail();
         });
     }

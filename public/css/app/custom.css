@@ -1,0 +1,134 @@
+/*html {*/
+/*    zoom: 0.9;*/
+/*}*/
+
+/*.h-screen {*/
+/*    height: 111vh !important;*/
+/*}*/
+
+/*.min-h-screen {*/
+/*    min-height: 75vh !important;*/
+/*}*/
+
+/*.\32xl\:max-w-7xl {*/
+/*    max-width: 120vw;*/
+/*}*/
+
+/*.\xl\:max-w-4xl {*/
+/*    max-width: 70vw;*/
+/*}*/
+
+/*.opacity-75 {*/
+/*    opacity: 0.5;*/
+/*}*/
+
+/*.bg-gray-500 {*/
+/*    background: lightgray;*/
+/*}*/
+
+/*.\rtl\:right-auto {*/
+/*    right: 7px;*/
+/*    top: 7px;*/
+/*}*/
+
+/*.max-w-\[14rem\] {*/
+/*    width: 14rem !important;*/
+/*}*/
+
+/*.-right-0\.5 {*/
+/*    right: -0.125rem;*/
+/*}*/
+/*.-top-0\.5 {*/
+/*    top: -0.125rem;*/
+/*}*/
+/*.-mx-6 {*/
+/*    margin-left: -1.5rem;*/
+/*    margin-right: -1.5rem;*/
+/*}*/
+/*.pl-4 {*/
+/*    padding-left: 1rem;*/
+/*}*/
+
+/*.pr-2 {*/
+/*    padding-right: 0.5rem;*/
+/*}*/
+/*.py-2 {*/
+/*    padding-bottom: 0.5rem;*/
+/*    padding-top: 0.5rem;*/
+/*}*/
+/*.bg-primary-50 {*/
+/*    --tw-bg-opacity: 1;*/
+/*    background-color: rgb(255 251 235/var(--tw-bg-opacity)) !important;*/
+/*}*/
+/*.-mb-px {*/
+/*    margin-bottom: -1px;*/
+/*}*/
+
+/*!*#modal-container{*!*/
+/*!*    margin-top: 200px;*!*/
+/*!*}*!*/
+
+/*!*.bg-gray-500 {*!*/
+/*!*    opacity: 0.1 !important;*!*/
+/*!*}*!*/
+
+/*@media (min-width: 640px) {*/
+
+/*    .sm\:align-middle {*/
+/*        vertical-align: middle;*/
+/*    }*/
+
+/*    .sm\:h-screen {*/
+/*        !*height: 50vh;*!*/
+/*    }*/
+
+/*    .sm\:inline-block {*/
+/*        display: inline-block !important;*/
+/*    }*/
+
+/*}*/
+
+body {
+    zoom: 90%;
+}
+/*.py-12 {*/
+/*    padding-bottom: 25rem !important;*/
+/*    padding-top: 16rem !important;*/
+/*}*/
+/*:root {*/
+/*    --zoom: 0.70; !* set the variable saying what the current zoom is *!*/
+/*}*/
+
+/*.h-screen {*/
+/*    height: calc(100vh / var(--zoom)) !important;*/
+/*}*/
+
+/*#modal-container{*/
+/*    margin-left: 3%;*/
+/*    margin-top: 14%;*/
+/*    max-height: 100%;*/
+/*    max-width: 90%;*/
+/*}*/
+
+.custom-bg-green {
+    background-color: #ccffd4;
+}
+.custom-bg-red {
+    background-color: #f6b4b4;
+}
+
+/*.custom-bg-green {*/
+/*    background-color: #e3fcec;*/
+/*}*/
+
+/*.custom-bg-amber {*/
+/*    background-color: #fffbeb;*/
+/*}*/
+/*.custom-bg-blue {*/
+/*    background-color: #add8e6;*/
+/*}*/
+
+/*.filament-apex-charts-widget {*/
+/*    zoom: 130%;*/
+/*}*/
+

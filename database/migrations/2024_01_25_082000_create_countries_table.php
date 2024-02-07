@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->boolean('status')->nullable();
+            $table->boolean('status')->nullable()->default(1);
             $table->auditTrail();
         });
     }
