@@ -6,7 +6,7 @@
     <nav aria-label="Breadcrumb" class="flex" >
         <ol class="flex space-x-1 rtl:space-x-reverse">
                 <li>
-                    <a href="/admin/compliance-list" style="color: #000000;">{{$this->country->name}}</a>
+                    <a href="/admin/compliance-list" style="color: #000000;">{{$this->document->name}}</a>
                 </li>
 
         </ol>

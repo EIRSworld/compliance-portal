@@ -16,8 +16,11 @@ class ComplianceSubMenu extends Model implements HasMedia
     use Auditable;
 
     protected $fillable = [
+        'document_id',
         'country_id',
         'compliance_menu_id',
+        'calendar_year_id',
+        'year',
         'name',
         'renewed_date',
         'expired_date',
@@ -28,6 +31,15 @@ class ComplianceSubMenu extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('compliance_attachments');
+    }
+
+    public function document(): BelongsTo
+    {
+        return $this->belongsTo(Document::class, 'document_id');
+    }
+    public function calendarYear(): BelongsTo
+    {
+        return $this->belongsTo(CalendarYear::class, 'calendar_year_id');
     }
     public function complianceMenu(): BelongsTo
     {

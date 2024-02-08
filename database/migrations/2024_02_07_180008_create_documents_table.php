@@ -11,18 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('compliance_sub_menus', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('document_id')->nullable();
-            $table->foreignId('country_id')->nullable();
-            $table->foreignId('compliance_menu_id')->nullable();
-            $table->foreignId('calendar_year_id')->nullable();
-            $table->string('year')->nullable();
             $table->string('name')->nullable();
-            $table->date('renewed_date')->nullable();
-            $table->date('expired_date')->nullable();
-            $table->boolean('is_uploaded')->nullable()->default(0);
-            $table->boolean('approve_status')->nullable()->default(0);
+            $table->foreignId('country_id')->nullable();
+            $table->foreignId('calendar_year_id')->nullable();
             $table->boolean('status')->nullable()->default(1);
             $table->auditTrail();
         });
@@ -33,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('compliance_sub_menus');
+        Schema::dropIfExists('documents');
     }
 };

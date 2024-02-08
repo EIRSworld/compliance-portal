@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\CalendarYear;
 use App\Models\ComplianceSubMenu;
 use App\Models\Country;
 use App\Models\User;
@@ -49,7 +50,7 @@ class ComplianceTotal extends BaseWidget
             })
             ->columns([
 
-                Tables\Columns\TextColumn::make('country.name')->label('Country Name'),
+                Tables\Columns\TextColumn::make('document.name')->label('Country Name'),
 //                Tables\Columns\TextColumn::make('complianceMenu.name')->label('Folder Name'),
                 Tables\Columns\TextColumn::make('name')->label('Document Name'),
 //                Tables\Columns\TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y'),
@@ -72,7 +73,8 @@ class ComplianceTotal extends BaseWidget
                     ->extraAttributes(function (ComplianceSubMenu $record) {
                         $complianceExpiredDate = Carbon::parse($record->expired_date);
                         $currentDate = Carbon::now();
-                        if ($complianceExpiredDate > $currentDate) {
+//                        if ($complianceExpiredDate > $currentDate) {
+                        if ($record->is_uploaded == 1) {
                             return [
                                 'class' => 'custom-bg-green',
                             ];
@@ -94,6 +96,17 @@ class ComplianceTotal extends BaseWidget
                     ->boolean(),
             ])
             ->filters([
+                SelectFilter::make('calendar_year_id')->searchable()
+                    ->options(function () {
+                        return CalendarYear::pluck('name', 'id')->toArray();
+                    })
+
+                    ->default(function(){
+                        $currentYear = Carbon::now()->year;
+                        return CalendarYear::where('name', $currentYear)->value('id');
+                    })
+                    ->placeholder('Select the Country')
+                    ->label('Year'),
                 SelectFilter::make('country_id')->searchable()
                     ->options(function () {
                         $role = auth()->user()->roles()->pluck('name')[0];
@@ -128,7 +141,6 @@ class ComplianceTotal extends BaseWidget
                                     ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
                                         return (string)str($file->getClientOriginalName())->prepend('compliant_attachments-');
                                     })
-                                    ->acceptedFileTypes(['application/pdf'])
                                     ->appendFiles()
                                     ->downloadable()
                                     ->openable()

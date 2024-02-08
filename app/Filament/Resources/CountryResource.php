@@ -54,7 +54,7 @@ class CountryResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->modalWidth('sm'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

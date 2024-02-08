@@ -19,7 +19,7 @@ class CompliantView extends Page implements HasTable
 
     protected static string $view = 'filament.pages.compliant-view';
     protected static bool $shouldRegisterNavigation = false;
-    public $compliant_sub_menu_id,$compliance_sub_menu;
+    public $compliant_sub_menu_id,$compliance_sub_menu,$calendar_year_id;
 
     public function getHeading(): string|Htmlable
     {
@@ -28,6 +28,7 @@ class CompliantView extends Page implements HasTable
 
     public function mount(Request $request)
     {
+        $this->calendar_year_id = $request->get('calendar_year_id');
         $this->compliant_sub_menu_id = $request->get('compliant_sub_menu_id');
         $this->compliance_sub_menu = ComplianceSubMenu::find($this->compliant_sub_menu_id);
     }

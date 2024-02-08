@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('compliance_menus', function (Blueprint $table) {
+        Schema::create('calendar_years', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('document_id')->nullable();
-            $table->foreignId('calendar_year_id')->nullable();
             $table->string('name')->nullable();
-            $table->boolean('status')->nullable()->default(1);
-            $table->auditTrail();
+            $table->json('country_id')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->boolean('status')->nullable()->default(0);
+            $table->timestamps();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('compliance_menus');
+        Schema::dropIfExists('calendar_years');
     }
 };

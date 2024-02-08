@@ -7,31 +7,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ComplianceMenu extends Model
+class Document extends Model
 {
     use HasFactory;
     use Auditable;
 
     protected $fillable = [
-        'document_id',
-        'calendar_year_id',
         'name',
+        'country_id',
+        'calendar_year_id',
         'status',
     ];
-    public function country(): BelongsTo
+
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Country::class, 'country_id');
-    }
-    public function document(): BelongsTo
-    {
-        return $this->belongsTo(Document::class, 'document_id');
+        return $this->belongsTo(User::class, 'updated_by');
     }
     public function calendarYear(): BelongsTo
     {
         return $this->belongsTo(CalendarYear::class, 'calendar_year_id');
-    }
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
     }
 }

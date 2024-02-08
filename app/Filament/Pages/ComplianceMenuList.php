@@ -2,14 +2,18 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\CalendarYear;
 use App\Models\ComplianceMenu;
 use App\Models\ComplianceSubMenu;
 use App\Models\Country;
+use App\Models\Document;
 use App\Models\Lead;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -17,6 +21,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Http\Request;
@@ -30,20 +36,22 @@ class ComplianceMenuList extends Page implements HasTable
 
     public function getHeading(): string|Htmlable
     {
-        return $this->country->name;
+        return $this->document->name;
     }
 
     protected static bool $shouldRegisterNavigation = false;
 
 
-    public $country_id,$country;
+    public $document_id,$document,$calendar_year_id;
 
 //    protected ?string $maxContentWidth = '7xl';
 
     public function mount(Request $request)
     {
-        $this->country_id = $request->get('country_id');
-        $this->country = Country::find($this->country_id);
+        $this->calendar_year_id = $request->get('calendar_year_id');
+        $this->document_id = $request->get('document_id');
+//        dd($this->calendar_year_id);
+        $this->document = Document::find($this->document_id);
 
     }
 //    public function getBreadcrumbs(): array
@@ -54,32 +62,36 @@ class ComplianceMenuList extends Page implements HasTable
     {
         return [
             Action::make('create')
-//                ->label(function () {
-//                    return ('Create ') . $this->country->name .(' Folder');
-//                })
+                ->modalWidth('md')
                 ->label('New Folder')
                 ->mountUsing(function (ComponentContainer $form) {
                     $form->fill([
-                        'country_id' => $this->country_id,
-                        'country_name' => $this->country->name,
+                        'document_id' => $this->document_id,
+                        'calendar_year_id' => $this->calendar_year_id,
+                        'document_name' => $this->document->name,
+
                     ]);
                 })
                 ->form([
                     Card::make()
                         ->schema([
-                            Card::make([
-                                Hidden::make('country_id'),
-                                TextInput::make('country_name')->label('Country')->disabled(),
+                                Hidden::make('document_id'),
+                                Hidden::make('calendar_year_id'),
+                                TextInput::make('document_name')->label('Country')->disabled()->columnSpan(1),
                                 TextInput::make('name')
                                     ->columnSpan(1)
                                     ->label('Name')
                                     ->required(),
-                            ])->columns(3)
-                        ])
+//                                Select::make('calendar_year_id')
+//                                ->options(CalendarYear::pluck('name','id'))
+//                                ->label('Year')->preload()->searchable()
+                            ])->columns(1)
+
                 ])
                 ->action(function (array $data, $record, $form): void {
                     $complianceMenu = new ComplianceMenu();
-                    $complianceMenu->country_id = $data['country_id'];
+                    $complianceMenu->document_id = $data['document_id'];
+                    $complianceMenu->calendar_year_id = $this->calendar_year_id;
                     $complianceMenu->name = $data['name'];
                     $complianceMenu->save();
                     Notification::make()
@@ -104,10 +116,13 @@ class ComplianceMenuList extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(\App\Models\ComplianceMenu::query()->where('country_id', $this->country_id))
+            ->query(\App\Models\ComplianceMenu::query()->where('document_id', $this->document_id))
             ->columns([
                 TextColumn::make('name')->label('Name')
-                    ->url(fn(\App\Models\ComplianceMenu $record): string => ComplianceSubMenuList::getUrl(['compliance_menu_id' => $record->id]))
+                    ->url(fn(\App\Models\ComplianceMenu $record): string => ComplianceSubMenuList::getUrl([
+                        'compliance_menu_id' => $record->id,
+                        'calendar_year_id' => $this->calendar_year_id,
+                        ]))
 
                     ->extraAttributes(function (ComplianceMenu $record) {
                         if ($record->name == 'Compliance docs with due dates') {
@@ -124,14 +139,16 @@ class ComplianceMenuList extends Page implements HasTable
                 TextColumn::make('updated_at')->label('Updated Date')->date('d-m-Y'),
                 TextColumn::make('user.name')->label('Created By'),
             ])
+
             ->actions([
                 \Filament\Tables\Actions\Action::make('edit')->color('warning')->button()
-                    ->icon('heroicon-o-pencil')
+                    ->icon('heroicon-o-pencil')->modalWidth('md')
                     ->label('Edit')
                     ->mountUsing(function (ComponentContainer $form,$record) {
                         $form->fill([
-                            'country_id' => $this->country_id,
-                            'country_name' => $this->country->name,
+                            'document_id' => $this->document_id,
+                            'calendar_year_id' => $record->calendar_year_id,
+                            'document_name' => $this->document->name,
                             'name' => $record->name,
                         ]);
                     })
@@ -139,19 +156,21 @@ class ComplianceMenuList extends Page implements HasTable
                         Card::make()
                             ->schema([
                                 Card::make([
-                                    Hidden::make('country_id'),
-                                    TextInput::make('country_name')->label('Country')->disabled(),
+                                    Hidden::make('document_id'),
+                                    Hidden::make('calendar_year_id'),
+                                    TextInput::make('document_name')->label('Country')->disabled()->columnSpan(1),
                                     TextInput::make('name')
                                         ->columnSpan(1)
                                         ->label('Name')
                                         ->required(),
-                                ])->columns(3)
+                                ])->columns(1)
                             ])
                     ])
 
                     ->action(function (array $data, $record, $form): void {
                         $complianceMenu = ComplianceMenu::find($record->id);
-                        $complianceMenu->country_id = $data['country_id'];
+                        $complianceMenu->document_id = $data['document_id'];
+                        $complianceMenu->calendar_year_id = $data['calendar_year_id'];
                         $complianceMenu->name = $data['name'];
                         $complianceMenu->save();
                         Notification::make()
@@ -177,8 +196,9 @@ class ComplianceMenuList extends Page implements HasTable
                     ->requiresConfirmation()
                     ->action(function (array $data, $record, $form): void {
                         $complianceMenu = ComplianceMenu::find($record->id)->delete();
+                        $complianceSubMenu = ComplianceSubMenu::where('compliance_menu_id',$record->id)->delete();
                         Notification::make()
-                            ->title('Deleted')
+                            ->title('Deleted Successfully')
                             ->success()
                             ->send();
 //                        }
