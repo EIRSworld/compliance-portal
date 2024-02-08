@@ -25,10 +25,10 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Masters';
-
+    protected static ?int $navigationSort = 2;
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('executive')) {
+        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('compliance_manager')) {
             return true;
         }
         return false;
@@ -47,12 +47,6 @@ class UserResource extends Resource
                         ->email()
                         ->columnSpan(1)
                         ->required(),
-
-                    Forms\Components\Select::make('country_id')->label('Country')->multiple()
-                        ->options(Country::pluck('name','id'))
-                        ->searchable()
-                        ->reactive()->required()
-                        ->placeholder('Select'),
                     Forms\Components\Select::make('roles')
                         ->searchable()->preload()
                         ->columnSpanFull()->reactive()
@@ -61,6 +55,18 @@ class UserResource extends Resource
                                 $query->get();
                             })
                         ->columnSpan(1),
+                    Forms\Components\Select::make('country_id')->label('Country')->multiple()
+                        ->options(Country::pluck('name','id'))
+                        ->searchable()
+                        ->reactive()->required()
+                        ->placeholder('Select'),
+//                        ->visible(function(Callable $get){
+//                            if($get('roles') === 'Country Head'){
+//                                return true;
+//                            }
+//                            return false;
+//                        }),
+
                     Forms\Components\TextInput::make('password')
                         ->hiddenOn('edit')
                         ->dehydrateStateUsing(fn ($state) => ! empty($state) ? Hash::make($state) : "")
@@ -98,6 +104,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

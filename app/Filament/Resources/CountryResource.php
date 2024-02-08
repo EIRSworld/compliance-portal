@@ -20,6 +20,8 @@ class CountryResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Masters';
+
+    protected static ?int $navigationSort = 0;
     protected static ?string $navigationLabel = 'Countries';
 
     public static function shouldRegisterNavigation(): bool

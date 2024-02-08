@@ -28,6 +28,7 @@ class CalendarYearResource extends Resource
 
     protected static ?string $navigationGroup = 'Masters';
     protected static ?string $navigationLabel = 'Years';
+    protected static ?int $navigationSort = 1;
     protected static ?string $label = 'Years';
 
     public static function shouldRegisterNavigation(): bool
@@ -125,7 +126,353 @@ class CalendarYearResource extends Resource
                             $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
                             $compliantSubMenu->name = 'AUDITED FINANCIALS';
                             $compliantSubMenu->save();
-                            // Similar logic to your create action for adding new documents and related entities
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'COMPANY REGISTRATION';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'LICENCE';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'BROKER QTR SUBMISSIONS';
+                            $compliantSubMenu->save();
+
+                            // Agencies
+                            $compliantMenu = new ComplianceMenu();
+                            $compliantMenu->calendar_year_id = $record->id;
+                            $compliantMenu->document_id = $document->id;
+                            $compliantMenu->name = 'Agencies';
+                            $compliantMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Application Forms';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'KYC Docs';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Onboarding Approval';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = "TOBA's";
+                            $compliantSubMenu->save();
+
+                            // Bank Account
+                            $compliantMenu = new ComplianceMenu();
+                            $compliantMenu->calendar_year_id = $record->id;
+                            $compliantMenu->document_id = $document->id;
+                            $compliantMenu->name = 'Bank Account';
+                            $compliantMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Application Forms';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Bank Confirmation Docs';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Proof of Captial Deposited';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = "Signatories";
+                            $compliantSubMenu->save();
+
+                            // Clients by BDM
+                            $compliantMenu = new ComplianceMenu();
+                            $compliantMenu->calendar_year_id = $record->id;
+                            $compliantMenu->document_id = $document->id;
+                            $compliantMenu->name = 'Clients by BDM';
+                            $compliantMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Approvals or Consent Forms';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'KYC Docs';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Policy Schedules';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = "Remainder for Renewal";
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = "Written Communication";
+                            $compliantSubMenu->save();
+
+                            // Finance
+                            $compliantMenu = new ComplianceMenu();
+                            $compliantMenu->calendar_year_id = $record->id;
+                            $compliantMenu->document_id = $document->id;
+                            $compliantMenu->name = 'Finance';
+                            $compliantMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Bank Statements';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Expenses';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Income';
+                            $compliantSubMenu->save();
+
+                            // Insurance Regulation Registration
+                            $compliantMenu = new ComplianceMenu();
+                            $compliantMenu->calendar_year_id = $record->id;
+                            $compliantMenu->document_id = $document->id;
+                            $compliantMenu->name = 'Insurance Regulation Registration';
+                            $compliantMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Licence';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'PI Cover';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Remainder for Renewal';
+                            $compliantSubMenu->save();
+
+
+                            // Registration Docs
+                            $compliantMenu = new ComplianceMenu();
+                            $compliantMenu->calendar_year_id = $record->id;
+                            $compliantMenu->document_id = $document->id;
+                            $compliantMenu->name = 'Registration Docs';
+                            $compliantMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Business Plan';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'COC';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Director Info';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Projected Financials';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Share Capital Docs';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Share Certificate';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Shareholder Info';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'SOP';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Structure';
+                            $compliantSubMenu->save();
+
+                            // Reporting
+                            $compliantMenu = new ComplianceMenu();
+                            $compliantMenu->calendar_year_id = $record->id;
+                            $compliantMenu->document_id = $document->id;
+                            $compliantMenu->name = 'Reporting';
+                            $compliantMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'LPM';
+                            $compliantSubMenu->save();
+
+                            $compliantSubMenu = new ComplianceSubMenu();
+                            $compliantSubMenu->calendar_year_id = $record->id;
+                            $compliantSubMenu->year = $record->name;
+                            $compliantSubMenu->document_id = $document->id;
+                            $compliantSubMenu->country_id = $countryId;
+                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                            $compliantSubMenu->name = 'Minutes of Meeting';
+                            $compliantSubMenu->save();
                         }
 
                         // Handle removal of countries and their documents
