@@ -113,8 +113,11 @@ body {
 .custom-bg-green {
     background-color: #ccffd4;
 }
+.custom-bg-yellow {
+    background-color: #ffeec7;
+}
 .custom-bg-red {
-    background-color: #f6b4b4;
+    background-color: #fdfdfd;
 }
 
 /*.custom-bg-green {*/

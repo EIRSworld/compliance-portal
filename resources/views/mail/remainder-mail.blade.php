@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>FX Exposure Task Reminder</title>
+    <title> Reminder</title>
     <style media="all" type="text/css">
         /* -------------------------------------
         GLOBAL RESETS
@@ -30,6 +30,7 @@
             font-size: 16px;
             vertical-align: top;
         }
+
         /* -------------------------------------
         BODY & CONTAINER
     ------------------------------------- */
@@ -47,19 +48,20 @@
 
         .container {
             margin: 0 auto !important;
-            max-width: 600px;
+            max-width: 1000px;
             padding: 0;
             padding-top: 24px;
-            width: 600px;
+            width: 1000px;
         }
 
         .content {
             box-sizing: border-box;
             display: block;
             margin: 0 auto;
-            max-width: 600px;
+            max-width: 900px;
             padding: 0;
         }
+
         /* -------------------------------------
         HEADER, FOOTER, MAIN
     ------------------------------------- */
@@ -91,6 +93,7 @@
             font-size: 16px;
             text-align: center;
         }
+
         /* -------------------------------------
         TYPOGRAPHY
     ------------------------------------- */
@@ -107,6 +110,7 @@
             color: #0867ec;
             text-decoration: underline;
         }
+
         /* -------------------------------------
         BUTTONS
     ------------------------------------- */
@@ -128,7 +132,7 @@
         .btn table td {
             background-color: #ffffff;
             border-radius: 4px;
-            text-align: center;
+            text-align: left;
         }
 
         .btn a {
@@ -161,6 +165,7 @@
             .btn-primary table td:hover {
                 background-color: #ec0867 !important;
             }
+
             .btn-primary a:hover {
                 background-color: #ec0867 !important;
                 border-color: #ec0867 !important;
@@ -235,32 +240,39 @@
             .main span {
                 font-size: 16px !important;
             }
+
             .wrapper {
                 padding: 8px !important;
             }
+
             .content {
                 padding: 0 !important;
             }
+
             .container {
                 padding: 0 !important;
                 padding-top: 8px !important;
                 width: 100% !important;
             }
+
             .main {
                 border-left-width: 0 !important;
                 border-radius: 0 !important;
                 border-right-width: 0 !important;
             }
+
             .btn table {
                 max-width: 100% !important;
                 width: 100% !important;
             }
+
             .btn a {
                 font-size: 16px !important;
                 max-width: 100% !important;
                 width: 100% !important;
             }
         }
+
         /* -------------------------------------
         PRESERVE THESE STYLES IN THE HEAD
     ------------------------------------- */
@@ -269,6 +281,7 @@
             .ExternalClass {
                 width: 100%;
             }
+
             .ExternalClass,
             .ExternalClass p,
             .ExternalClass span,
@@ -277,6 +290,7 @@
             .ExternalClass div {
                 line-height: 100%;
             }
+
             .apple-link a {
                 color: inherit !important;
                 font-family: inherit !important;
@@ -285,6 +299,7 @@
                 line-height: inherit !important;
                 text-decoration: none !important;
             }
+
             #MessageViewBody a {
                 color: inherit;
                 text-decoration: none;
@@ -303,24 +318,76 @@
         <td class="container">
             <div class="content">
                 <span class="preheader">This is preheader text. Some clients will show this text as a preview.</span>
+
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
                     <tr>
                         <td class="wrapper">
-                            <p>Dear {{ $user->name }},</p>
-                            <p>
-                                We would like to bring to your attention the approaching deadline for the <b>{{ $complaint->country->name }}</b>country submission of the <b>{{ $complaint->name }}</b>and last date is {{ $complaint->expired_date }}.</p>
+                            <p>Dear {{ $userNames }},</p>
+                            <p>I trust this email finds you well. As part of our ongoing commitment to compliance and
+                                transparency, we would like to draw your attention to the pending submission of
+                                important documents for the upcoming deadlines.</p>
+                            <p>Please find below the details of the pending documents along with their current status
+                                for <b>{{ $countryName->name }} </b>:</p>
+
+                            <table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">
+
+                                <tr>
+                                    <th style="text-align: left !important">Document Name</th>
+                                    <th style="text-align: left !important">Status</th>
+                                    <th style="text-align: left !important">Due Date</th>
+                                </tr>
+                                @foreach ($complianceList as $compliantSubMenu)
+
+                                        <tr style="@if(in_array($compliantSubMenu->id,(array)$combinedIds))background-color: #f86a83 @endif">
+
+                                            <td class="align-left">{{ $compliantSubMenu->name }}</td>
+                                            @if($compliantSubMenu->is_uploaded === 1)
+                                                <td class="align-left">Uploaded</td>
+                                            @else
+                                                <td class="align-left">Pending</td>
+                                            @endif
+                                            <td class="align-left">{{ \Carbon\Carbon::parse($compliantSubMenu->expired_date)->format('d-m-Y') }}</td>
+                                        </tr>
+                                @endforeach
+                            </table>
+                            {{--<p>Compliance Portal : <a>compliance-management.eirsworld.com</a></p>--}}
+                            <p>It is crucial for the organization's compliance that these documents are submitted before
+                                the due date.</p>
+                            <p>To facilitate a smooth process, we kindly request your prompt attention to ensure all
+                                necessary documents are submitted by the specified deadline. Additionally, it is
+                                important to note that the reminder emails will cease once all documents are updated
+                                before the due date for the year.</p>
+                            <p>Thank you for your cooperation in this matter. Should you have any questions or require
+                                further assistance, please do not hesitate to reach out.</p>
+                            <p>Best regards,<br>EIRS Team</p>
                         </td>
                     </tr>
                 </table>
-{{--                <div class="footer">--}}
-{{--                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">--}}
-{{--                        <tr>--}}
-{{--                            <td class="content-block">--}}
-{{--                                <b>ETCV FP&A</b>.--}}
-{{--                            </td>--}}
-{{--                        </tr>--}}
-{{--                    </table>--}}
-{{--                </div>--}}
+                {{--                <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">--}}
+                {{--                    <tr>--}}
+                {{--                        <td class="wrapper">--}}
+                {{--                            <p>Dear {{ $user->name }},</p>--}}
+
+                {{--                            @foreach ($complianceList as $compliantSubMenu)--}}
+                {{--                                <p>--}}
+                {{--                                    We would like to bring to your attention the approaching deadline for the--}}
+                {{--                                    <b>{{ $compliantSubMenu->country->name }}</b> country submission of the--}}
+                {{--                                    <b>{{ $compliantSubMenu->name }}</b> and the last date is--}}
+                {{--                                    <b>{{ \Carbon\Carbon::parse($compliantSubMenu->expired_date)->format('d-m-Y') }}</b>.--}}
+                {{--                                </p>--}}
+                {{--                            @endforeach--}}
+                {{--                        </td>--}}
+                {{--                    </tr>--}}
+                {{--                </table>--}}
+                {{--                <div class="footer">--}}
+                {{--                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">--}}
+                {{--                        <tr>--}}
+                {{--                            <td class="content-block">--}}
+                {{--                                <b>ETCV FP&A</b>.--}}
+                {{--                            </td>--}}
+                {{--                        </tr>--}}
+                {{--                    </table>--}}
+                {{--                </div>--}}
             </div>
         </td>
         <td>&nbsp;</td>

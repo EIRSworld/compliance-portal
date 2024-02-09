@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Pages\CompliantView;
 use App\Models\CalendarYear;
 use App\Models\ComplianceSubMenu;
 use App\Models\Country;
@@ -52,7 +53,12 @@ class ComplianceTotal extends BaseWidget
 
                 Tables\Columns\TextColumn::make('document.name')->label('Country Name'),
 //                Tables\Columns\TextColumn::make('complianceMenu.name')->label('Folder Name'),
-                Tables\Columns\TextColumn::make('name')->label('Document Name'),
+                Tables\Columns\TextColumn::make('name')->label('Document Name')
+                    ->url(fn(\App\Models\ComplianceSubMenu $record): string => CompliantView::getUrl([
+                        'compliant_sub_menu_id' => $record->id,
+                        'calendar_year_id' => $record->calendar_year_id,
+
+                    ]))->openUrlInNewTab(),
 //                Tables\Columns\TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y'),
                 Tables\Columns\TextColumn::make('expired_date')->label('Expired Date')
                     ->formatStateUsing(function (ComplianceSubMenu $record) {
@@ -74,11 +80,17 @@ class ComplianceTotal extends BaseWidget
                         $complianceExpiredDate = Carbon::parse($record->expired_date);
                         $currentDate = Carbon::now();
 //                        if ($complianceExpiredDate > $currentDate) {
-                        if ($record->is_uploaded == 1) {
+//                        dd($record->approve_status == 1 && $record->is_uploaded == 1);
+                        if ($record->approve_status == 1 && $record->is_uploaded == 1) {
                             return [
                                 'class' => 'custom-bg-green',
                             ];
-                        } else {
+                        } elseif ($record->is_uploaded == 1) {
+                            return [
+                                'class' => 'custom-bg-yellow',
+                            ];
+                        }
+                        else {
                             return [
                                 'class' => 'custom-bg-red',
                             ];

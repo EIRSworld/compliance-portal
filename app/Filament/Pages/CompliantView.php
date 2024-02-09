@@ -3,11 +3,14 @@
 namespace App\Filament\Pages;
 
 use App\Models\ComplianceSubMenu;
+use Filament\Forms\ComponentContainer;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Http\Request;
@@ -43,6 +46,32 @@ class CompliantView extends Page implements HasTable
             ->columns([
                 ViewColumn::make('upload_file')->label('Upload Files')->view('upload_file'),
             ]);
+//            ->actions([
+//
+//                \Filament\Tables\Actions\Action::make('delete')->color('danger')
+//                    ->icon('heroicon-o-trash')
+//                    ->label('Delete')
+//                    ->button()
+//                    ->requiresConfirmation()
+//                    ->action(function (array $data, $record, $form): void {
+//                        dd($record);
+//                        $complianceMenu = ComplianceMenu::find($record->id)->delete();
+//                        Notification::make()
+//                            ->title('Deleted Successfully')
+//                            ->success()
+//                            ->send();
+////                        }
+//
+//
+//                    })
+////                    ->visible(function () {
+////
+////                        if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
+////                            return true;
+////                        }
+////                        return false;
+////                    }),
+//            ], position: ActionsPosition::AfterColumns);
     }
 
 }

@@ -50,6 +50,7 @@ class ComplianceSubMenuList extends Page implements HasTable
 //        dd($this->year);
         $this->compliance_menu_id = $request->get('compliance_menu_id');
         $this->compliance_menu = ComplianceMenu::find($this->compliance_menu_id);
+//        dd($this->compliance_menu->document_id);
     }
 
     protected function getHeaderActions(): array
@@ -68,12 +69,14 @@ class ComplianceSubMenuList extends Page implements HasTable
                         'compliance_name' => $this->compliance_menu->name,
                         'document_id' => $this->compliance_menu->document_id,
                         'document_name' => $this->compliance_menu->document->name,
+                        'country_id' => $this->compliance_menu->document->country_id,
                     ]);
                 })
                 ->form([
                     Card::make()
                         ->schema([
                             Card::make([
+                                Hidden::make('country_id'),
                                 Hidden::make('document_id'),
                                 Hidden::make('calendar_year_id'),
                                 Hidden::make('year'),
@@ -103,6 +106,7 @@ class ComplianceSubMenuList extends Page implements HasTable
                 ])
                 ->action(function (array $data, $record, $form): void {
                     $complianceSubMenu = new ComplianceSubMenu();
+                    $complianceSubMenu->country_id = $data['country_id'];
                     $complianceSubMenu->document_id = $data['document_id'];
                     $complianceSubMenu->compliance_menu_id = $data['compliance_menu_id'];
                     $complianceSubMenu->calendar_year_id = $data['calendar_year_id'];
@@ -171,6 +175,7 @@ class ComplianceSubMenuList extends Page implements HasTable
                             'compliance_name' => $this->compliance_menu->name,
                             'document_id' => $this->compliance_menu->document_id,
                             'document_name' => $this->compliance_menu->document->name,
+                            'country_id' => $this->compliance_menu->document->country_id,
                             'name' => $record->name,
 
                         ]);
@@ -180,6 +185,7 @@ class ComplianceSubMenuList extends Page implements HasTable
                             ->schema([
                                 Card::make([
                                     Hidden::make('document_id'),
+                                    Hidden::make('country_id'),
                                     Hidden::make('calendar_year_id'),
                                     Hidden::make('year'),
                                     TextInput::make('document_name')->label('Country')->disabled(),
@@ -189,26 +195,27 @@ class ComplianceSubMenuList extends Page implements HasTable
                                         ->columnSpan(1)
                                         ->label('Task File Title')
                                         ->required(),
-                                    DatePicker::make('expired_date')
-                                        ->label('Deadline')
-                                        ->required()
-                                        ->suffixIcon('heroicon-o-calendar')
-                                        ->closeOnDateSelection()
-                                        ->native(false)
-                                        ->visible(function () {
-                                            if ($this->compliance_menu->name == 'Compliance docs with due dates') {
-                                                if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
-                                                    return true;
-                                                }
-                                            }
-                                            return false;
-                                        }),
+//                                    DatePicker::make('expired_date')
+//                                        ->label('Deadline')
+//                                        ->required()
+//                                        ->suffixIcon('heroicon-o-calendar')
+//                                        ->closeOnDateSelection()
+//                                        ->native(false)
+//                                        ->visible(function () {
+//                                            if ($this->compliance_menu->name == 'Compliance docs with due dates') {
+//                                                if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
+//                                                    return true;
+//                                                }
+//                                            }
+//                                            return false;
+//                                        }),
                                 ])->columns(3)
                             ])
                     ])
                     ->action(function (array $data, $record, $form): void {
                         $complianceSubMenu = ComplianceSubMenu::find($record->id);
                         $complianceSubMenu->document_id = $data['document_id'];
+                        $complianceSubMenu->country_id = $data['country_id'];
                         $complianceSubMenu->compliance_menu_id = $data['compliance_menu_id'];
                         $complianceSubMenu->calendar_year_id = $data['calendar_year_id'];
                         $complianceSubMenu->year = $data['year'];
