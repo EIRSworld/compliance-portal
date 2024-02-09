@@ -13,10 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-//        User::create([
-//            'name' => 'Super Admin',
-//            'email' => 'admin@compliance.com',
-//            'password' => bcrypt('password'),
-//        ]);
+        User::create([
+            'name' => 'Super Admin',
+            'email' => 'admin@compliance.com',
+            'password' => bcrypt('password'),
+        ]);
     }
 }
