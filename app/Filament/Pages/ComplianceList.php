@@ -3,10 +3,15 @@
 namespace App\Filament\Pages;
 
 use App\Models\CalendarYear;
+use App\Models\ComplianceMenu;
+use App\Models\CompliancePrimarySubMenu;
+use App\Models\ComplianceSubMenu;
 use App\Models\Country;
 use App\Models\Document;
+use App\Models\UploadDocument;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -26,6 +31,8 @@ class ComplianceList extends Page implements HasTable
 
     protected static ?string $title = 'Documents';
 
+    protected static ?int $navigationSort = 0;
+
 
     public function table(Table $table): Table
     {
@@ -34,9 +41,9 @@ class ComplianceList extends Page implements HasTable
             ->query(function (Builder $query) {
 
                 $query = Document::query();
-                if (auth()->user()->hasRole('country_head')) {
-                    return $query->whereIn('country_id', auth()->user()->country_id);
-                }
+//                if (auth()->user()->hasRole('country_head')) {
+//                    return $query->whereIn('country_id', auth()->user()->country_id);
+//                }
 
                 return $query;
             })
@@ -64,9 +71,40 @@ class ComplianceList extends Page implements HasTable
                         $currentYear = Carbon::now()->year;
                         return CalendarYear::where('name', $currentYear)->value('id');
                     })
-                    ->placeholder('Select the Country')
+                    ->placeholder('Select the Year')
                     ->label('Year'),
             ], FiltersLayout::AboveContent)
+
+
+            ->actions([
+                \Filament\Tables\Actions\Action::make('delete')->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->label('Delete')
+                    ->button()
+                    ->requiresConfirmation()
+                    ->action(function (array $data, $record, $form): void {
+//                        dd($record);
+                        $document = Document::find($record->id)->delete();
+                        $complianceMenu = ComplianceMenu::where('document_id',$record->id)->delete();
+                        $complianceSubMenu = ComplianceSubMenu::where('document_id', $record->id)->delete();
+                        $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('document_id', $record->id)->delete();
+                        $complianceUploadDocument = UploadDocument::where('document_id', $record->id)->delete();
+                        Notification::make()
+                            ->title('Deleted Successfully')
+                            ->success()
+                            ->send();
+//                        }
+
+
+                    })
+                    ->visible(function () {
+
+                        if (auth()->user()->hasRole('Super Admin')) {
+                            return true;
+                        }
+                        return false;
+                    }),
+                ])
             ;
     }
 }

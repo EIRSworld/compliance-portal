@@ -110,6 +110,10 @@ body {
 /*    max-width: 90%;*/
 /*}*/
 
+
+.custom-bg-red-event {
+    background-color: #fcc4c4;
+}
 .custom-bg-green {
     background-color: #ccffd4;
 }
@@ -118,6 +122,9 @@ body {
 }
 .custom-bg-red {
     background-color: #fdfdfd;
+}
+.custom-bg-blue {
+    background-color: #add8e6;
 }
 
 /*.custom-bg-green {*/

@@ -1,0 +1,218 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\RoleResource\Pages\CreateRole;
+use App\Filament\Resources\RoleResource\Pages\EditRole;
+use App\Filament\Resources\RoleResource\Pages\ListRoles;
+use App\Filament\Resources\RoleResource\Pages\ViewRole;
+use App\Filament\Resources\RoleResource\RelationManager\PermissionRelationManager;
+use App\Filament\Resources\RoleResource\RelationManager\UserRelationManager;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+class RoleResource extends Resource
+{
+    protected static ?string $model = Role::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'Masters';
+    protected static ?int $navigationSort = 2;
+
+    public static function canCreate(): bool
+    {
+        if (auth()->user()->can('Create Role')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        if (auth()->user()->can('Edit Role')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        if (auth()->user()->can('Delete Role')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (auth()->user()->can('View Role')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function getModel(): string
+    {
+        return config('permission.models.role', Role::class);
+    }
+
+    public static function getLabel(): string
+    {
+        return __('filament-spatie-roles-permissions::filament-spatie.section.role');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __(config('filament-spatie-roles-permissions.navigation_section_group', 'filament-spatie-roles-permissions::filament-spatie.section.roles_and_permissions'));
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament-spatie-roles-permissions::filament-spatie.section.roles');
+    }
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Card::make()
+                    ->schema([
+                        Grid::make(6)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.name'))
+                                    ->required(),
+                                Select::make('panel')
+                                    ->options([
+                                        'admin' => 'DL360',
+                                        'cap' => 'CAP',
+                                        'fpna' => 'FPnA',
+                                        'oms' => 'OMS',
+                                    ])->reactive()
+                                    ->default('admin')
+                                    ->required(),
+                                Select::make('guard_name')
+                                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
+                                    ->options(config('filament-spatie-roles-permissions.guard_names'))
+                                    ->default(config('filament-spatie-roles-permissions.default_guard_name'))
+                                    ->required(),
+                                CheckboxList::make('permissions')->columnSpanFull()
+                                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.permissions'))
+//                                    ->options(
+//                                        function () {
+//                                            $permissions = config('filament-spatie-roles-permissions.permission_model', Permission::class)::select('id', 'guard_name', 'name')->get();
+//
+//                                            return $permissions->mapWithKeys(function ($permission) {
+//                                                return [$permission->id => $permission->name.' ('.$permission->guard_name.')'];
+//                                            });
+//                                        }
+//                                    )
+                                    ->columns(6)->searchable()->bulkToggleable()
+                                    ->selectAllAction(
+                                        fn (Action $action) => $action->label('Select all Permissions'),
+                                    )
+                                    ->relationship('permissions', 'name', modifyQueryUsing: function (Builder $query, callable $get) {
+                                        if ($get('panel') == 'admin') {
+                                            return $query;
+                                        }
+                                        return $query->whereIn('panel', [$get('panel'), 'admin']);
+                                    })
+                                ,
+//                                Select::make(config('permission.column_names.team_foreign_key', 'team_id'))
+//                                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.team'))
+//                                    ->hidden(! config('permission.teams', false))
+//                                    ->options(
+//                                        fn () => config('filament-spatie-roles-permissions.team_model', App\Models\Team::class)::pluck('name', 'id')
+//                                    )
+//                                    ->dehydrated(fn ($state) => (int) $state <= 0)
+//                                    ->placeholder(__('filament-spatie-roles-permissions::filament-spatie.select-team'))
+//                                    ->hint(__('filament-spatie-roles-permissions::filament-spatie.select-team-hint')),
+                            ]),
+                    ]),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('name')->badge()
+                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.name'))
+                    ->searchable(),
+                TextColumn::make('permissions_count')->badge()->color('success')
+                    ->counts('permissions')
+                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.permissions_count'))
+//                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true))
+                    ->searchable(),
+                TextColumn::make('panel')
+                    ->label('Panel')->badge()
+                    ->getStateUsing(function (Role $record) {
+                        if ($record->panel == 'admin') {
+                            return 'DL360';
+                        }
+                        if ($record->panel == 'cap') {
+                            return 'CAP';
+                        }
+                        if ($record->panel == 'fpna') {
+                            return 'FPnA';
+                        }
+                        if ($record->panel == 'oms') {
+                            return 'OMS';
+                        }
+                        return '-';
+                    })
+                    ->searchable(),
+//                TextColumn::make('guard_name')
+//                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true))
+//                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
+//                    ->searchable(),
+            ])
+            ->filters([
+
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make()->modalWidth('full'),
+//                Tables\Actions\ViewAction::make()->modalWidth('full'),
+            ])
+            ->bulkActions([
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+//            PermissionRelationManager::class,
+//            UserRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListRoles::route('/'),
+//            'create' => CreateRole::route('/create'),
+//            'edit' => EditRole::route('/{record}/edit'),
+//            'view' => ViewRole::route('/{record}'),
+        ];
+    }
+}

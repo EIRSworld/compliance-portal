@@ -42,10 +42,7 @@ class ComplianceTotal extends BaseWidget
             ->query(function (Builder $query) {
 
                 $baseQuery = ComplianceSubMenu::whereRelation('complianceMenu', 'name', 'Compliance docs with due dates')->orderBy('expired_date');
-                if (auth()->user()->hasRole('country_head')) {
 
-                    return $baseQuery->whereIn('country_id', auth()->user()->country_id);
-                }
 
                 return $baseQuery;
             })
@@ -117,7 +114,7 @@ class ComplianceTotal extends BaseWidget
                         $currentYear = Carbon::now()->year;
                         return CalendarYear::where('name', $currentYear)->value('id');
                     })
-                    ->placeholder('Select the Country')
+                    ->placeholder('Select the Year')
                     ->label('Year'),
                 SelectFilter::make('country_id')->searchable()
                     ->options(function () {
@@ -177,7 +174,7 @@ class ComplianceTotal extends BaseWidget
                     })
                     ->visible(function () {
 
-                        if (auth()->user()->hasRole('country_head') || auth()->user()->hasRole('super_admin')) {
+                        if (auth()->user()->hasRole('country_head') || auth()->user()->hasRole('Super Admin')) {
                             return true;
                         }
 
@@ -188,7 +185,7 @@ class ComplianceTotal extends BaseWidget
                     ->label('Approve')
                     ->visible(function () {
 
-                        if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
+                        if (auth()->user()->hasRole('Super Admin')) {
                             return true;
                         }
 

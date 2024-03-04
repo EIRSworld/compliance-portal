@@ -6,6 +6,7 @@ use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Document extends Model
 {
@@ -19,6 +20,10 @@ class Document extends Model
         'status',
     ];
 
+    public function complianceSub(): HasMany
+    {
+        return $this->hasMany(ComplianceSubMenu::class, 'compliance_menu_id', 'id');
+    }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

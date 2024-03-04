@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CountryResource extends Resource
@@ -23,10 +24,34 @@ class CountryResource extends Resource
 
     protected static ?int $navigationSort = 0;
     protected static ?string $navigationLabel = 'Countries';
+    public static function canCreate(): bool
+    {
+        if (auth()->user()->can('Create Country')) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        if (auth()->user()->can('Edit Country')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        if (auth()->user()->can('Delete Country')) {
+            return true;
+        }
+        return false;
+    }
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('compliance_manager')) {
+        if (auth()->user()->hasRole('Super Admin')) {
             return true;
         }
         return false;

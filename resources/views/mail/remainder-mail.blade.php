@@ -357,6 +357,9 @@
                                 necessary documents are submitted by the specified deadline. Additionally, it is
                                 important to note that the reminder emails will cease once all documents are updated
                                 before the due date for the year.</p>
+                            <p>
+                              <a href="https://compliance-management.eirsworld.com/">https://compliance-management.eirsworld.com/</a>
+                            </p>
                             <p>Thank you for your cooperation in this matter. Should you have any questions or require
                                 further assistance, please do not hesitate to reach out.</p>
                             <p>Best regards,<br>EIRS Team</p>

@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -25,10 +26,38 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Masters';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
+
+
+
+    public static function canCreate(): bool
+    {
+        if (auth()->user()->can('Create User')) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        if (auth()->user()->can('Edit User')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        if (auth()->user()->can('Delete User')) {
+            return true;
+        }
+        return false;
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('compliance_manager')) {
+        if (auth()->user()->hasRole('Super Admin')) {
             return true;
         }
         return false;
@@ -56,20 +85,102 @@ class UserResource extends Resource
                             })
                         ->columnSpan(1),
                     Forms\Components\Select::make('country_id')->label('Country')->multiple()
-                        ->options(Country::pluck('name','id'))
+
+                        ->options(Country::pluck('name', 'id')->toArray())
+                        ->default(function (callable $get){
+                            $roleId = $get('roles');
+                            $role = Role::find($roleId);
+                            if ($role){
+
+                                if ($role->name === 'Management' || $role->name === 'Super Admin' || $role->name === 'Business Head' || $role->name === 'Compliance Head') {
+                                    Country::pluck('id')->toArray();
+                                }
+                            }
+})
                         ->searchable()
                         ->reactive()->required()
                         ->placeholder('Select'),
-//                        ->visible(function(Callable $get){
-//                            if($get('roles') === 'Country Head'){
-//                                return true;
+
+                    Forms\Components\Select::make('finance_manager_id')->label('Finance Manager')
+//                        ->options(function (callable $get) {
+//                            $countryIds = $get('country_id');
+//                          return User::role('Compliance Finance Manager')->whereJsonContains('country_id',$countryIds)->pluck('name','id')->toArray();
+//
+//                        })
+                        ->options(function (callable $get) {
+                            $countryIds = $get('country_id');
+                            // Ensure we're dealing with an array of country IDs.
+                            if (!is_array($countryIds)) {
+                                $countryIds = [$countryIds];
+                            }
+
+                            $query = User::role('Compliance Finance Manager');
+                            // Apply whereJsonContains for each country ID individually
+                            foreach ($countryIds as $countryId) {
+//                                dd($query->orWhereJsonContains('country_id', (string)$countryId));
+                                // Note: Depending on your exact database and Laravel version,
+                                // you might need to adjust this to ensure compatibility.
+                                $query->orWhereJsonContains('country_id', (string)$countryId);
+                            }
+//dd($query);
+                            return $query->pluck('name', 'id')->toArray();
+                        })
+                        ->searchable()
+                        ->reactive()
+                        ->placeholder('Select')
+                        ->visible(function (callable $get) {
+                            $roleIds = $get('roles');
+                            if (!is_array($roleIds)) {
+                                $roleIds = [$roleIds];
+                            }
+                            $roles = Role::findMany($roleIds);
+
+                            foreach ($roles as $role) {
+                                if (in_array($role->name, ['Compliance Finance Officer', 'Compliance Principle Officer'])) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }),
+//                        ->visible(function (callable $get) {
+//                            $roleId = $get('roles');
+////                            dd($roleId);
+//                            $role = Role::findMany($roleId);
+//                            if ($role){
+//
+//                                if ($role->name === 'Compliance Finance Officer' || $role->name === 'Compliance Principle Officer') {
+//                                    return true;
+//                                }
 //                            }
 //                            return false;
 //                        }),
+                    Forms\Components\Select::make('principal_manager_id')->label('Principal Manager')
+                        ->options(function (callable $get) {
+                            $country = $get('country_id');
 
+                            User::role('Compliance Principle Manager')->whereIn('country_id',$country)->pluck('id','name')->toArray();
+
+                        })
+                        ->searchable()
+                        ->reactive()
+                        ->placeholder('Select')
+                        ->visible(function (callable $get) {
+                            $roleIds = $get('roles');
+                            if (!is_array($roleIds)) {
+                                $roleIds = [$roleIds];
+                            }
+                            $roles = Role::findMany($roleIds);
+
+                            foreach ($roles as $role) {
+                                if (in_array($role->name, ['Compliance Finance Officer', 'Compliance Principle Officer'])) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }),
                     Forms\Components\TextInput::make('password')
                         ->hiddenOn('edit')
-                        ->dehydrateStateUsing(fn ($state) => ! empty($state) ? Hash::make($state) : "")
+                        ->dehydrateStateUsing(fn($state) => !empty($state) ? Hash::make($state) : "")
                         ->label('Password')
                         ->password(),
                     Forms\Components\TextInput::make('confirm_password')
@@ -94,7 +205,7 @@ class UserResource extends Resource
                 TextColumn::make('country_id')->label('Country')
                     ->getStateUsing(function (User $record) {
                         if ($record->country_id) {
-                            return Country::whereIn('id',$record->country_id)->pluck('name')->toArray();
+                            return Country::whereIn('id', $record->country_id)->pluck('name')->toArray();
                         }
                         return [];
                     })->badge(),

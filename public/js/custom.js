@@ -16,12 +16,18 @@ setInterval(function(){
     var list = document.getElementsByClassName("custom-bg-yellow");
     for (var i=0; i<list.length; i++) {
         getParentByTagName(list[i],"tr").classList.add('custom-bg-yellow');
-        // list[i].parentElement.parentElement.parentElement.parentElement.classList.add('custom-bg-red');
     }
     var list = document.getElementsByClassName("custom-bg-red");
     for (var i=0; i<list.length; i++) {
         getParentByTagName(list[i],"tr").classList.add('custom-bg-red');
-        // list[i].parentElement.parentElement.parentElement.parentElement.classList.add('custom-bg-red');
+    }
+    var list = document.getElementsByClassName("custom-bg-blue");
+    for (var i=0; i<list.length; i++) {
+        getParentByTagName(list[i],"tr").classList.add('custom-bg-blue');
+    }
+    var list = document.getElementsByClassName("custom-bg-red-event");
+    for (var i=0; i<list.length; i++) {
+        getParentByTagName(list[i],"tr").classList.add('custom-bg-red-event');
     }
 }, 1000);
 

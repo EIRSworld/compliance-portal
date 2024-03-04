@@ -6,9 +6,12 @@ use App\Filament\Resources\CalendarYearResource\Pages;
 use App\Filament\Resources\CalendarYearResource\RelationManagers;
 use App\Models\CalendarYear;
 use App\Models\ComplianceMenu;
+use App\Models\CompliancePrimarySubMenu;
 use App\Models\ComplianceSubMenu;
 use App\Models\Country;
 use App\Models\Document;
+use App\Models\UploadDocument;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -18,6 +21,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CalendarYearResource extends Resource
@@ -27,13 +31,37 @@ class CalendarYearResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Masters';
-    protected static ?string $navigationLabel = 'Years';
+    protected static ?string $navigationLabel = 'Calendar Years';
     protected static ?int $navigationSort = 1;
-    protected static ?string $label = 'Years';
+    protected static ?string $label = 'Calendar Years';
+    public static function canCreate(): bool
+    {
+        if (auth()->user()->can('Create Year')) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        if (auth()->user()->can('Edit Year')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        if (auth()->user()->can('Delete Year')) {
+            return true;
+        }
+        return false;
+    }
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('compliance_manager')) {
+        if (auth()->user()->hasRole('Super Admin')) {
             return true;
         }
         return false;
@@ -92,387 +120,1637 @@ class CalendarYearResource extends Resource
                         // Find country IDs to add and to remove
                         $toAdd = array_diff($newCountryIds, $existingCountryIds);
                         $toRemove = array_diff($existingCountryIds, $newCountryIds);
-//                        dd($newCountryIds,$existingCountryIds,$toAdd,$toRemove);
 
                         // Handle new countries
-                        foreach ($toAdd as $countryId) {
-                            $document = new Document();
-                            $country = Country::find($countryId);
-                            $document->country_id = $countryId;
-                            $document->calendar_year_id = $record->id;
-                            $document->name = $country->name;
-                            $document->save();
+                        try {
 
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Compliance docs with due dates';
-                            $compliantMenu->save();
+                            foreach ($toAdd as $countryId) {
+//                dd($record->id);
+                                // Compliance docs with due dates
+                                $document = new Document();
+                                $country = Country::find($countryId);
+                                $document->country_id = $countryId;
+                                $document->calendar_year_id = $record->id;
+                                $document->name = $country->name;
+                                $document->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'PI COVER/3RD PARTY COVER';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'AUDITED FINANCIALS';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'COMPANY REGISTRATION';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'LICENCE';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'BROKER QTR SUBMISSIONS';
-                            $compliantSubMenu->save();
-
-                            // Agencies
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Agencies';
-                            $compliantMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Application Forms';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'KYC Docs';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Onboarding Approval';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = "TOBA's";
-                            $compliantSubMenu->save();
-
-                            // Bank Account
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Bank Account';
-                            $compliantMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Application Forms';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Bank Confirmation Docs';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Proof of Captial Deposited';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = "Signatories";
-                            $compliantSubMenu->save();
-
-                            // Clients by BDM
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Clients by BDM';
-                            $compliantMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Approvals or Consent Forms';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'KYC Docs';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Policy Schedules';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = "Remainder for Renewal";
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = "Written Communication";
-                            $compliantSubMenu->save();
-
-                            // Finance
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Finance';
-                            $compliantMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Bank Statements';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Expenses';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Income';
-                            $compliantSubMenu->save();
-
-                            // Insurance Regulation Registration
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Insurance Regulation Registration';
-                            $compliantMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Licence';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'PI Cover';
-                            $compliantSubMenu->save();
-
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Remainder for Renewal';
-                            $compliantSubMenu->save();
+                                // Agencies
+                                $compliantMenu = new ComplianceMenu();
+                                $compliantMenu->calendar_year_id = $record->id;
+                                $compliantMenu->document_id = $document->id;
+                                $compliantMenu->country_id = $countryId;
+                                $compliantMenu->year = $record->name;
+                                $compliantMenu->name = 'Agencies';
+                                $compliantMenu->folder_type = 'Sub Folder';
+                                $compliantMenu->save();
 
 
-                            // Registration Docs
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Registration Docs';
-                            $compliantMenu->save();
+                                // Finance
+                                $compliantMenu = new ComplianceMenu();
+                                $compliantMenu->calendar_year_id = $record->id;
+                                $compliantMenu->document_id = $document->id;
+                                $compliantMenu->country_id = $countryId;
+                                $compliantMenu->year = $record->name;
+                                $compliantMenu->name = 'Finance';
+                                $compliantMenu->folder_type = 'Sub Folder';
+                                $compliantMenu->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Business Plan';
-                            $compliantSubMenu->save();
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Bank Statements';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'COC';
-                            $compliantSubMenu->save();
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Jan';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Director Info';
-                            $compliantSubMenu->save();
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Jan';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Projected Financials';
-                            $compliantSubMenu->save();
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Feb';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Share Capital Docs';
-                            $compliantSubMenu->save();
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Feb';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Share Certificate';
-                            $compliantSubMenu->save();
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Mar';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Shareholder Info';
-                            $compliantSubMenu->save();
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Mar';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'SOP';
-                            $compliantSubMenu->save();
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Apr';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Structure';
-                            $compliantSubMenu->save();
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Apr';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
 
-                            // Reporting
-                            $compliantMenu = new ComplianceMenu();
-                            $compliantMenu->calendar_year_id = $record->id;
-                            $compliantMenu->document_id = $document->id;
-                            $compliantMenu->name = 'Reporting';
-                            $compliantMenu->save();
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'May';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'LPM';
-                            $compliantSubMenu->save();
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'May';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
 
-                            $compliantSubMenu = new ComplianceSubMenu();
-                            $compliantSubMenu->calendar_year_id = $record->id;
-                            $compliantSubMenu->year = $record->name;
-                            $compliantSubMenu->document_id = $document->id;
-                            $compliantSubMenu->country_id = $countryId;
-                            $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                            $compliantSubMenu->name = 'Minutes of Meeting';
-                            $compliantSubMenu->save();
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'June';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'June';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'July';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'July';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Aug';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Aug';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Sep';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Sep';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Oct';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Oct';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Nov';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Nov';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Dec';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Dec';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Expenses';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Jan';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Jan';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Feb';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Feb';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Mar';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Mar';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Apr';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Apr';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'May';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'May';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'June';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'June';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'July';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'July';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Aug';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Aug';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Sep';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Sep';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Oct';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Oct';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Nov';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Nov';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Dec';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Dec';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Income';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Jan';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Jan';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Feb';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Feb';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Mar';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Mar';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Apr';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Apr';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'May';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'May';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'June';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'June';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'July';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'July';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Aug';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Aug';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Sep';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Sep';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Oct';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Oct';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Nov';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Nov';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Dec';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Dec';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Annual Return';
+                                $compliantSubMenu->is_expired = 1;
+                                $compliantSubMenu->expired_date = Carbon::now();
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'Annual Return';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = Carbon::now();
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Audited Financials';
+                                $compliantSubMenu->is_expired = 1;
+                                $compliantSubMenu->expired_date = Carbon::now();
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'Audited Financials';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = Carbon::now();
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Broker Qtr Submissions';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $year = $record->name;
+                                $endOfMarchForYear = Carbon::create($year, 3)->endOfMonth();
+                                $endOfJuneForYear = Carbon::create($year, 6)->endOfMonth();
+                                $endOfSepForYear = Carbon::create($year, 9)->endOfMonth();
+                                $endOfDecForYear = Carbon::create($year, 12)->endOfMonth();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = '1st Qtr';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = $endOfMarchForYear;
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = '1st Qtr';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = $endOfMarchForYear;
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = '2nd Qtr';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = $endOfJuneForYear;
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = '2nd Qtr';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = $endOfJuneForYear;
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = '3rd Qtr';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = $endOfSepForYear;
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = '3rd Qtr';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = $endOfSepForYear;
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = '4th Qtr';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = $endOfDecForYear;
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = '4th Qtr';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = $endOfDecForYear;
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                // Client Documents
+                                $compliantMenu = new ComplianceMenu();
+                                $compliantMenu->calendar_year_id = $record->id;
+                                $compliantMenu->document_id = $document->id;
+                                $compliantMenu->country_id = $countryId;
+                                $compliantMenu->year = $record->name;
+                                $compliantMenu->name = 'Client Documents';
+                                $compliantMenu->folder_type = 'Sub Folder';
+                                $compliantMenu->save();
+
+                                // Company Registration
+                                $compliantMenu = new ComplianceMenu();
+                                $compliantMenu->calendar_year_id = $record->id;
+                                $compliantMenu->document_id = $document->id;
+                                $compliantMenu->country_id = $countryId;
+                                $compliantMenu->year = $record->name;
+                                $compliantMenu->name = 'Company Registration';
+                                $compliantMenu->folder_type = 'Sub Folder';
+                                $compliantMenu->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'SOP';
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'SOP';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Certificate of Corporation';
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'Certificate of Corporation';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Shareholder Documents';
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'Shareholder Documents';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Director Documents';
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'Director Documents';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'PI/Fidelity/3rd Party Cover';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'PI Cover';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = Carbon::now();
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'PI Cover';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = Carbon::now();
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Fidelity';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = Carbon::now();
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Fidelity';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = Carbon::now();
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'VAT Registration Documents';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'VAT';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'VAT';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Tax Registration Documents';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Tax';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Tax';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Public Officer Documents';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Bank Account';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Registration Documents';
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_expired = 1;
+                                $compliantSubMenu->expired_date = Carbon::now();
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'Registration Documents';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_expired = 1;
+                                $complianceUploadDocument->expired_date = Carbon::now();
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                // Employee Documents
+                                $compliantMenu = new ComplianceMenu();
+                                $compliantMenu->calendar_year_id = $record->id;
+                                $compliantMenu->document_id = $document->id;
+                                $compliantMenu->country_id = $countryId;
+                                $compliantMenu->year = $record->name;
+                                $compliantMenu->name = 'Employee Documents';
+                                $compliantMenu->folder_type = 'Sub Folder';
+                                $compliantMenu->save();
+
+                                // Licence
+                                $compliantMenu = new ComplianceMenu();
+                                $compliantMenu->calendar_year_id = $record->id;
+                                $compliantMenu->document_id = $document->id;
+                                $compliantMenu->country_id = $countryId;
+                                $compliantMenu->year = $record->name;
+                                $compliantMenu->name = 'Licence';
+                                $compliantMenu->folder_type = 'Sub Folder';
+                                $compliantMenu->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Licence Registration Documents';
+                                $compliantSubMenu->folder_type = 'Upload';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->name = 'Licence Registration Documents';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliantSubMenu = new ComplianceSubMenu();
+                                $compliantSubMenu->calendar_year_id = $record->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->year = $record->name;
+                                $compliantSubMenu->document_id = $document->id;
+                                $compliantSubMenu->country_id = $countryId;
+                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliantSubMenu->sub_menu_name = 'Licence Certificate';
+                                $compliantSubMenu->folder_type = 'Sub Folder';
+                                $compliantSubMenu->is_uploaded = 0;
+                                $compliantSubMenu->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Proof of Payment';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = Carbon::now();
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Proof of Payment';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = Carbon::now();
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                                $compliancePrimarySubMenu->country_id = $countryId;
+                                $compliancePrimarySubMenu->document_id = $document->id;
+                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
+                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
+                                $compliancePrimarySubMenu->year = $record->name;
+                                $compliancePrimarySubMenu->primary_name = 'Certificate';
+                                $compliancePrimarySubMenu->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = Carbon::now();
+                                $compliancePrimarySubMenu->is_uploaded = 0;
+                                $compliancePrimarySubMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
+                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Certificate';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $compliancePrimarySubMenu->is_expired = 1;
+                                $compliancePrimarySubMenu->expired_date = Carbon::now();
+                                $complianceUploadDocument->is_uploaded = 0;
+                                $complianceUploadDocument->save();
+
+                                // Internal Policies
+                                $compliantMenu = new ComplianceMenu();
+                                $compliantMenu->calendar_year_id = $record->id;
+                                $compliantMenu->document_id = $document->id;
+                                $compliantMenu->country_id = $countryId;
+                                $compliantMenu->year = $record->name;
+                                $compliantMenu->name = 'Internal Policies';
+                                $compliantMenu->folder_type = 'Upload';
+                                $compliantMenu->save();
+
+                                $complianceUploadDocument = new UploadDocument();
+                                $complianceUploadDocument->calendar_year_id = $record->id;
+                                $complianceUploadDocument->document_id = $document->id;
+                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
+                                $complianceUploadDocument->country_id = $countryId;
+                                $complianceUploadDocument->year = $record->name;
+                                $complianceUploadDocument->name = 'Internal Policies';
+                                $complianceUploadDocument->folder_type = 'Upload';
+                                $complianceUploadDocument->save();
+
+                            }
+                        } catch (\Exception $e) {
+                            // Handle the exception
+                            echo "An error occurred: " . $e->getMessage();
+                            // Optionally, log the error or take other actions.
                         }
 
                         // Handle removal of countries and their documents
@@ -483,67 +1761,14 @@ class CalendarYearResource extends Resource
 
                                 $complianceMenu = ComplianceMenu::where('document_id',$document->id)->delete();
                                 $complianceSubMenu = ComplianceSubMenu::where('document_id',$document->id)->delete();
+                                $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('document_id',$document->id)->delete();
+                                $complianceUploadDocument = UploadDocument::where('document_id',$document->id)->delete();
                                 // Assuming you have cascading deletes set up in your database or you manually delete related records
                                 $document->delete();
                             }
                         }
-
-                        // Update any other necessary details for remaining documents
-//                        foreach ($existingDocuments as $document) {
-//                            if (in_array($document->country_id, $newCountryIds)) {
-//                                // Update document details if needed
-//                            }
-//                        }
                     }),
-//                Action::make('active_status')->button()->modalWidth('sm')->requiresConfirmation()
-//                    ->label('Active')
-//                    ->visible(function (CalendarYear $record ) {
-//                        $calendarYearCount = CalendarYear::count();
-//                        $calendarYear = CalendarYear::whereStatus(0)->count();
-//                        if ($calendarYearCount === $calendarYear)
-//                        {
-//                            return true;
-//                        }
-//
-//                        return false;
-//                    })
-//                    ->action(function (array $data, $record): void {
-//
-//                        $calendarYear = CalendarYear::find($record->id);
-//                        $calendarYear->status = 1;
-//                        $calendarYear->save();
-//
-//                        Notification::make()
-//                            ->title('Year Active Successfully')
-//                            ->success()
-//                            ->send();
-//
-//                    }),
-//                Action::make('inactive_status')->button()->modalWidth('sm')->requiresConfirmation()
-//                    ->label('Inactive')
-//                    ->visible(function (CalendarYear $record ) {
-////                        $calendarYearCount = CalendarYear::count();
-//                        $calendarYear = CalendarYear::find($record->id);
-////dd($calendarYear);
-//                        if ($calendarYear->status === 1)
-//                        {
-//                            return true;
-//                        }
-//
-//                        return false;
-//                    })
-//                    ->action(function (array $data, $record): void {
-//
-//                        $calendarYear = CalendarYear::find($record->id);
-//                        $calendarYear->status = 0;
-//                        $calendarYear->save();
-//
-//                        Notification::make()
-//                            ->title('Year Inactive Successfully')
-//                            ->success()
-//                            ->send();
-//
-//                    }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

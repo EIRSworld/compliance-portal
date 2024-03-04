@@ -17,15 +17,20 @@ class ComplianceSubMenu extends Model implements HasMedia
 
     protected $fillable = [
         'document_id',
-        'country_id',
         'compliance_menu_id',
+        'sub_menu_id',
+        'country_id',
         'calendar_year_id',
         'year',
-        'name',
+        'sub_menu_name',
         'renewed_date',
+        'is_expired',
         'expired_date',
+        'folder_type',
         'is_uploaded',
+        'upload_comment',
         'approve_status',
+        'reject_comment',
         'status',
     ];
     public function registerMediaCollections(): void
@@ -33,6 +38,10 @@ class ComplianceSubMenu extends Model implements HasMedia
         $this->addMediaCollection('compliance_attachments');
     }
 
+//    public function subMenu(): BelongsTo
+//    {
+//        return $this->belongsTo(ComplianceSubMenu::class, 'sub_menu_id');
+//    }
     public function document(): BelongsTo
     {
         return $this->belongsTo(Document::class, 'document_id');

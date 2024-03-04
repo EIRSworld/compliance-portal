@@ -4,18 +4,25 @@ namespace App\Filament\Pages;
 
 use App\Models\CalendarYear;
 use App\Models\ComplianceMenu;
+use App\Models\CompliancePrimarySubMenu;
 use App\Models\ComplianceSubMenu;
+use App\Models\UploadDocument;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -38,8 +45,7 @@ class ComplianceSubMenuList extends Page implements HasTable
         return $this->compliance_menu->name;
     }
 
-    protected static ?string $title = 'Compliance';
-    public $compliance_menu_id, $compliance_menu,$calendar_year_id,$year;
+    public $compliance_menu_id, $compliance_menu, $calendar_year_id, $year;
 
 //    protected ?string $maxContentWidth = '7xl';
 
@@ -50,6 +56,7 @@ class ComplianceSubMenuList extends Page implements HasTable
 //        dd($this->year);
         $this->compliance_menu_id = $request->get('compliance_menu_id');
         $this->compliance_menu = ComplianceMenu::find($this->compliance_menu_id);
+//        dd($this->compliance_menu);
 //        dd($this->compliance_menu->document_id);
     }
 
@@ -83,23 +90,41 @@ class ComplianceSubMenuList extends Page implements HasTable
                                 TextInput::make('document_name')->label('Country')->disabled(),
                                 Hidden::make('compliance_menu_id'),
                                 TextInput::make('compliance_name')->label('Folder Name')->disabled(),
-                                TextInput::make('name')
+                                TextInput::make('sub_menu_name')
                                     ->columnSpan(1)
                                     ->label('Task File Title')
                                     ->required(),
+                                Radio::make('folder_type')
+                                    ->label('Type')
+                                    ->options([
+                                        'Sub Folder' => 'Sub Folder',
+                                        'Upload' => 'Upload',
+                                    ])->required()
+                                    ->inline()->reactive()
+                                    ->inlineLabel(false),
+                                Checkbox::make('is_expired')->label('Expired')->reactive()
+                                    ->visible(function (callable $get) {
+
+                                        if ($get('folder_type') === 'Upload') {
+                                            return true;
+                                        }
+                                        return false;
+
+                                    }),
+
                                 DatePicker::make('expired_date')
                                     ->label('Deadline')
-                                    ->required()
+                                    ->required()->reactive()
                                     ->suffixIcon('heroicon-o-calendar')
                                     ->closeOnDateSelection()
                                     ->native(false)
-                                    ->visible(function () {
-                                        if ($this->compliance_menu->name == 'Compliance docs with due dates') {
-                                            if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
-                                                return true;
-                                            }
+                                    ->visible(function (callable $get) {
+
+                                        if ($get('is_expired') === true) {
+                                            return true;
                                         }
                                         return false;
+
                                     }),
                             ])->columns(3)
                         ])
@@ -111,13 +136,165 @@ class ComplianceSubMenuList extends Page implements HasTable
                     $complianceSubMenu->compliance_menu_id = $data['compliance_menu_id'];
                     $complianceSubMenu->calendar_year_id = $data['calendar_year_id'];
                     $complianceSubMenu->year = $data['year'];
-                    $complianceSubMenu->name = $data['name'];
-                    if ($this->compliance_menu->name === 'Compliance docs with due dates') {
+                    $complianceSubMenu->sub_menu_name = $data['sub_menu_name'];
+                    $complianceSubMenu->folder_type = $data['folder_type'];
+                    $complianceSubMenu->is_uploaded = 0;
+                    $isExpiredSet = isset($data['is_expired']) && $data['is_expired'];
+                    $complianceSubMenu->is_expired = $isExpiredSet ? 1 : 0;
+                    if ($complianceSubMenu->is_expired === 1) {
                         $complianceSubMenu->expired_date = $data['expired_date'];
                     }
-
-                    $complianceSubMenu->is_uploaded = 0;
                     $complianceSubMenu->save();
+
+                    if ($complianceSubMenu->folder_type === 'Upload') {
+
+                        $complianceUploadDocument = new UploadDocument();
+                        $complianceUploadDocument->country_id = $data['country_id'];
+                        $complianceUploadDocument->document_id = $data['document_id'];
+                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
+                        $complianceUploadDocument->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
+                        $complianceUploadDocument->year = $data['year'];
+                        $complianceUploadDocument->name = $data['sub_menu_name'];
+                        $complianceUploadDocument->folder_type = $data['folder_type'];
+                        $complianceUploadDocument->is_uploaded = 0;
+                        $complianceUploadDocument->is_expired = $isExpiredSet ? 1 : 0;
+                        if ($complianceSubMenu->is_expired === 1) {
+                            $complianceUploadDocument->expired_date = $data['expired_date'];
+                        }
+                        $complianceUploadDocument->save();
+                    }
+
+
+                    if ($this->compliance_menu->name === 'Agencies') {
+                        $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                        $compliancePrimarySubMenu->country_id = $data['country_id'];
+                        $compliancePrimarySubMenu->document_id = $data['document_id'];
+                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
+                        $compliancePrimarySubMenu->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
+                        $compliancePrimarySubMenu->year = $data['year'];
+                        $compliancePrimarySubMenu->primary_name = 'Agreement';
+                        $compliancePrimarySubMenu->folder_type = 'Upload';
+                        $compliancePrimarySubMenu->is_uploaded = 0;
+                        $compliancePrimarySubMenu->save();
+
+                        $complianceUploadDocument = new UploadDocument();
+                        $complianceUploadDocument->country_id = $data['country_id'];
+                        $complianceUploadDocument->document_id = $data['document_id'];
+                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
+                        $complianceUploadDocument->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
+                        $complianceUploadDocument->year = $data['year'];
+                        $complianceUploadDocument->name = 'Agreement';
+                        $complianceUploadDocument->folder_type = 'Upload';
+                        $complianceUploadDocument->is_uploaded = 0;
+                        $complianceUploadDocument->save();
+
+                        $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                        $compliancePrimarySubMenu->country_id = $data['country_id'];
+                        $compliancePrimarySubMenu->document_id = $data['document_id'];
+                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
+                        $compliancePrimarySubMenu->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
+                        $compliancePrimarySubMenu->year = $data['year'];
+                        $compliancePrimarySubMenu->primary_name = 'KYC';
+                        $compliancePrimarySubMenu->folder_type = 'Upload';
+                        $compliancePrimarySubMenu->is_uploaded = 0;
+                        $compliancePrimarySubMenu->save();
+
+                        $complianceUploadDocument = new UploadDocument();
+                        $complianceUploadDocument->country_id = $data['country_id'];
+                        $complianceUploadDocument->document_id = $data['document_id'];
+                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
+                        $complianceUploadDocument->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
+                        $complianceUploadDocument->year = $data['year'];
+                        $complianceUploadDocument->name = 'KYC';
+                        $complianceUploadDocument->folder_type = 'Upload';
+                        $complianceUploadDocument->is_uploaded = 0;
+                        $complianceUploadDocument->save();
+                    }
+
+                    if ($this->compliance_menu->name === 'Client Documents') {
+                        $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                        $compliancePrimarySubMenu->country_id = $data['country_id'];
+                        $compliancePrimarySubMenu->document_id = $data['document_id'];
+                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
+                        $compliancePrimarySubMenu->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
+                        $compliancePrimarySubMenu->year = $data['year'];
+                        $compliancePrimarySubMenu->primary_name = 'Policy Documents';
+                        $compliancePrimarySubMenu->folder_type = 'Upload';
+                        $compliancePrimarySubMenu->is_uploaded = 0;
+                        $compliancePrimarySubMenu->save();
+
+                        $complianceUploadDocument = new UploadDocument();
+                        $complianceUploadDocument->country_id = $data['country_id'];
+                        $complianceUploadDocument->document_id = $data['document_id'];
+                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
+                        $complianceUploadDocument->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
+                        $complianceUploadDocument->year = $data['year'];
+                        $complianceUploadDocument->name = 'Policy Documents';
+                        $complianceUploadDocument->folder_type = 'Upload';
+                        $complianceUploadDocument->is_uploaded = 0;
+                        $complianceUploadDocument->save();
+
+                        $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                        $compliancePrimarySubMenu->country_id = $data['country_id'];
+                        $compliancePrimarySubMenu->document_id = $data['document_id'];
+                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
+                        $compliancePrimarySubMenu->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
+                        $compliancePrimarySubMenu->year = $data['year'];
+                        $compliancePrimarySubMenu->primary_name = 'Correspondences';
+                        $compliancePrimarySubMenu->folder_type = 'Upload';
+                        $compliancePrimarySubMenu->is_uploaded = 0;
+                        $compliancePrimarySubMenu->save();
+
+                        $complianceUploadDocument = new UploadDocument();
+                        $complianceUploadDocument->country_id = $data['country_id'];
+                        $complianceUploadDocument->document_id = $data['document_id'];
+                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
+                        $complianceUploadDocument->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
+                        $complianceUploadDocument->year = $data['year'];
+                        $complianceUploadDocument->name = 'Correspondences';
+                        $complianceUploadDocument->folder_type = 'Upload';
+                        $complianceUploadDocument->is_uploaded = 0;
+                        $complianceUploadDocument->save();
+
+                        $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+                        $compliancePrimarySubMenu->country_id = $data['country_id'];
+                        $compliancePrimarySubMenu->document_id = $data['document_id'];
+                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
+                        $compliancePrimarySubMenu->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
+                        $compliancePrimarySubMenu->year = $data['year'];
+                        $compliancePrimarySubMenu->primary_name = 'Regulatory Documents';
+                        $compliancePrimarySubMenu->folder_type = 'Upload';
+                        $compliancePrimarySubMenu->is_uploaded = 0;
+                        $compliancePrimarySubMenu->save();
+
+                        $complianceUploadDocument = new UploadDocument();
+                        $complianceUploadDocument->country_id = $data['country_id'];
+                        $complianceUploadDocument->document_id = $data['document_id'];
+                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
+                        $complianceUploadDocument->compliance_sub_menu_id = $complianceSubMenu->id;
+                        $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
+                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
+                        $complianceUploadDocument->year = $data['year'];
+                        $complianceUploadDocument->name = 'Regulatory Documents';
+                        $complianceUploadDocument->folder_type = 'Upload';
+                        $complianceUploadDocument->is_uploaded = 0;
+                        $complianceUploadDocument->save();
+                    }
+
 
                     Notification::make()
                         ->title('Folder Successfully Created')
@@ -129,7 +306,7 @@ class ComplianceSubMenuList extends Page implements HasTable
                 })
                 ->visible(function () {
 
-                    if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
+                    if (auth()->user()->hasRole('Super Admin')) {
                         return true;
                     }
                     return false;
@@ -143,23 +320,36 @@ class ComplianceSubMenuList extends Page implements HasTable
         return $table
             ->query(\App\Models\ComplianceSubMenu::query()->where('compliance_menu_id', $this->compliance_menu_id)->orderBy('expired_date'))
             ->columns([
-                TextColumn::make('name')->label('Name')
-                    ->url(fn(\App\Models\ComplianceSubMenu $record): string => CompliantView::getUrl([
-                        'compliant_sub_menu_id' => $record->id,
-                        'calendar_year_id' => $record->calendar_year_id,
+                TextColumn::make('sub_menu_name')->label('Name')
+                    ->url(function (\App\Models\ComplianceSubMenu $record) {
+                        if ($record->folder_type == 'Sub Folder') {
 
-                        ])),
-                TextColumn::make('updated_at')->label('Updated Date')->date('d-m-Y'),
-                TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y')
-                    ->visible(function () {
-                        if ($this->compliance_menu->name == 'Compliance docs with due dates') {
-                            if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
-                                return true;
-                            }
+                            return CompliancePrimarySubMenuList::getUrl([
+                                'compliant_menu_id' => $record->compliance_menu_id,
+                                'compliant_sub_menu_id' => $record->id,
+                                'calendar_year_id' => $record->calendar_year_id,
+                            ]);
+                        } else {
+                            return null;
                         }
-                        return false;
+                    })
+                    ->extraAttributes(function (ComplianceSubMenu $record) {
+                        if ($record->is_expired == 1) {
+                            return [
+                                'class' => 'custom-bg-green',
+                            ];
+                        }
+                        return [];
                     }),
+                TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y'),
+//                    ->getStateUsing(function (ComplianceSubMenu $record){
+//
+//                        return $record->expired_date ? $record->expired_date->format('d-m-Y') : '-';
+//                    }),
+                TextColumn::make('updated_at')->label('Updated Date')->date('d-m-Y'),
+
                 TextColumn::make('user.name')->label('Created By'),
+                ViewColumn::make('id')->label('Documents')->view('document.compliance-sub-menu')
             ])
             ->actions([
 
@@ -176,7 +366,8 @@ class ComplianceSubMenuList extends Page implements HasTable
                             'document_id' => $this->compliance_menu->document_id,
                             'document_name' => $this->compliance_menu->document->name,
                             'country_id' => $this->compliance_menu->document->country_id,
-                            'name' => $record->name,
+                            'sub_menu_name' => $record->sub_menu_name,
+                            'expired_date' => $record->expired_date,
 
                         ]);
                     })
@@ -191,24 +382,23 @@ class ComplianceSubMenuList extends Page implements HasTable
                                     TextInput::make('document_name')->label('Country')->disabled(),
                                     Hidden::make('compliance_menu_id'),
                                     TextInput::make('compliance_name')->label('Folder Name')->disabled(),
-                                    TextInput::make('name')
+                                    TextInput::make('sub_menu_name')
                                         ->columnSpan(1)
                                         ->label('Task File Title')
                                         ->required(),
-//                                    DatePicker::make('expired_date')
-//                                        ->label('Deadline')
-//                                        ->required()
-//                                        ->suffixIcon('heroicon-o-calendar')
-//                                        ->closeOnDateSelection()
-//                                        ->native(false)
-//                                        ->visible(function () {
-//                                            if ($this->compliance_menu->name == 'Compliance docs with due dates') {
-//                                                if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
-//                                                    return true;
-//                                                }
-//                                            }
-//                                            return false;
-//                                        }),
+                                    DatePicker::make('expired_date')
+                                        ->label('Deadline')->displayFormat('d-m-Y')
+                                        ->required()
+                                        ->suffixIcon('heroicon-o-calendar')
+                                        ->closeOnDateSelection()
+                                        ->native(false)
+                                        ->visible(function (ComplianceSubMenu $record) {
+                                            if ($record->is_expired === 1) {
+                                                return true;
+                                            }
+
+                                            return false;
+                                        }),
                                 ])->columns(3)
                             ])
                     ])
@@ -219,8 +409,25 @@ class ComplianceSubMenuList extends Page implements HasTable
                         $complianceSubMenu->compliance_menu_id = $data['compliance_menu_id'];
                         $complianceSubMenu->calendar_year_id = $data['calendar_year_id'];
                         $complianceSubMenu->year = $data['year'];
-                        $complianceSubMenu->name = $data['name'];
+                        $complianceSubMenu->sub_menu_name = $data['sub_menu_name'];
+                        if ($record->is_expired === 1) {
+
+                            $complianceSubMenu->expired_date = $data['expired_date'];
+                        }
                         $complianceSubMenu->save();
+
+                        $complianceUploadDocument = UploadDocument::whereComplianceSubMenuId($record->id)->first();
+                        $complianceUploadDocument->document_id = $data['document_id'];
+                        $complianceUploadDocument->country_id = $data['country_id'];
+                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
+                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
+                        $complianceUploadDocument->year = $data['year'];
+                        $complianceUploadDocument->name = $data['sub_menu_name'];
+                        if ($record->is_expired === 1) {
+
+                            $complianceUploadDocument->expired_date = $data['expired_date'];
+                        }
+                        $complianceUploadDocument->save();
                         Notification::make()
                             ->title('Folder Successfully Updated')
                             ->success()
@@ -231,7 +438,7 @@ class ComplianceSubMenuList extends Page implements HasTable
                     })
                     ->visible(function () {
 
-                        if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
+                        if (auth()->user()->hasRole('Super Admin')) {
                             return true;
                         }
                         return false;
@@ -243,6 +450,8 @@ class ComplianceSubMenuList extends Page implements HasTable
                     ->requiresConfirmation()
                     ->action(function (array $data, $record, $form): void {
                         $complianceSubMenu = ComplianceSubMenu::find($record->id)->delete();
+                        $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('compliance_sub_menu_id', $record->id)->delete();
+                        $complianceUploadDocument = UploadDocument::where('compliance_sub_menu_id', $record->id)->delete();
                         Notification::make()
                             ->title('Deleted Successfully')
                             ->success()
@@ -250,9 +459,11 @@ class ComplianceSubMenuList extends Page implements HasTable
 //                        }
 
 
-                    })->visible(function () {
+                    })
 
-                        if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
+                    ->visible(function () {
+
+                        if (auth()->user()->hasRole('Super Admin')) {
                             return true;
                         }
                         return false;
@@ -260,87 +471,106 @@ class ComplianceSubMenuList extends Page implements HasTable
                 Action::make('upload_file')->color('success')
                     ->icon('heroicon-o-clipboard-document')->button()
                     ->label('Upload File')
-                    ->mountUsing(function (ComponentContainer $form) {
-                        $form->fill([
-                            'media' => $form->getRecord()->getMedia('compliant_attachments'),
-                        ]);
-                    })
+//                    ->mountUsing(function (ComponentContainer $form) {
+//                        $form->fill([
+//                            'media' => $form->getRecord()->getMedia('compliant_attachments'),
+//                        ]);
+//                    })
                     ->form([
                         Card::make()
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('media')
+                                FileUpload::make('document')
                                     ->label('Upload File')
                                     ->model()
-                                    ->collection('compliant_attachments')
+//                                    ->collection('compliant_attachments')
                                     ->preserveFilenames()
                                     ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
                                         return (string)str($file->getClientOriginalName())->prepend('compliant_attachments-');
                                     })
 //                                        ->acceptedFileTypes(['application/pdf'])
-                                    ->appendFiles()
+                                    ->appendFiles()->required()
                                     ->downloadable()
                                     ->openable()
                                     ->multiple(),
+
+                                Textarea::make('upload_comment')->rows(2)
+                                    ->label('Comment'),
                             ])
                     ])
                     ->action(function (array $data, $record, $form): void {
 
-                        $mediaFile = Media::whereModelType('App\Models\ComplianceSubMenu')->whereModelId($record->id)->whereCollectionName('compliant_attachments')->get();
+                        $complianceUploadDocument = UploadDocument::where('compliance_sub_menu_id', $record->id)->first();
 
-                        if ($mediaFile) {
-                            $complianceSubMenu = \App\Models\ComplianceSubMenu::find($record->id);
-                            $complianceSubMenu->is_uploaded = 1;
-                            $complianceSubMenu->save();
-                            Notification::make()
-                                ->title('File Update Successfully')
-                                ->success()
-                                ->send();
+
+                        foreach ($data['document'] as $document) {
+                            $complianceUploadDocument->addMedia(storage_path('app/public/' . $document))->toMediaCollection('upload_documents');
                         }
+                        $complianceSubMenu = \App\Models\ComplianceSubMenu::find($record->id);
+                        $complianceSubMenu->upload_comment = $data['upload_comment'];
+                        $complianceSubMenu->is_uploaded = 1;
+                        $complianceSubMenu->save();
+
+                        $complianceUploadDocument = \App\Models\UploadDocument::whereComplianceSubMenuId($record->id)->first();
+                        $complianceUploadDocument->upload_comment = $data['upload_comment'];
+                        $complianceUploadDocument->is_uploaded = 1;
+                        $complianceUploadDocument->save();
+                        Notification::make()
+                            ->title('File Update Successfully')
+                            ->success()
+                            ->send();
 
 
+
+                    })
+                    ->visible(function (ComplianceSubMenu $record) {
+
+                        if ($record->folder_type === 'Upload') {
+                            return true;
+                        }
+                        return false;
                     })
 //                    ->after()
                     ->modalWidth('md'),
 
 
-                Action::make('update_date')->color('warning')
-                    ->icon('heroicon-o-calendar')->button()
-                    ->mountUsing(function (ComponentContainer $form, $record) {
-                        $form->fill([
-                            'expired_date' => $record->expired_date,
-                        ]);
-                    })
-                    ->form([
-                        Card::make()
-                            ->schema([
-                                DatePicker::make('expired_date')
-                                    ->label('Deadline')
-                                    ->required()
-                                    ->suffixIcon('heroicon-o-calendar')
-                                    ->closeOnDateSelection()
-                                    ->native(false),
-                            ])
-                    ])
-                    ->action(function (array $data, $record, $form): void {
-                        $data = $form->getState();
-                        $complianceSubMenu = \App\Models\ComplianceSubMenu::find($record->id);
-                        $complianceSubMenu->update($data);
-                        Notification::make()
-                            ->title('Update Successfully')
-                            ->success()
-                            ->send();
-                    })
-                    ->modalWidth('sm')
-                    ->visible(function (ComplianceSubMenu $record) {
-
-                        $compliance = ComplianceMenu::where('id', $record->compliance_menu_id)->value('name');
-                        if ($compliance == 'Compliance docs with due dates') {
-                            if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }),
+//                Action::make('update_date')->color('warning')
+//                    ->icon('heroicon-o-calendar')->button()
+//                    ->mountUsing(function (ComponentContainer $form, $record) {
+//                        $form->fill([
+//                            'expired_date' => $record->expired_date,
+//                        ]);
+//                    })
+//                    ->form([
+//                        Card::make()
+//                            ->schema([
+//                                DatePicker::make('expired_date')
+//                                    ->label('Deadline')
+//                                    ->required()
+//                                    ->suffixIcon('heroicon-o-calendar')
+//                                    ->closeOnDateSelection()
+//                                    ->native(false),
+//                            ])
+//                    ])
+//                    ->action(function (array $data, $record, $form): void {
+//                        $data = $form->getState();
+//                        $complianceSubMenu = \App\Models\ComplianceSubMenu::find($record->id);
+//                        $complianceSubMenu->update($data);
+//                        Notification::make()
+//                            ->title('Update Successfully')
+//                            ->success()
+//                            ->send();
+//                    })
+//                    ->modalWidth('sm')
+//                    ->visible(function (ComplianceSubMenu $record) {
+//
+//                        $compliance = ComplianceMenu::where('id', $record->compliance_menu_id)->value('name');
+//                        if ($compliance == 'Compliance docs with due dates') {
+//                            if (auth()->user()->hasRole('Super Admin')) {
+//                                return true;
+//                            }
+//                        }
+//                        return false;
+//                    }),
 
 //                ])
             ]);

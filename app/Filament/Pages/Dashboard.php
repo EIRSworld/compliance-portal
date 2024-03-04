@@ -2,9 +2,8 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\ComplianceTotal;
+use App\Filament\Widgets\ComplianceSummary;
 use Filament\Pages\Dashboard as BasePage;
-use Filament\Pages\Page;
 
 class Dashboard extends BasePage
 {
@@ -12,13 +11,17 @@ class Dashboard extends BasePage
 
     protected static string $view = 'filament.pages.dashboard';
 
-
-
+    public function getColumns(): int|array
+    {
+        return 2;
+    }
 
     public function getWidgets(): array
     {
         return [
-           ComplianceTotal::class,
+
+            ComplianceSummary::class,
+           \App\Filament\Widgets\ComplianceEventSummary::class,
         ];
     }
 }

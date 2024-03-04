@@ -1,6 +1,8 @@
 <?php
 
+use App\Exports\DashboardSummaryExport;
 use App\Models\Country;
+use App\Models\User;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +17,16 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/report', function () {
+    $countries = Country::get();
+//    dd($countries);
+    return view('test',['countries' => $countries]);
+});
+
+Route::get('dashboard-summary/{id}', function ($calendar_year_id) {
+    return Excel::download(new DashboardSummaryExport($calendar_year_id), 'Dashboard Summary Report.xlsx');
+})->name('report.dashboard-summary');
 
 Route::get('/', function () {
     return redirect('admin');
@@ -48,6 +60,7 @@ Route::get('/document/delete/{id}',function ($id){
 
 
 Route::get('/test', function () {
+
     $currentDate = \Carbon\Carbon::now()->format('Y-m-d');
     $currentYear = \Carbon\Carbon::now()->format('Y');
     $calendarYear = \App\Models\CalendarYear::whereName($currentYear)->first();

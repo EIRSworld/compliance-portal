@@ -6,18 +6,47 @@ use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class ComplianceMenu extends Model
+class ComplianceMenu extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     use HasFactory;
     use Auditable;
 
     protected $fillable = [
         'document_id',
+        'country_id',
         'calendar_year_id',
+        'year',
         'name',
+        'folder_type',
+        'is_expired',
+        'expired_date',
+        'is_uploaded',
+        'upload_comment',
+        'approve_status',
+        'reject_comment',
         'status',
     ];
+
+
+//    public function registerMediaCollections(): void
+//    {
+//        $this->addMediaCollection('compliance_documents');
+//    }
+
+
+    public function complianceSubMenus()
+    {
+        return $this->hasMany(ComplianceSubMenu::class, 'compliance_menu_id');
+    }
+    public function compliancePrimarySubMenus(): HasMany
+    {
+        return $this->hasMany(CompliancePrimarySubMenu::class, 'compliance_menu_id');
+    }
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'country_id');

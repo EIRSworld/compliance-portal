@@ -66,7 +66,7 @@ class CompliantView extends Page implements HasTable
 //                    })
 ////                    ->visible(function () {
 ////
-////                        if (auth()->user()->hasRole('compliance_manager') || auth()->user()->hasRole('super_admin')) {
+////                        if (auth()->user()->hasRole('super_admin')) {
 ////                            return true;
 ////                        }
 ////                        return false;
