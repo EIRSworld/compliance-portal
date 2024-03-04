@@ -96,15 +96,6 @@ class RoleResource extends Resource
                                 TextInput::make('name')
                                     ->label(__('filament-spatie-roles-permissions::filament-spatie.field.name'))
                                     ->required(),
-                                Select::make('panel')
-                                    ->options([
-                                        'admin' => 'DL360',
-                                        'cap' => 'CAP',
-                                        'fpna' => 'FPnA',
-                                        'oms' => 'OMS',
-                                    ])->reactive()
-                                    ->default('admin')
-                                    ->required(),
                                 Select::make('guard_name')
                                     ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
                                     ->options(config('filament-spatie-roles-permissions.guard_names'))
@@ -126,10 +117,7 @@ class RoleResource extends Resource
                                         fn (Action $action) => $action->label('Select all Permissions'),
                                     )
                                     ->relationship('permissions', 'name', modifyQueryUsing: function (Builder $query, callable $get) {
-                                        if ($get('panel') == 'admin') {
-                                            return $query;
-                                        }
-                                        return $query->whereIn('panel', [$get('panel'), 'admin']);
+                                        return $query;
                                     })
                                 ,
 //                                Select::make(config('permission.column_names.team_foreign_key', 'team_id'))
@@ -157,24 +145,6 @@ class RoleResource extends Resource
                     ->counts('permissions')
                     ->label(__('filament-spatie-roles-permissions::filament-spatie.field.permissions_count'))
 //                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true))
-                    ->searchable(),
-                TextColumn::make('panel')
-                    ->label('Panel')->badge()
-                    ->getStateUsing(function (Role $record) {
-                        if ($record->panel == 'admin') {
-                            return 'DL360';
-                        }
-                        if ($record->panel == 'cap') {
-                            return 'CAP';
-                        }
-                        if ($record->panel == 'fpna') {
-                            return 'FPnA';
-                        }
-                        if ($record->panel == 'oms') {
-                            return 'OMS';
-                        }
-                        return '-';
-                    })
                     ->searchable(),
 //                TextColumn::make('guard_name')
 //                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true))

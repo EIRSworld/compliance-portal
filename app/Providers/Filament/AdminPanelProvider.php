@@ -65,9 +65,9 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Masters'),
             ])
-            ->maxContentWidth('full')
+            ->maxContentWidth('full');
 //            ->plugins([
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());
+//            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());
 
 //                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
 //            ]);

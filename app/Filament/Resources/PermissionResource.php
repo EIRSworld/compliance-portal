@@ -64,15 +64,6 @@ class PermissionResource extends Resource
                             TextInput::make('name')
                                 ->label(__('filament-spatie-roles-permissions::filament-spatie.field.name'))
                                 ->required(),
-                            Select::make('panel')
-                                ->options([
-                                    'admin' => 'DL360 Admin',
-                                    'cap' => 'CAP',
-                                    'fpna' => 'FPnA',
-                                    'oms' => 'OMS',
-                                ])
-                                ->default('admin')
-                                ->required(),
                             Select::make('guard_name')
                                 ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
                                 ->options(config('filament-spatie-roles-permissions.guard_names'))
@@ -99,24 +90,6 @@ class PermissionResource extends Resource
                     ->searchable(),
                 TextColumn::make('roles.name')->badge()
 //                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true))
-                    ->searchable(),
-                TextColumn::make('panel')
-                    ->label('Panel')->badge()
-                    ->getStateUsing(function (Permission $record) {
-                        if ($record->panel == 'admin') {
-                            return 'DL360 Admin';
-                        }
-                        if ($record->panel == 'cap') {
-                            return 'CAP';
-                        }
-                        if ($record->panel == 'fpna') {
-                            return 'FPnA';
-                        }
-                        if ($record->panel == 'oms') {
-                            return 'OMS';
-                        }
-                        return '-';
-                    })
                     ->searchable(),
 //                TextColumn::make('guard_name')
 //                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.permissions.isToggledHiddenByDefault', true))
