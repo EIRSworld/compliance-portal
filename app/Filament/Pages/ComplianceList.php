@@ -76,35 +76,35 @@ class ComplianceList extends Page implements HasTable
             ], FiltersLayout::AboveContent)
 
 
-            ->actions([
-                \Filament\Tables\Actions\Action::make('delete')->color('danger')
-                    ->icon('heroicon-o-trash')
-                    ->label('Delete')
-                    ->button()
-                    ->requiresConfirmation()
-                    ->action(function (array $data, $record, $form): void {
-//                        dd($record);
-                        $document = Document::find($record->id)->delete();
-                        $complianceMenu = ComplianceMenu::where('document_id',$record->id)->delete();
-                        $complianceSubMenu = ComplianceSubMenu::where('document_id', $record->id)->delete();
-                        $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('document_id', $record->id)->delete();
-                        $complianceUploadDocument = UploadDocument::where('document_id', $record->id)->delete();
-                        Notification::make()
-                            ->title('Deleted Successfully')
-                            ->success()
-                            ->send();
+//            ->actions([
+//                \Filament\Tables\Actions\Action::make('delete')->color('danger')
+//                    ->icon('heroicon-o-trash')
+//                    ->label('Delete')
+//                    ->button()
+//                    ->requiresConfirmation()
+//                    ->action(function (array $data, $record, $form): void {
+////                        dd($record);
+//                        $document = Document::find($record->id)->delete();
+//                        $complianceMenu = ComplianceMenu::where('document_id',$record->id)->delete();
+//                        $complianceSubMenu = ComplianceSubMenu::where('document_id', $record->id)->delete();
+//                        $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('document_id', $record->id)->delete();
+//                        $complianceUploadDocument = UploadDocument::where('document_id', $record->id)->delete();
+//                        Notification::make()
+//                            ->title('Deleted Successfully')
+//                            ->success()
+//                            ->send();
+////                        }
+//
+//
+//                    })
+//                    ->visible(function () {
+//
+//                        if (auth()->user()->hasRole('Super Admin')) {
+//                            return true;
 //                        }
-
-
-                    })
-                    ->visible(function () {
-
-                        if (auth()->user()->hasRole('Super Admin')) {
-                            return true;
-                        }
-                        return false;
-                    }),
-                ])
+//                        return false;
+//                    }),
+//                ])
             ;
     }
 }

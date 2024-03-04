@@ -54,15 +54,18 @@ class UserResource extends Resource
         }
         return false;
     }
-    protected static bool $shouldRegisterNavigation = true;
+//    protected static bool $shouldRegisterNavigation = true;
 
-//    public static function shouldRegisterNavigation(): bool
-//    {
-////        if (auth()->user()->can('View User')) {
-////            return true;
-////        }
-//        return true;
-//    }
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
+            return true;
+        }
+//        if (auth()->user()->can('View User')) {
+//            return true;
+//        }
+        return true;
+    }
 
     public static function form(Form $form): Form
     {
@@ -155,30 +158,30 @@ class UserResource extends Resource
 //                            }
 //                            return false;
 //                        }),
-                    Forms\Components\Select::make('principal_manager_id')->label('Principal Manager')
-                        ->options(function (callable $get) {
-                            $country = $get('country_id');
-
-                            User::role('Compliance Principle Manager')->whereIn('country_id',$country)->pluck('id','name')->toArray();
-
-                        })
-                        ->searchable()
-                        ->reactive()
-                        ->placeholder('Select')
-                        ->visible(function (callable $get) {
-                            $roleIds = $get('roles');
-                            if (!is_array($roleIds)) {
-                                $roleIds = [$roleIds];
-                            }
-                            $roles = Role::findMany($roleIds);
-
-                            foreach ($roles as $role) {
-                                if (in_array($role->name, ['Compliance Finance Officer', 'Compliance Principle Officer'])) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }),
+//                    Forms\Components\Select::make('principal_manager_id')->label('Principal Manager')
+//                        ->options(function (callable $get) {
+//                            $country = $get('country_id');
+//
+//                            User::role('Compliance Principle Manager')->whereIn('country_id',$country)->pluck('id','name')->toArray();
+//
+//                        })
+//                        ->searchable()
+//                        ->reactive()
+//                        ->placeholder('Select')
+//                        ->visible(function (callable $get) {
+//                            $roleIds = $get('roles');
+//                            if (!is_array($roleIds)) {
+//                                $roleIds = [$roleIds];
+//                            }
+//                            $roles = Role::findMany($roleIds);
+//
+//                            foreach ($roles as $role) {
+//                                if (in_array($role->name, ['Compliance Finance Officer', 'Compliance Principle Officer'])) {
+//                                    return true;
+//                                }
+//                            }
+//                            return false;
+//                        }),
                     Forms\Components\TextInput::make('password')
                         ->hiddenOn('edit')
                         ->dehydrateStateUsing(fn($state) => !empty($state) ? Hash::make($state) : "")
