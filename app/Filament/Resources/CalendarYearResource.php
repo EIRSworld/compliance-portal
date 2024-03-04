@@ -58,7 +58,7 @@ class CalendarYearResource extends Resource
         }
         return false;
     }
-
+protected static bool $shouldRegisterNavigation = true;
 //    public static function shouldRegisterNavigation(): bool
 //    {
 ////        if (auth()->user()->can('View Year')) {

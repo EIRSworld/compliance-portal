@@ -56,6 +56,7 @@ class RoleResource extends Resource
         }
         return false;
     }
+    protected static bool $shouldRegisterNavigation = true;
 
 //    public static function shouldRegisterNavigation(): bool
 //    {

@@ -48,6 +48,7 @@ class CountryResource extends Resource
         }
         return false;
     }
+    protected static bool $shouldRegisterNavigation = true;
 
 //    public static function shouldRegisterNavigation(): bool
 //    {
