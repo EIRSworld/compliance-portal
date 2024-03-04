@@ -57,13 +57,13 @@ class RoleResource extends Resource
         return false;
     }
 
-    public static function shouldRegisterNavigation(): bool
-    {
-//        if (auth()->user()->can('View Role')) {
-//            return true;
-//        }
-        return true;
-    }
+//    public static function shouldRegisterNavigation(): bool
+//    {
+////        if (auth()->user()->can('View Role')) {
+////            return true;
+////        }
+//        return true;
+//    }
 
     public static function getModel(): string
     {

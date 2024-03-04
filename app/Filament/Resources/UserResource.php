@@ -55,13 +55,13 @@ class UserResource extends Resource
         return false;
     }
 
-    public static function shouldRegisterNavigation(): bool
-    {
-//        if (auth()->user()->can('View User')) {
-//            return true;
-//        }
-        return true;
-    }
+//    public static function shouldRegisterNavigation(): bool
+//    {
+////        if (auth()->user()->can('View User')) {
+////            return true;
+////        }
+//        return true;
+//    }
 
     public static function form(Form $form): Form
     {
