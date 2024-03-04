@@ -151,7 +151,7 @@
                 @else
                     <td class='summary' style="font-size: 12px;width: 3%;"></td>
                 @endif
-                <td class='summary' style="width: 6%;font-size: 12px;">{!! $uploadDocumentsRegistration->upload_comment !!}</td>
+                <td class='summary' style="width: 6%;font-size: 12px;">{!! $uploadDocumentsRegistration->upload_comment ?? '' !!}</td>
 
                 @if($uploadDocumentsLicence && $uploadDocumentsLicence->is_uploaded == 1)
                     <td class='summary' style="font-size: 12px;background-color: #77ad5f;width: 3%;">YES</td>
@@ -163,7 +163,7 @@
                 @else
                     <td class='summary' style="font-size: 12px;width: 3%;"></td>
                 @endif
-                <td class='summary' style="width: 6%;font-size: 12px;">{!! $uploadDocumentsLicence->upload_comment !!}</td>
+                <td class='summary' style="width: 6%;font-size: 12px;">{!! $uploadDocumentsLicence->upload_comment ?? '' !!}</td>
 
                 @if($uploadDocumentsBroker && $uploadDocumentsBroker->is_uploaded == 1)
                     <td class='summary' style="font-size: 12px;background-color: #77ad5f;width: 3%;">YES</td>
