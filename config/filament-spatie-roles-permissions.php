@@ -16,7 +16,7 @@ return [
      * Set as false to remove from navigation.
      */
     'should_register_on_navigation' => [
-        'permissions' => true,
+        'permissions' => false,
         'roles' => true,
     ],
 
@@ -34,7 +34,7 @@ return [
         ],
     ],
 
-    'default_guard_name' => null,
+    'default_guard_name' => 'web',
 
     'model_filter_key' => 'return \'%\'.$value;', // Eg: 'return \'%\'.$key.'\%\';'
 
@@ -43,19 +43,19 @@ return [
     /*
      * Icons to use for navigation
      */
-    'icons' => [
-        'role_navigation' => 'heroicon-o-lock-closed',
-        'permission_navigation' => 'heroicon-o-lock-closed',
-    ],
+//    'icons' => [
+//        'role_navigation' => 'heroicon-o-lock-closed',
+//        'permission_navigation' => 'heroicon-o-lock-closed',
+//    ],
 
     /*
      *  Navigation items order - int value, false  restores the default position
      */
 
-    'sort' => [
-        'role_navigation' => false,
-        'permission_navigation' => false
-    ],
+//    'sort' => [
+//        'role_navigation' => false,
+//        'permission_navigation' => false
+//    ],
 
     'generator' => [
 
@@ -75,14 +75,16 @@ return [
             'createPermission' => 'create',
             'updatePermission' => 'update',
             'deletePermission' => 'delete',
-            'restorePermission' => 'restore',
-            'forceDeletePermission' => 'force-delete',
+//            'restorePermission' => 'restore',
+//            'forceDeletePermission' => 'force-delete',
 
             /*
              * Additional Resource Permissions
              */
-            'replicate',
-            'reorder',
+//            'replicate',
+//            'reorder',
+
+            'reorder' => 'Reorder',
         ],
 
         /*
