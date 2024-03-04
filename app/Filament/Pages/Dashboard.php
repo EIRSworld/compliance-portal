@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\ComplianceSummary;
+use App\Filament\Widgets\ComplianceEventSummary;
 use Filament\Pages\Dashboard as BasePage;
 
 class Dashboard extends BasePage
@@ -21,7 +22,7 @@ class Dashboard extends BasePage
         return [
 
             ComplianceSummary::class,
-           \App\Filament\Widgets\ComplianceEventSummary::class,
+            ComplianceEventSummary::class,
         ];
     }
 }

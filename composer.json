@@ -13,7 +13,6 @@
         "althinect/filament-spatie-roles-permissions": "^2.2",
         "arcanedev/log-viewer": "^10.0",
         "bensampo/laravel-enum": "^6.10",
-        "bezhansalleh/filament-shield": "^3.2",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "filament/spatie-laravel-settings-plugin": "^3.2",

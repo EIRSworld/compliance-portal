@@ -66,7 +66,7 @@ class ComplianceEventSummary extends Page implements HasTable
         return $table
             ->query(\App\Models\ComplianceEvent::query())
             ->columns([
-                TextColumn::make('country.name')->label('Country Name')
+                TextColumn::make('country.name')->label('Country')
                     ->extraAttributes(function (ComplianceEvent $record) {
                         if ($record->status == 'Red') {
                             return [
@@ -88,7 +88,7 @@ class ComplianceEventSummary extends Page implements HasTable
                         return [];
                     }),
                 TextColumn::make('calendarYear.name')->label('Calendar Year'),
-                TextColumn::make('name')->label('Name'),
+                TextColumn::make('name')->label('Event Name'),
                 TextColumn::make('description')->label('Description')
                     ->wrap()->getStateUsing(function (ComplianceEvent $record) {
                         $com = $record->description;

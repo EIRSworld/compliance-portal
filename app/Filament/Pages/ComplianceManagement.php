@@ -62,7 +62,7 @@ class ComplianceManagement extends Page implements HasTable
             })
             ->columns([
 
-                TextColumn::make('country.name')->label('Country Name'),
+                TextColumn::make('country.name')->label('Country'),
 //                TextColumn::make('complianceSubMenu.sub_menu_name')->label('Name'),
 //                Tables\Columns\TextColumn::make('complianceMenu.name')->label('Folder Name'),
                 TextColumn::make('name')->label('Document Name'),
@@ -228,7 +228,7 @@ class ComplianceManagement extends Page implements HasTable
                     })
                     ->modalWidth('md'),
                 Action::make('approve_status')->button()->modalWidth('sm')
-                    ->label('Approve')
+                    ->label('Change Status')
                     ->form([
                         Card::make()
                             ->schema([
@@ -299,12 +299,25 @@ class ComplianceManagement extends Page implements HasTable
                             ->send();
 
                     })
-                    ->visible(function () {
+                    ->visible(function ($record) {
                         if (auth()->user()->hasRole('Super Admin')) {
-                            return true;
+                            if ($record->is_uploaded === 1){
+
+                                return true;
+                            }
                         }
                         return false;
-                    })
+                    }),
+                 Action::make('approved_status')->button()->modalWidth('sm')
+                     ->label('Change Status')->color('danger')
+                     ->visible(function ($record) {
+                         if (auth()->user()->hasRole('Super Admin')) {
+                             if ($record->is_uploaded === 0){
+                             return true;
+                             }
+                         }
+                         return false;
+                     })
 
             ]);
     }

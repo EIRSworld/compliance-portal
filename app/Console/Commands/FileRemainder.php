@@ -47,19 +47,19 @@ class FileRemainder extends Command
             $emails = $users->pluck('email')->toArray();
 
 
-                $data = [
-                    'subject' => 'Compliance Reminder Email',
-                    'complianceList' => $subMenus,
-                    'countryId' => $countryId,
-                    'countryName' => $countryName,
-                    'userNames' => $userNames,
-                ];
+                    $data = [
+                        'subject' => 'Compliance Reminder Email',
+                        'complianceList' => $subMenus,
+                        'countryId' => $countryId,
+                        'countryName' => $countryName,
+                        'userNames' => $userNames,
+                    ];
 
-                Mail::send('mail.remainder-mail', $data, function ($message) use ($data,$emails) {
-                    $message->to($emails, config('app.name'))
-                        ->cc(['harish@nordicsolutions.in'])
-                        ->subject($data['subject']);
-                });
+                    Mail::send('mail.remainder-mail', $data, function ($message) use ($data,$emails) {
+                        $message->to($emails, config('app.name'))
+                            ->cc(['harish@nordicsolutions.in'])
+                            ->subject($data['subject']);
+                    });
         }
 
 //
