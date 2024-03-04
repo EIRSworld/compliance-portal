@@ -134,7 +134,7 @@ class ComplianceManagement extends Page implements HasTable
                     ->label('Year'),
                 SelectFilter::make('country_id')->searchable()
                     ->options(function () {
-                        $role = auth()->user()->roles()->pluck('name')[0];
+//                        $role = auth()->user()->roles()->pluck('name')[0];
 //                        if ($role === 'country_head'){
 //                            $userCountry = User::whereId(auth()->id())->value('country_id');
 ////                            dd($userCountry);
