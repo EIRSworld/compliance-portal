@@ -90,14 +90,19 @@ class ComplianceEventSummary extends Page implements HasTable
                 TextColumn::make('calendarYear.name')->label('Calendar Year'),
                 TextColumn::make('name')->label('Event Name'),
                 TextColumn::make('description')->label('Description')
-                    ->wrap()->getStateUsing(function (ComplianceEvent $record) {
-                        $com = $record->description;
-                        $comment = wordwrap($com, 35, "<br>\n");
-                        return '<div class="tooltip">
-        <p class="text-ellipsis" style="margin: 0">' . $comment . '</p>
-<span class="tooltip-text tooltip-text-left">' . $comment . '</span>
-</div>';
-                    })->html(),
+                    ->wrap()
+                    ->getStateUsing(function (ComplianceEvent $record) {
+                        return Str::limit($record->description, 20);
+                    })
+                    ->tooltip(fn(ComplianceEvent $record): string|null => $record->description),
+//                    ->getStateUsing(function (ComplianceEvent $record) {
+//                        $com = $record->description;
+//                        $comment = wordwrap($com, 35, "<br>\n");
+//                        return '<div class="tooltip">
+//        <p class="text-ellipsis" style="margin: 0">' . $comment . '</p>
+//<span class="tooltip-text tooltip-text-left">' . $comment . '</span>
+//</div>';
+//                    })->html(),
 //                    ->getStateUsing(function (ComplianceEvent $record) {
 //                        return Str::limit($record->description, 20);
 //                    })

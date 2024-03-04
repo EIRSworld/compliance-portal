@@ -131,7 +131,7 @@
                     <td class='summary' style="font-size: 12px;width: 3%;"></td>
                 @endif
                 @if($uploadDocumentsAudit && $uploadDocumentsAudit->is_uploaded == 1)
-                    <td class='summary' style="font-size: 12px;background-color: #add8e6;width: 3%;">YES</td>
+                    <td class='summary' style="font-size: 12px;background-color: #77ad5f;width: 3%;">YES</td>
                 @else
                     <td class='summary' style="font-size: 12px;width: 3%;"></td>
                 @endif

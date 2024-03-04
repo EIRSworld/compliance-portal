@@ -53,11 +53,11 @@
                     <thead>
                     <tr style="background-color: lightskyblue">
                         <th class="text-center font-bold" colspan="16"><b>Dashboard Event Summary</b>
-                            <a href="{{ route('report.dashboard-summary', [$this->calendar_year_id]) }}" style="padding: 5px;" target="_blank">
-                                <x-filament::button >
-                                    Download
-                                </x-filament::button>
-                            </a>
+{{--                            <a href="{{ route('report.dashboard-summary', [$this->calendar_year_id]) }}" style="padding: 5px;" target="_blank">--}}
+{{--                                <x-filament::button >--}}
+{{--                                    Download--}}
+{{--                                </x-filament::button>--}}
+{{--                            </a>--}}
                         </th>
                     </tr>
 

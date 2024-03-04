@@ -27,6 +27,7 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -119,7 +120,12 @@ class ComplianceManagement extends Page implements HasTable
                     ->falseIcon('heroicon-o-x-circle')
                     ->boolean(),
 
-                ViewColumn::make('id')->label('Documents')->view('document.compliance-management')
+                ViewColumn::make('id')->label('Documents')->view('document.compliance-management'),
+                TextColumn::make('upload_comment')->label('Comment')
+                    ->getStateUsing(function (UploadDocument $record) {
+                        return Str::limit($record->upload_comment, 20);
+                    })
+                    ->tooltip(fn(UploadDocument $record): string|null => $record->upload_comment),
             ])
             ->filters([
                 SelectFilter::make('calendar_year_id')->searchable()
