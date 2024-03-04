@@ -51,10 +51,10 @@ class CountryResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->can('View Country')) {
-            return true;
-        }
-        return false;
+//        if (auth()->user()->can('View Country')) {
+//            return true;
+//        }
+        return true;
     }
 
     public static function form(Form $form): Form

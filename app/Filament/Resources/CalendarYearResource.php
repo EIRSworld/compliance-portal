@@ -61,10 +61,10 @@ class CalendarYearResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->can('View Year')) {
-            return true;
-        }
-        return false;
+//        if (auth()->user()->can('View Year')) {
+//            return true;
+//        }
+        return true;
     }
 
 
