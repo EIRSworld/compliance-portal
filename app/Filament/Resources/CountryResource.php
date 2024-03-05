@@ -26,7 +26,7 @@ class CountryResource extends Resource
     protected static ?string $navigationLabel = 'Countries';
     public static function canCreate(): bool
     {
-        if (auth()->user()->can('Create Country')) {
+        if (auth()->user()->can('create Country')) {
             return true;
         }
         return false;
@@ -34,7 +34,7 @@ class CountryResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        if (auth()->user()->can('Edit Country')) {
+        if (auth()->user()->can('edit Country')) {
             return true;
         }
         return false;
@@ -42,7 +42,7 @@ class CountryResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        if (auth()->user()->can('Delete Country')) {
+        if (auth()->user()->can('delete Country')) {
             return true;
         }
         return false;
@@ -54,8 +54,7 @@ class CountryResource extends Resource
 //        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
 //            return true;
 //        }
-//        dd(auth()->user()->getAllPermissions(), auth()->user()->can('View Country'));
-        if (auth()->user()->can('View Country')) {
+        if (auth()->user()->can('view Country')) {
             return true;
         }
         return false;
