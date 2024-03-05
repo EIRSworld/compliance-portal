@@ -24,29 +24,29 @@ class CountryResource extends Resource
 
     protected static ?int $navigationSort = 0;
     protected static ?string $navigationLabel = 'Countries';
-//    public static function canCreate(): bool
-//    {
-//        if (auth()->user()->can('Create Country')) {
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    public static function canEdit(Model $record): bool
-//    {
-//        if (auth()->user()->can('Edit Country')) {
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    public static function canDelete(Model $record): bool
-//    {
-//        if (auth()->user()->can('Delete Country')) {
-//            return true;
-//        }
-//        return false;
-//    }
+    public static function canCreate(): bool
+    {
+        if (auth()->user()->can('Create Country')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        if (auth()->user()->can('Edit Country')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        if (auth()->user()->can('Delete Country')) {
+            return true;
+        }
+        return false;
+    }
 //    protected static bool $shouldRegisterNavigation = true;
 
     public static function shouldRegisterNavigation(): bool
