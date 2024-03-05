@@ -204,83 +204,83 @@ class DatabaseSeeder extends Seeder
 
         $permissionsArray = [
             [
-                'name' => 'View User',
+                'name' => 'view User',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Create User',
+                'name' => 'create User',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Edit User',
+                'name' => 'edit User',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Delete User',
+                'name' => 'delete User',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'View Role',
+                'name' => 'view Role',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Create Role',
+                'name' => 'create Role',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Edit Role',
+                'name' => 'edit Role',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Delete Role',
+                'name' => 'delete Role',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'View Permission',
+                'name' => 'view Permission',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Create Permission',
+                'name' => 'create Permission',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Edit Permission',
+                'name' => 'edit Permission',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Delete Permission',
+                'name' => 'delete Permission',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'View Country',
+                'name' => 'view Country',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Create Country',
+                'name' => 'create Country',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Edit Country',
+                'name' => 'edit Country',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Delete Country',
+                'name' => 'delete Country',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'View Year',
+                'name' => 'view Year',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Create Year',
+                'name' => 'create Year',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Edit Year',
+                'name' => 'edit Year',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Delete Year',
+                'name' => 'delete Year',
                 'guard_name' => 'web',
             ],
 

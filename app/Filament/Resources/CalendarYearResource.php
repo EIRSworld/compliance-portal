@@ -36,7 +36,7 @@ class CalendarYearResource extends Resource
     protected static ?string $label = 'Calendar Years';
     public static function canCreate(): bool
     {
-        if (auth()->user()->can('Create Year')) {
+        if (auth()->user()->can('create Year')) {
             return true;
         }
         return false;
@@ -45,7 +45,7 @@ class CalendarYearResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        if (auth()->user()->can('Edit Year')) {
+        if (auth()->user()->can('edit Year')) {
             return true;
         }
         return false;
@@ -53,7 +53,7 @@ class CalendarYearResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        if (auth()->user()->can('Delete Year')) {
+        if (auth()->user()->can('delete Year')) {
             return true;
         }
         return false;
@@ -61,12 +61,12 @@ class CalendarYearResource extends Resource
 //protected static bool $shouldRegisterNavigation = true;
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
-            return true;
-        }
-//        if (auth()->user()->can('View Year')) {
+//        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
 //            return true;
 //        }
+        if (auth()->user()->can('view Year')) {
+            return true;
+        }
         return true;
     }
 

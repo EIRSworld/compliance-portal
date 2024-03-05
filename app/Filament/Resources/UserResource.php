@@ -32,7 +32,7 @@ class UserResource extends Resource
 
     public static function canCreate(): bool
     {
-        if (auth()->user()->can('Create User')) {
+        if (auth()->user()->can('create User')) {
             return true;
         }
         return false;
@@ -41,7 +41,7 @@ class UserResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        if (auth()->user()->can('Edit User')) {
+        if (auth()->user()->can('edit User')) {
             return true;
         }
         return false;
@@ -49,7 +49,7 @@ class UserResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        if (auth()->user()->can('Delete User')) {
+        if (auth()->user()->can('delete User')) {
             return true;
         }
         return false;
@@ -58,12 +58,12 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
-            return true;
-        }
-//        if (auth()->user()->can('View User')) {
+//        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
 //            return true;
 //        }
+        if (auth()->user()->can('view User')) {
+            return true;
+        }
         return true;
     }
 
