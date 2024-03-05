@@ -25,6 +25,8 @@ class ComplianceList extends Page implements HasTable
 {
     use InteractsWithTable;
 
+
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.compliance-list';
@@ -33,6 +35,10 @@ class ComplianceList extends Page implements HasTable
 
     protected static ?int $navigationSort = 0;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('view');
+    }
 
     public function table(Table $table): Table
     {
