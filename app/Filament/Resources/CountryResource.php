@@ -30,7 +30,6 @@ class CountryResource extends Resource
             return true;
         }
         return false;
-
     }
 
     public static function canEdit(Model $record): bool
@@ -55,6 +54,7 @@ class CountryResource extends Resource
 //        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
 //            return true;
 //        }
+        dd(auth()->user()->getAllPermissions(), auth()->user()->can('View Country'));
         if (auth()->user()->can('View Country')) {
             return true;
         }
