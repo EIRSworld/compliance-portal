@@ -212,7 +212,7 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'edit User',
+                'name' => 'update User',
                 'guard_name' => 'web',
             ],
             [
@@ -228,7 +228,7 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'edit Role',
+                'name' => 'update Role',
                 'guard_name' => 'web',
             ],
             [
@@ -244,7 +244,7 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'edit Permission',
+                'name' => 'update Permission',
                 'guard_name' => 'web',
             ],
             [
@@ -260,7 +260,7 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'edit Country',
+                'name' => 'update Country',
                 'guard_name' => 'web',
             ],
             [
@@ -276,7 +276,7 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'edit Year',
+                'name' => 'update Year',
                 'guard_name' => 'web',
             ],
             [
