@@ -16,7 +16,7 @@ return [
      * Set as false to remove from navigation.
      */
     'should_register_on_navigation' => [
-        'permissions' => true,
+        'permissions' => false,
         'roles' => true,
     ],
 
@@ -102,7 +102,7 @@ return [
         /*
          * Permissions will be generated for the models associated with the respective Filament Resources
          */
-        'discover_models_through_filament_resources' => false,
+        'discover_models_through_filament_resources' => true,
 
         /*
          * Include directories which consists of models.
