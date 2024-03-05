@@ -24,41 +24,44 @@ class CountryResource extends Resource
 
     protected static ?int $navigationSort = 0;
     protected static ?string $navigationLabel = 'Countries';
-    public static function canCreate(): bool
-    {
-        if (auth()->user()->can('create Country')) {
-            return true;
-        }
-        return false;
-    }
 
-    public static function canEdit(Model $record): bool
-    {
-        if (auth()->user()->can('edit Country')) {
-            return true;
-        }
-        return false;
-    }
-
-    public static function canDelete(Model $record): bool
-    {
-        if (auth()->user()->can('delete Country')) {
-            return true;
-        }
-        return false;
-    }
 //    protected static bool $shouldRegisterNavigation = true;
-
-    public static function shouldRegisterNavigation(): bool
-    {
-//        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
+//    protected static bool $shouldCheckPolicyExistence   = true;
+//    public static function canCreate(): bool
+//    {
+//        if (auth()->user()->can('create Country')) {
 //            return true;
 //        }
-        if (auth()->user()->can('view Country')) {
-            return true;
-        }
-        return false;
-    }
+//        return false;
+//    }
+//
+//    public static function canEdit(Model $record): bool
+//    {
+//        if (auth()->user()->can('edit Country')) {
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    public static function canDelete(Model $record): bool
+//    {
+//        if (auth()->user()->can('delete Country')) {
+//            return true;
+//        }
+//        return false;
+//    }
+////    protected static bool $shouldRegisterNavigation = true;
+//
+//    public static function shouldRegisterNavigation(): bool
+//    {
+////        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
+////            return true;
+////        }
+//        if (auth()->user()->can('view Country')) {
+//            return true;
+//        }
+//        return false;
+//    }
 
     public static function form(Form $form): Form
     {
