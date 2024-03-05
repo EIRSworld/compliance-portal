@@ -6,8 +6,10 @@ namespace App\Providers;
 use App\Models\Country;
 use App\Models\User;
 use App\Policies\CountryPolicy;
+use App\Policies\RolePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Spatie\Permission\Models\Role;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
+        Role::class => RolePolicy::class,
         Country::class => CountryPolicy::class,
     ];
 

@@ -33,42 +33,6 @@ class RoleResource extends Resource
     protected static ?string $navigationGroup = 'Masters';
     protected static ?int $navigationSort = 2;
 
-    public static function canCreate(): bool
-    {
-        if (auth()->user()->can('Create Role')) {
-            return true;
-        }
-        return false;
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        if (auth()->user()->can('Edit Role')) {
-            return true;
-        }
-        return false;
-    }
-
-    public static function canDelete(Model $record): bool
-    {
-        if (auth()->user()->can('Delete Role')) {
-            return true;
-        }
-        return false;
-    }
-//    protected static bool $shouldRegisterNavigation = true;
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
-            return true;
-        }
-//        if (auth()->user()->can('View Role')) {
-//            return true;
-//        }
-        return true;
-    }
-
     public static function getModel(): string
     {
         return config('permission.models.role', Role::class);
