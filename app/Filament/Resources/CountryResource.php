@@ -52,13 +52,13 @@ class CountryResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
-            return true;
-        }
-//        if (auth()->user()->can('View Country')) {
+//        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
 //            return true;
 //        }
-        return true;
+        if (auth()->user()->can('View Country')) {
+            return true;
+        }
+        return false;
     }
 
     public static function form(Form $form): Form
