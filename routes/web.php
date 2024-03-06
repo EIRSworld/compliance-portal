@@ -1,6 +1,7 @@
 <?php
 
 use App\Exports\DashboardSummaryExport;
+use App\Exports\EventExport;
 use App\Models\Country;
 use App\Models\User;
 use Filament\Notifications\Notification;
@@ -27,6 +28,10 @@ Route::get('/report', function () {
 Route::get('dashboard-summary/{id}', function ($calendar_year_id) {
     return Excel::download(new DashboardSummaryExport($calendar_year_id), 'Dashboard Summary Report.xlsx');
 })->name('report.dashboard-summary');
+
+Route::get('dashboard-event-summary/{id}', function ($calendar_year_id) {
+    return Excel::download(new \App\Exports\DashboardEventSummaryExport($calendar_year_id), 'Dashboard Event Summary Report.xlsx');
+})->name('report.dashboard-event-summary');
 
 Route::get('/', function () {
     return redirect('admin');
@@ -68,6 +73,7 @@ Route::get('/test', function () {
     $complianceSubMenus = \App\Models\ComplianceSubMenu::whereNotNull('expired_date')->orderBy('expired_date')->whereCalendarYearId($calendarYear->id)->get();
 //    dd($complianceSubMenus);Country id add in this table
     $groupedByCountryIds = $complianceSubMenus->groupBy('country_id');
+//    dd($groupedByCountryIds);
 //    dd($groupedByCountryIds);
 
     $mailSendDate = '';

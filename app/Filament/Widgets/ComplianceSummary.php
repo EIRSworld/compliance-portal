@@ -72,8 +72,9 @@ class ComplianceSummary extends Widget implements HasForms
 
         if ($user->hasAnyRole(['Country Head', 'Cluster Head', 'Compliance Finance Manager', 'Compliance Principle Manager', 'Compliance Finance Officer', 'Compliance Principle Officer'])) {
             $countryId = $user->country_id;
+//            dd($countryId);
             if ($countryId !== null) {
-                $this->countries = Country::whereIn('id', [$countryId])->get();
+                $this->countries = Country::whereIn('id', $countryId)->get();
             } else {
                 // Set countries to an empty array if country_id is null
                 $this->countries = [];
