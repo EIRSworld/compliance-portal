@@ -94,7 +94,7 @@
                         <td class='summary'>DUE DATE</td>
                     </tr>
                     <?php
-                    $documents = \App\Models\Document::where('calendar_year_id', $this->calendar_year_id)->get();
+                    $document = \App\Models\Document::where('calendar_year_id', $this->calendar_year_id)->get();
                     $user = \Illuminate\Support\Facades\Auth::user();
 
                     if ($user->hasAnyRole(['Country Head', 'Cluster Head', 'Compliance Finance Manager', 'Compliance Principle Manager', 'Compliance Finance Officer', 'Compliance Principle Officer'])) {
@@ -105,7 +105,7 @@
                             $documents = [];
                         }
                     } else {
-                        $documents = $this->country;
+                        $documents = $document;
                     }
                     ?>
                     @foreach($documents as $country)

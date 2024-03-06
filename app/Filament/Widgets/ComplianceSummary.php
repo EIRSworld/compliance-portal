@@ -69,7 +69,7 @@ $events;
 //
 //            $this->countries = $this->country;
 //        }
-//        $this->country = Country::get();
+        $this->country = Country::get();
         $user = Auth::user();
 
         if ($user->hasAnyRole(['Country Head', 'Cluster Head', 'Compliance Finance Manager', 'Compliance Principle Manager', 'Compliance Finance Officer', 'Compliance Principle Officer'])) {
