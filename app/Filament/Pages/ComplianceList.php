@@ -37,7 +37,7 @@ class ComplianceList extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()->can('view');
+        return auth()->user()->can('view Document');
     }
 
     public function table(Table $table): Table

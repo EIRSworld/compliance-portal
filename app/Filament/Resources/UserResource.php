@@ -28,44 +28,47 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Masters';
     protected static ?int $navigationSort = 3;
 
-
-
-    public static function canCreate(): bool
+    public static function canAccess(): bool
     {
-        if (auth()->user()->can('create User')) {
-            return true;
-        }
-        return false;
-
+        return auth()->user()->can('view User');
     }
 
-    public static function canEdit(Model $record): bool
-    {
-        if (auth()->user()->can('edit User')) {
-            return true;
-        }
-        return false;
-    }
-
-    public static function canDelete(Model $record): bool
-    {
-        if (auth()->user()->can('delete User')) {
-            return true;
-        }
-        return false;
-    }
-//    protected static bool $shouldRegisterNavigation = true;
-
-    public static function shouldRegisterNavigation(): bool
-    {
-//        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
+//    public static function canCreate(): bool
+//    {
+//        if (auth()->user()->can('create User')) {
 //            return true;
 //        }
-        if (auth()->user()->can('view User')) {
-            return true;
-        }
-        return true;
-    }
+//        return false;
+//
+//    }
+//
+//    public static function canEdit(Model $record): bool
+//    {
+//        if (auth()->user()->can('edit User')) {
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    public static function canDelete(Model $record): bool
+//    {
+//        if (auth()->user()->can('delete User')) {
+//            return true;
+//        }
+//        return false;
+//    }
+////    protected static bool $shouldRegisterNavigation = true;
+//
+//    public static function shouldRegisterNavigation(): bool
+//    {
+////        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
+////            return true;
+////        }
+//        if (auth()->user()->can('view User')) {
+//            return true;
+//        }
+//        return true;
+//    }
 
     public static function form(Form $form): Form
     {

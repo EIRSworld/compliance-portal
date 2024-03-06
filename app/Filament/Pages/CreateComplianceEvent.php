@@ -38,6 +38,19 @@ class CreateComplianceEvent extends Page implements HasForms
 
     protected static ?int $navigationSort = 1;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('create Compliance Event');
+    }
+
+//    public static function shouldRegisterNavigation(): bool
+//    {
+//        if (auth()->user()->can('Create Compliance Event')) {
+//            return true;
+//        }
+//        return false;
+//    }
+
     public $calendar_year_id, $country_id, $name, $description, $status, $status_text;
 
     public function mount()

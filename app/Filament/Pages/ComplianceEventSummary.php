@@ -30,6 +30,7 @@ use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
@@ -38,6 +39,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class ComplianceEventSummary extends Page implements HasTable
 {
     use InteractsWithTable;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.compliance-event-summary';
@@ -47,6 +49,19 @@ class ComplianceEventSummary extends Page implements HasTable
     protected static ?string $title = 'Compliance Event Summary';
 
     protected static ?int $navigationSort = 2;
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('view Compliance Event Summary');
+    }
+
+//    public static function shouldRegisterNavigation(): bool
+//    {
+//        if (auth()->user()->can('View Compliance Event Summary')) {
+//            return true;
+//        }
+//        return false;
+//    }
 
 
     protected function getHeaderActions(): array
@@ -64,7 +79,27 @@ class ComplianceEventSummary extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(\App\Models\ComplianceEvent::query())
+//            ->query(\App\Models\ComplianceEvent::query())
+            ->query(function () {
+                $user = auth()->user();
+
+                $query = \App\Models\ComplianceEvent::query();
+
+                if ($user->hasAnyRole([
+                        'Country Head',
+                        'Cluster Head',
+                        'Compliance Finance Manager',
+                        'Compliance Principle Manager',
+                        'Compliance Finance Officer',
+                        'Compliance Principle Officer'
+                    ]) && !is_null($user->country_id)) {
+                    $countryId = $user->country_id;
+
+                    $query->whereIn('country_id', $countryId);
+                }
+                return $query;
+
+            })
             ->columns([
                 TextColumn::make('country.name')->label('Country')
                     ->extraAttributes(function (ComplianceEvent $record) {
@@ -80,7 +115,7 @@ class ComplianceEventSummary extends Page implements HasTable
                             return [
                                 'class' => 'custom-bg-green',
                             ];
-                        }elseif ($record->status == 'Blue') {
+                        } elseif ($record->status == 'Blue') {
                             return [
                                 'class' => 'custom-bg-blue',
                             ];
@@ -110,50 +145,45 @@ class ComplianceEventSummary extends Page implements HasTable
                 TextColumn::make('status')->label('Status')
                     ->getStateUsing(function (ComplianceEvent $record) {
 
-                    $data = $record->status ?? '-';
+                        $data = $record->status ?? '-';
 
-                    if($record->status == 'Red') {
-                        $data .= '<div class="filament-tables-badge-column flex ">
+                        if ($record->status == 'Red') {
+                            $data .= '<div class="filament-tables-badge-column flex ">
                     <div class="inline-flex items-center text-left	 space-x-1 rtl:space-x-reverse min-h-6 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-nowrap  bg-primary-500/10">
 
                     <span>(Very Critical)';
-                        $data .= '</span></div></div>';
-                    }
-                    elseif($record->status == 'Amber') {
-                        $data .= '<div class="filament-tables-badge-column flex ">
+                            $data .= '</span></div></div>';
+                        } elseif ($record->status == 'Amber') {
+                            $data .= '<div class="filament-tables-badge-column flex ">
                     <div class="inline-flex items-center text-left	 space-x-1 rtl:space-x-reverse min-h-6 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-nowrap  bg-primary-500/10">
 
                     <span>(Event needs attention)';
-                        $data .= '</span></div></div>';
-                    }
-                    elseif($record->status == 'Green') {
-                        $data .= '<div class="filament-tables-badge-column flex ">
+                            $data .= '</span></div></div>';
+                        } elseif ($record->status == 'Green') {
+                            $data .= '<div class="filament-tables-badge-column flex ">
                     <div class="inline-flex items-center text-left	 space-x-1 rtl:space-x-reverse min-h-6 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-nowrap  bg-primary-500/10">
 
                     <span>(Solved - It is a risk, but it keeps happening)';
-                        $data .= '</span></div></div>';
-                    }
-                    elseif($record->status == 'Blue') {
-                        $data .= '<div class="filament-tables-badge-column flex ">
+                            $data .= '</span></div></div>';
+                        } elseif ($record->status == 'Blue') {
+                            $data .= '<div class="filament-tables-badge-column flex ">
                     <div class="inline-flex items-center text-left	 space-x-1 rtl:space-x-reverse min-h-6 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-nowrap  bg-primary-500/10">
 
                     <span>(Event happened but its not a risk anymore)';
-                        $data .= '</span></div></div>';
-                    }
-                    else{
-                        $data .= '';
-                    }
+                            $data .= '</span></div></div>';
+                        } else {
+                            $data .= '';
+                        }
 
-                    return $data;
-                })->html(),
+                        return $data;
+                    })->html(),
             ])
             ->filters([
                 SelectFilter::make('calendar_year_id')->searchable()
                     ->options(function () {
                         return CalendarYear::pluck('name', 'id')->toArray();
                     })
-
-                    ->default(function(){
+                    ->default(function () {
                         $currentYear = Carbon::now()->year;
                         return CalendarYear::where('name', $currentYear)->value('id');
                     })
@@ -161,7 +191,13 @@ class ComplianceEventSummary extends Page implements HasTable
                     ->label('Year'),
                 SelectFilter::make('country_id')->searchable()
                     ->options(function () {
-                        return Country::pluck('name', 'id')->toArray();
+                        $user = auth()->user();
+                        if ($user->role('Compliance Principle Officer') && $user->country_id) {
+                            return Country::whereIn('id', $user->country_id)->pluck('name', 'id')->toArray();
+                        } else {
+
+                            return Country::pluck('name', 'id')->toArray();
+                        }
                     })
                     ->placeholder('Select the Country')
                     ->label('Country'),
@@ -170,12 +206,11 @@ class ComplianceEventSummary extends Page implements HasTable
                     ->placeholder('Select the Status')
                     ->label('Status'),
             ], FiltersLayout::AboveContent)
-
             ->actions([
                 \Filament\Tables\Actions\Action::make('edit')->color('warning')->button()
                     ->icon('heroicon-o-pencil')->modalWidth('lg')
                     ->label('Edit')
-                    ->mountUsing(function (ComponentContainer $form,$record) {
+                    ->mountUsing(function (ComponentContainer $form, $record) {
                         $form->fill([
                             'country_id' => $record->country_id,
                             'calendar_year_id' => $record->calendar_year_id,
@@ -245,7 +280,6 @@ class ComplianceEventSummary extends Page implements HasTable
                                     }),
                             ])
                     ])
-
                     ->action(function (array $data, $record, $form): void {
                         $complianceEvent = ComplianceEvent::find($record->id);
                         $complianceEvent->calendar_year_id = $data['calendar_year_id'];
@@ -270,7 +304,7 @@ class ComplianceEventSummary extends Page implements HasTable
                                 'complianceEvent' => $complianceEvent,
                             ];
 
-                            Mail::send('mail.event-mail', $data, function ($message) use ($data,$user) {
+                            Mail::send('mail.event-mail', $data, function ($message) use ($data, $user) {
                                 $message->to($user->email, config('app.name'));
                             });
                             Notification::make()
@@ -278,6 +312,12 @@ class ComplianceEventSummary extends Page implements HasTable
                                 ->success()
                                 ->send();
                         }
+                    })
+                    ->visible(function () {
+                        if (auth()->user()->can('edit Compliance Event Summary')) {
+                            return true;
+                        }
+                        return false;
                     }),
 
                 \Filament\Tables\Actions\Action::make('delete')->color('danger')
@@ -291,7 +331,14 @@ class ComplianceEventSummary extends Page implements HasTable
                             ->title('Deleted Successfully')
                             ->success()
                             ->send();
+                    })
+                    ->visible(function () {
+                        if (auth()->user()->can('delete Compliance Event Summary')) {
+                            return true;
+                        }
+                        return false;
                     }),
+
             ], position: ActionsPosition::AfterColumns);
     }
 }

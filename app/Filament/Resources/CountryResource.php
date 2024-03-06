@@ -25,6 +25,10 @@ class CountryResource extends Resource
     protected static ?int $navigationSort = 0;
     protected static ?string $navigationLabel = 'Countries';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('view Country');
+    }
 //    protected static bool $shouldRegisterNavigation = true;
 //    protected static bool $shouldCheckPolicyExistence   = true;
 //    public static function canCreate(): bool

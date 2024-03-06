@@ -2,14 +2,14 @@
 
 namespace App\Exports;
 
-use App\Models\Country;
+use App\Models\ComplianceEvent;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class DashboardSummaryExport implements FromView, ShouldAutoSize
+class DashboardEventSummaryExport implements FromView, ShouldAutoSize
 {
     protected $calendar_year_id;
     function __construct($calendar_year_id) {
@@ -18,26 +18,23 @@ class DashboardSummaryExport implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        $country = Country::get();
-        $user = Auth::user();
 
+        $complianceEvents = ComplianceEvent::where('calendar_year_id', $this->calendar_year_id)->get();
+        $user = Auth::user();
         if ($user->hasAnyRole(['Country Head', 'Cluster Head', 'Compliance Finance Manager', 'Compliance Principle Manager', 'Compliance Finance Officer', 'Compliance Principle Officer'])) {
             $countryId = $user->country_id;
-//            dd($countryId);
             if ($countryId !== null) {
-                $countries = Country::whereIn('id', $countryId)->get();
+                $events = ComplianceEvent::where('calendar_year_id', $this->calendar_year_id)->whereIn('country_id', $countryId)->get();
             } else {
-                // Set countries to an empty array if country_id is null
-                $countries = [];
+                $events = [];
             }
         } else {
-            $countries = $country;
+            $events = $complianceEvents;
         }
-//
-//        $countries = Country::get();
-        return view('exports.dashboard-summary-export', [
+//        $events = ComplianceEvent::where('calendar_year_id',$this->calendar_year_id)->whereIn('country_id', $this->country_ids)->get();
+        return view('exports.dashboard-event-summary', [
             'calendar_year_id' => $this->calendar_year_id,
-            'countries' => $countries,
+            'events' => $events,
         ]);
     }
 }

@@ -283,6 +283,38 @@ class DatabaseSeeder extends Seeder
                 'name' => 'delete Year',
                 'guard_name' => 'web',
             ],
+            [
+                'name' => 'view Document',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'create Compliance Event',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'view Compliance Event Summary',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'edit Compliance Event Summary',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'delete Compliance Event Summary',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'view Compliance Management',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'upload Compliance Management',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'change Status Compliance Management',
+                'guard_name' => 'web',
+            ],
 
         ];
 

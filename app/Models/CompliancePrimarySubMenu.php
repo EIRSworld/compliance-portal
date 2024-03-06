@@ -26,8 +26,12 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
         'expired_date',
         'folder_type',
         'is_uploaded',
+        'upload_by',
+        'upload_date',
         'upload_comment',
         'approve_status',
+        'approve_by',
+        'approve_date',
         'reject_comment',
         'status',
     ];
@@ -59,5 +63,10 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function uploadBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'upload_by');
     }
 }

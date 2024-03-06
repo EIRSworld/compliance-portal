@@ -34,41 +34,46 @@ class CalendarYearResource extends Resource
     protected static ?string $navigationLabel = 'Calendar Years';
     protected static ?int $navigationSort = 1;
     protected static ?string $label = 'Calendar Years';
-    public static function canCreate(): bool
-    {
-        if (auth()->user()->can('create Year')) {
-            return true;
-        }
-        return false;
 
-    }
-
-    public static function canEdit(Model $record): bool
+    public static function canAccess(): bool
     {
-        if (auth()->user()->can('edit Year')) {
-            return true;
-        }
-        return false;
+        return auth()->user()->can('view Year');
     }
-
-    public static function canDelete(Model $record): bool
-    {
-        if (auth()->user()->can('delete Year')) {
-            return true;
-        }
-        return false;
-    }
-//protected static bool $shouldRegisterNavigation = true;
-    public static function shouldRegisterNavigation(): bool
-    {
-//        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
+//    public static function canCreate(): bool
+//    {
+//        if (auth()->user()->can('create Year')) {
 //            return true;
 //        }
-        if (auth()->user()->can('view Year')) {
-            return true;
-        }
-        return true;
-    }
+//        return false;
+//
+//    }
+//
+//    public static function canEdit(Model $record): bool
+//    {
+//        if (auth()->user()->can('edit Year')) {
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    public static function canDelete(Model $record): bool
+//    {
+//        if (auth()->user()->can('delete Year')) {
+//            return true;
+//        }
+//        return false;
+//    }
+////protected static bool $shouldRegisterNavigation = true;
+//    public static function shouldRegisterNavigation(): bool
+//    {
+////        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Management')) {
+////            return true;
+////        }
+//        if (auth()->user()->can('view Year')) {
+//            return true;
+//        }
+//        return true;
+//    }
 
 
     public static function form(Form $form): Form
@@ -1770,7 +1775,8 @@ class CalendarYearResource extends Resource
                                 $document->delete();
                             }
                         }
-                    }),
+                    })
+
 
             ])
             ->bulkActions([

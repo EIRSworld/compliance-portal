@@ -13,7 +13,8 @@ class CalendarYearPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->checkPermissionTo('view-any CalendarYear');
+//        return $user->checkPermissionTo('view-any CalendarYear');
+        return true;
     }
 
     /**
@@ -21,7 +22,7 @@ class CalendarYearPolicy
      */
     public function view(User $user, CalendarYear $calendaryear): bool
     {
-        return $user->checkPermissionTo('view CalendarYear');
+        return $user->checkPermissionTo('view Year');
     }
 
     /**
@@ -29,7 +30,7 @@ class CalendarYearPolicy
      */
     public function create(User $user): bool
     {
-        return $user->checkPermissionTo('create CalendarYear');
+        return $user->checkPermissionTo('create Year');
     }
 
     /**
@@ -37,7 +38,7 @@ class CalendarYearPolicy
      */
     public function update(User $user, CalendarYear $calendaryear): bool
     {
-        return $user->checkPermissionTo('update CalendarYear');
+        return $user->checkPermissionTo('update Year');
     }
 
     /**
@@ -45,7 +46,7 @@ class CalendarYearPolicy
      */
     public function delete(User $user, CalendarYear $calendaryear): bool
     {
-        return $user->checkPermissionTo('delete CalendarYear');
+        return $user->checkPermissionTo('delete Year');
     }
 
     /**

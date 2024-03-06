@@ -110,7 +110,7 @@ class ComplianceMenuList extends Page implements HasTable
                                 ])->required()
                                 ->inline()->reactive()
                                 ->inlineLabel(false),
-                            Checkbox::make('is_expired')->label('Expired')->reactive()
+                            Checkbox::make('is_expired')->label('Expired Date')->reactive()
                                 ->visible(function (callable $get) {
 
                                     if ($get('folder_type') === 'Upload') {
@@ -181,7 +181,9 @@ class ComplianceMenuList extends Page implements HasTable
                 })
                 ->visible(function () {
 
-                    if (auth()->user()->hasRole('Super Admin')) {
+                    if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
+
+
                         return true;
                     }
                     return false;
@@ -215,7 +217,7 @@ class ComplianceMenuList extends Page implements HasTable
                         }
                         return [];
                     }),
-                TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y'),
+                TextColumn::make('expired_date')->label('Due Date')->date('d-m-Y'),
 //                ->getStateUsing(function (ComplianceMenu $record){
 //                    if ($record->expired_date){
 //                        return $record->expired_date;
@@ -301,7 +303,8 @@ class ComplianceMenuList extends Page implements HasTable
                     })
                     ->visible(function () {
 
-                        if (auth()->user()->hasRole('Super Admin')) {
+                        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
+
                             return true;
                         }
                         return false;
@@ -327,8 +330,8 @@ class ComplianceMenuList extends Page implements HasTable
 
                     })
                     ->visible(function () {
+                        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
 
-                        if (auth()->user()->hasRole('Super Admin')) {
                             return true;
                         }
                         return false;
@@ -372,11 +375,15 @@ class ComplianceMenuList extends Page implements HasTable
                         $complianceMenu = \App\Models\ComplianceMenu::find($record->id);
                         $complianceMenu->upload_comment = $data['upload_comment'];
                         $complianceMenu->is_uploaded = 1;
+                        $complianceMenu->upload_by = auth()->id();
+                        $complianceMenu->upload_date = Carbon::now();
                         $complianceMenu->save();
 
                         $complianceUploadDocument = \App\Models\UploadDocument::whereComplianceMenuId($record->id)->first();
                         $complianceUploadDocument->upload_comment = $data['upload_comment'];
                         $complianceUploadDocument->is_uploaded = 1;
+                        $complianceUploadDocument->upload_by = auth()->id();
+                        $complianceUploadDocument->upload_date = Carbon::now();
                         $complianceUploadDocument->save();
                         Notification::make()
                             ->title('File Update Successfully')

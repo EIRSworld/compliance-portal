@@ -7,6 +7,7 @@ use App\Models\ComplianceMenu;
 use App\Models\CompliancePrimarySubMenu;
 use App\Models\ComplianceSubMenu;
 use App\Models\UploadDocument;
+use Carbon\Carbon;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Checkbox;
@@ -110,7 +111,7 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
 //                                    ])->required()
 //                                    ->inline()->reactive()
 //                                    ->inlineLabel(false),
-                                Checkbox::make('is_expired')->label('Expired')->reactive(),
+                                Checkbox::make('is_expired')->label('Expired Date')->reactive(),
 //                                    ->visible(function (callable $get) {
 //
 //                                        if ($get('folder_type') === 'Upload') {
@@ -185,8 +186,8 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
 
                 })
                 ->visible(function () {
+                    if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
 
-                    if (auth()->user()->hasRole('Super Admin')) {
                         return true;
                     }
                     return false;
@@ -215,7 +216,7 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
                         return [];
                     }),
 
-                TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y'),
+                TextColumn::make('expired_date')->label('Due Date')->date('d-m-Y'),
                 TextColumn::make('updated_at')->label('Updated Date')->date('d-m-Y'),
                 TextColumn::make('user.name')->label('Created By'),
                 ViewColumn::make('id')->label('Documents')->view('document.compliance-primary-sub-menu')
@@ -310,8 +311,8 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
 
                     })
                     ->visible(function () {
+                        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
 
-                        if (auth()->user()->hasRole('Super Admin')) {
                             return true;
                         }
                         return false;
@@ -333,8 +334,8 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
 
                     })
                     ->visible(function () {
+                        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
 
-                        if (auth()->user()->hasRole('Super Admin')) {
                             return true;
                         }
                         return false;
@@ -378,11 +379,15 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
                         $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($record->id);
                         $compliancePrimarySubMenu->upload_comment = $data['upload_comment'];
                         $compliancePrimarySubMenu->is_uploaded = 1;
+                        $compliancePrimarySubMenu->upload_by = auth()->id();
+                        $compliancePrimarySubMenu->upload_date = Carbon::now();
                         $compliancePrimarySubMenu->save();
 
                         $complianceUploadDocument = \App\Models\UploadDocument::whereCompliancePrimarySubMenuId($record->id)->first();
                         $complianceUploadDocument->upload_comment = $data['upload_comment'];
                         $complianceUploadDocument->is_uploaded = 1;
+                        $complianceUploadDocument->upload_by = auth()->id();
+                        $complianceUploadDocument->upload_date = Carbon::now();
                         $complianceUploadDocument->save();
                         Notification::make()
                             ->title('File Update Successfully')
