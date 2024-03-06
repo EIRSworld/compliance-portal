@@ -84,7 +84,7 @@ class UserResource extends Resource
                         ->columnSpan(1)
                         ->required(),
                     Forms\Components\Select::make('roles')
-                        ->searchable()->preload()
+                        ->searchable()->preload()->multiple()
                         ->columnSpanFull()->reactive()
                         ->relationship('roles', 'name',
                             modifyQueryUsing: function (Builder $query) {
@@ -94,97 +94,20 @@ class UserResource extends Resource
                     Forms\Components\Select::make('country_id')->label('Country')->multiple()
 
                         ->options(Country::pluck('name', 'id')->toArray())
-                        ->default(function (callable $get){
-                            $roleId = $get('roles');
-                            $role = Role::find($roleId);
-                            if ($role){
-
-                                if ($role->name === 'Management' || $role->name === 'Super Admin' || $role->name === 'Business Head' || $role->name === 'Compliance Head') {
-                                    Country::pluck('id')->toArray();
-                                }
-                            }
-})
+//                        ->default(function (callable $get){
+//                            $roleId = $get('roles');
+//                            $role = Role::find($roleId);
+//                            if ($role){
+//
+//                                if ($role->name === 'Management' || $role->name === 'Super Admin' || $role->name === 'Business Head' || $role->name === 'Compliance Head') {
+//                                    Country::pluck('id')->toArray();
+//                                }
+//                            }
+//})
                         ->searchable()
                         ->reactive()->required()
                         ->placeholder('Select'),
 
-                    Forms\Components\Select::make('finance_manager_id')->label('Finance Manager')
-//                        ->options(function (callable $get) {
-//                            $countryIds = $get('country_id');
-//                          return User::role('Compliance Finance Manager')->whereJsonContains('country_id',$countryIds)->pluck('name','id')->toArray();
-//
-//                        })
-                        ->options(function (callable $get) {
-                            $countryIds = $get('country_id');
-                            // Ensure we're dealing with an array of country IDs.
-                            if (!is_array($countryIds)) {
-                                $countryIds = [$countryIds];
-                            }
-
-                            $query = User::role('Compliance Finance Manager');
-                            // Apply whereJsonContains for each country ID individually
-                            foreach ($countryIds as $countryId) {
-//                                dd($query->orWhereJsonContains('country_id', (string)$countryId));
-                                // Note: Depending on your exact database and Laravel version,
-                                // you might need to adjust this to ensure compatibility.
-                                $query->orWhereJsonContains('country_id', (string)$countryId);
-                            }
-//dd($query);
-                            return $query->pluck('name', 'id')->toArray();
-                        })
-                        ->searchable()
-                        ->reactive()
-                        ->placeholder('Select')
-                        ->visible(function (callable $get) {
-                            $roleIds = $get('roles');
-                            if (!is_array($roleIds)) {
-                                $roleIds = [$roleIds];
-                            }
-                            $roles = Role::findMany($roleIds);
-
-                            foreach ($roles as $role) {
-                                if (in_array($role->name, ['Compliance Finance Officer', 'Compliance Principle Officer'])) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }),
-//                        ->visible(function (callable $get) {
-//                            $roleId = $get('roles');
-////                            dd($roleId);
-//                            $role = Role::findMany($roleId);
-//                            if ($role){
-//
-//                                if ($role->name === 'Compliance Finance Officer' || $role->name === 'Compliance Principle Officer') {
-//                                    return true;
-//                                }
-//                            }
-//                            return false;
-//                        }),
-//                    Forms\Components\Select::make('principal_manager_id')->label('Principal Manager')
-//                        ->options(function (callable $get) {
-//                            $country = $get('country_id');
-//
-//                            User::role('Compliance Principle Manager')->whereIn('country_id',$country)->pluck('id','name')->toArray();
-//
-//                        })
-//                        ->searchable()
-//                        ->reactive()
-//                        ->placeholder('Select')
-//                        ->visible(function (callable $get) {
-//                            $roleIds = $get('roles');
-//                            if (!is_array($roleIds)) {
-//                                $roleIds = [$roleIds];
-//                            }
-//                            $roles = Role::findMany($roleIds);
-//
-//                            foreach ($roles as $role) {
-//                                if (in_array($role->name, ['Compliance Finance Officer', 'Compliance Principle Officer'])) {
-//                                    return true;
-//                                }
-//                            }
-//                            return false;
-//                        }),
                     Forms\Components\TextInput::make('password')
                         ->hiddenOn('edit')
                         ->dehydrateStateUsing(fn($state) => !empty($state) ? Hash::make($state) : "")

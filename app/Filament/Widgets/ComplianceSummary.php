@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Exports\DashboardSummaryExport;
 use App\Models\CalendarYear;
+use App\Models\ComplianceEvent;
 use App\Models\Country;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
@@ -35,7 +36,8 @@ class ComplianceSummary extends Widget implements HasForms
     protected int|string|array $columnSpan = 2;
     protected static ?string $heading = 'Dashboard Summary';
 
-    public $countries, $calendar_year_id, $country;
+    public $countries, $calendar_year_id, $country,$compliance_events,
+$events;
 
     public function mount()
     {
@@ -67,7 +69,7 @@ class ComplianceSummary extends Widget implements HasForms
 //
 //            $this->countries = $this->country;
 //        }
-        $this->country = Country::get();
+//        $this->country = Country::get();
         $user = Auth::user();
 
         if ($user->hasAnyRole(['Country Head', 'Cluster Head', 'Compliance Finance Manager', 'Compliance Principle Manager', 'Compliance Finance Officer', 'Compliance Principle Officer'])) {
@@ -81,6 +83,20 @@ class ComplianceSummary extends Widget implements HasForms
             }
         } else {
             $this->countries = $this->country;
+        }
+
+        $this->events = ComplianceEvent::get();
+        $user = Auth::user();
+        if ($user->hasAnyRole(['Country Head', 'Cluster Head', 'Compliance Finance Manager', 'Compliance Principle Manager', 'Compliance Finance Officer', 'Compliance Principle Officer'])) {
+            $countryId = $user->country_id;
+//            dd($countryId);
+            if ($countryId !== null) {
+                $this->compliance_events = ComplianceEvent::whereIn('country_id', $countryId)->get();
+            } else {
+                $this->compliance_events = [];
+            }
+        } else {
+            $this->compliance_events = $this->events;
         }
 //        $user = auth()->user();
 

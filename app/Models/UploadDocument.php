@@ -65,5 +65,9 @@ class UploadDocument extends Model implements HasMedia
     {
         return $this->belongsTo(User::class, 'upload_by');
     }
+    public function approveBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approve_by');
+    }
 
 }

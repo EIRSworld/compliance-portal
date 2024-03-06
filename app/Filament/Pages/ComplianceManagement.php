@@ -18,6 +18,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -54,18 +55,28 @@ class ComplianceManagement extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(function (Builder $query) {
+            ->query(function () {
 
-                $baseQuery = UploadDocument::where('is_expired', '=', 1);
-//                    ->whereRelation('complianceSubMenu', 'is_expired', '=',1)
-//                    ->whereRelation('compliancePrimarySubMenu', 'is_expired','=',1)
-//                    ->orderBy('expired_date');
-////                if (auth()->user()->hasRole('country_head')) {
-////
-////                    return $baseQuery->whereIn('country_id', auth()->user()->country_id);
-////                }
-//
-                return $baseQuery;
+                $user = auth()->user();
+//                $query = UploadDocument::where('is_expired', '=', 1);
+                $query = UploadDocument::query();
+
+                if ($user->hasAnyRole([
+                        'Country Head',
+                        'Cluster Head',
+                        'Compliance Finance Manager',
+                        'Compliance Principle Manager',
+                        'Compliance Finance Officer',
+                        'Compliance Principle Officer'
+                    ]) && !is_null($user->country_id)) {
+                    $countryId = $user->country_id;
+//                    dd($query->whereIn('country_id', $user->country_id)->get());
+
+                    $query->whereIn('country_id', $user->country_id);
+                }
+
+
+                return $query->where('is_expired', '=', 1);
             })
             ->columns([
 
@@ -79,7 +90,7 @@ class ComplianceManagement extends Page implements HasTable
 //
 //                    ]))->openUrlInNewTab(),
 //                TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y'),
-                TextColumn::make('expired_date')->label('Expired Date')
+                TextColumn::make('expired_date')->label('Due Date')
                     ->formatStateUsing(function (UploadDocument $record) {
                         $complianceExpiredDate = Carbon::parse($record->expired_date);
                         $currentDate = Carbon::now();
@@ -120,11 +131,29 @@ class ComplianceManagement extends Page implements HasTable
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->boolean(),
-                IconColumn::make('approve_status')
-                    ->label('Approve Status')
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->boolean(),
+                BadgeColumn::make('approve_status')->label('Approve Status')
+                    ->color(function (UploadDocument $record) {
+                        if ($record->approve_status == 1) {
+                            return 'success';
+
+                        } elseif ($record->approve_status == 2) {
+                            return 'danger';
+                        }
+                        return '';
+                    })
+                    ->formatStateUsing(function (UploadDocument $record) {
+                        if ($record->approve_status == 1) {
+                            return 'Approved';
+
+                        } elseif ($record->approve_status == 2) {
+                            return 'Rejected';
+                        }
+                        return '';
+                    }),
+//                IconColumn::make('approve_status')
+//                    ->label('Approve Status')
+//                    ->trueIcon('heroicon-o-check-circle')
+//                    ->falseIcon('heroicon-o-x-circle'),
 
                 ViewColumn::make('id')->label('Documents')->view('document.compliance-management'),
                 TextColumn::make('upload_comment')->label('Comment')
@@ -132,6 +161,29 @@ class ComplianceManagement extends Page implements HasTable
                         return Str::limit($record->upload_comment, 20);
                     })
                     ->tooltip(fn(UploadDocument $record): string|null => $record->upload_comment),
+//                    ->visible(function (UploadDocument $record) {
+//                        return empty($record->reject_comment);
+//                    }),
+                TextColumn::make('reject_comment')->label('Comment')
+                    ->getStateUsing(function (UploadDocument $record) {
+                        return Str::limit($record->reject_comment, 20);
+                    })
+                    ->tooltip(fn(UploadDocument $record): string|null => $record->reject_comment),
+
+                TextColumn::make('uploadBy.name')->label('Uploaded By')
+                    ->visible(function () {
+                        if (auth()->user()->hasRole('Compliance Finance Officer') || auth()->user()->hasRole('Compliance Principle Officer')) {
+                            return false;
+                        }
+                        return true;
+                    }),
+                TextColumn::make('approveBy.name')->label('Approved By')
+                    ->visible(function () {
+                        if (auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
+                            return false;
+                        }
+                        return true;
+                    }),
             ])
             ->filters([
                 SelectFilter::make('calendar_year_id')->searchable()
@@ -166,7 +218,7 @@ class ComplianceManagement extends Page implements HasTable
                 SelectFilter::make('approve_status')->searchable()
                     ->options([
                         '1' => 'Approve',
-                        '0' => 'Reject',
+                        '2' => 'Reject',
                     ])
                     ->placeholder('Select the Status')
                     ->label('Approve Status'),
@@ -270,7 +322,7 @@ class ComplianceManagement extends Page implements HasTable
                         if ($record->is_uploaded === 0) {
                             return 'primary';
                         }
-                         return 'warning';
+                        return 'warning';
                     })
                     ->form([
                         Card::make()
@@ -278,19 +330,19 @@ class ComplianceManagement extends Page implements HasTable
                                 Radio::make('approve_status')->reactive()->boolean()
                                     ->options([
                                         '1' => 'Approve',
-                                        '0' => 'Reject',
+                                        '2' => 'Reject',
                                     ]),
 
 
                                 Textarea::make('reject_comment')->rows(2)->reactive()
-                                    ->label('Reason For Reject')
-                                    ->visible(function (callable $get) {
-                                        $approveStatus = $get('approve_status');
-                                        if ($approveStatus === '0') {
-                                            return true;
-                                        }
-                                        return false;
-                                    })
+                                    ->label('Reason')
+//                                    ->visible(function (callable $get) {
+//                                        $approveStatus = $get('approve_status');
+//                                        if ($approveStatus === '2') {
+//                                            return true;
+//                                        }
+//                                        return false;
+//                                    })
                             ])
                     ])
                     ->action(function (array $data, $record): void {
@@ -299,11 +351,7 @@ class ComplianceManagement extends Page implements HasTable
                         $complianceUploadDocument->approve_status = $data['approve_status'];
                         $complianceUploadDocument->approve_by = auth()->id();
                         $complianceUploadDocument->approve_date = Carbon::now();
-                        if ($data['approve_status'] === '0' && !empty($data['reject_comment'])) {
-                            $complianceUploadDocument->reject_comment = $data['reject_comment'];
-                        } elseif ($data['approve_status'] === '1') {
-                            $complianceUploadDocument->reject_comment = null;
-                        }
+                        $complianceUploadDocument->reject_comment = $data['reject_comment'];
                         $complianceUploadDocument->save();
 
                         $user = User::find($record->upload_by);
@@ -313,7 +361,7 @@ class ComplianceManagement extends Page implements HasTable
                             'email' => $user->email,
                             'complianceUploadDocument' => $complianceUploadDocument,
                         ];
-                        Mail::send('mail.management-status', $da, function ($message) use ($da,$user) {
+                        Mail::send('mail.management-status', $da, function ($message) use ($da, $user) {
                             $message->to($user->email, config('app.name'));
                         });
                         Notification::make()
@@ -328,11 +376,8 @@ class ComplianceManagement extends Page implements HasTable
                             $complianceMenu->approve_status = $data['approve_status'];
                             $complianceMenu->approve_by = auth()->id();
                             $complianceMenu->approve_date = Carbon::now();
-                            if ($data['approve_status'] === '0' && !empty($data['reject_comment'])) {
-                                $complianceMenu->reject_comment = $data['reject_comment'];
-                            } elseif ($data['approve_status'] === '1') {
-                                $complianceMenu->reject_comment = null;
-                            }
+                            $complianceMenu->reject_comment = $data['reject_comment'];
+
                             $complianceMenu->save();
                         } elseif (($record->compliance_primary_sub_menu_id === null || $record->compliance_primary_sub_menu_id === '')) {
                             $complianceSubMenu = \App\Models\ComplianceSubMenu::find($record->compliance_sub_menu_id);
@@ -340,27 +385,21 @@ class ComplianceManagement extends Page implements HasTable
                             $complianceSubMenu->approve_status = $data['approve_status'];
                             $complianceSubMenu->approve_by = auth()->id();
                             $complianceSubMenu->approve_date = Carbon::now();
-                            if ($data['approve_status'] === '0' && !empty($data['reject_comment'])) {
-                                $complianceSubMenu->reject_comment = $data['reject_comment'];
-                            } elseif ($data['approve_status'] === '1') {
-                                $complianceSubMenu->reject_comment = null;
-                            }
+                            $complianceSubMenu->reject_comment = $data['reject_comment'];
+
                             $complianceSubMenu->save();
                         } else {
                             $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($record->compliance_primary_sub_menu_id);
                             $compliancePrimarySubMenu->approve_status = $data['approve_status'];
                             $compliancePrimarySubMenu->approve_by = auth()->id();
                             $compliancePrimarySubMenu->approve_date = Carbon::now();
-                            if ($data['approve_status'] === '0' && !empty($data['reject_comment'])) {
-                                $compliancePrimarySubMenu->reject_comment = $data['reject_comment'];
-                            } elseif ($data['approve_status'] === '1') {
-                                $compliancePrimarySubMenu->reject_comment = null;
-                            }
+                            $compliancePrimarySubMenu->reject_comment = $data['reject_comment'];
+
                             $compliancePrimarySubMenu->save();
                         }
 
                         Notification::make()
-                            ->title('Approved Successfully')
+                            ->title('Successfully Updated')
                             ->success()
                             ->send();
 

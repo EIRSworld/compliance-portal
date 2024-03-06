@@ -25,50 +25,11 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt('password'),
             ],
             [
-                'name' => 'Rakhee(management)',
-                'email' => 'admin@management.com',
+                'name' => 'Rakhee',
+                'email' => 'rakhee@compliance.com',
                 'password' => bcrypt('password'),
             ],
-            [
-                'name' => 'Mohan(business)',
-                'email' => 'admin@businesshead.com',
-                'password' => bcrypt('password'),
-            ],
-            [
-                'name' => 'Mark(cluster)',
-                'email' => 'admin@clusterhead.com',
-                'password' => bcrypt('password'),
-            ],
-            [
-                'name' => 'Rajesh(country)',
-                'email' => 'admin@countryhead.com',
-                'password' => bcrypt('password'),
-            ],
-            [
-                'name' => 'David(compliance)',
-                'email' => 'admin@compliancehead.com',
-                'password' => bcrypt('password'),
-            ],
-            [
-                'name' => 'Miller(FM)',
-                'email' => 'admin@compliancefinancemanager.com',
-                'password' => bcrypt('password'),
-            ],
-            [
-                'name' => 'Suresh(PM)',
-                'email' => 'admin@complianceprincipalmanager.com',
-                'password' => bcrypt('password'),
-            ],
-            [
-                'name' => 'Harrish(FO)',
-                'email' => 'admin@compliancefinanceofficer.com',
-                'password' => bcrypt('password'),
-            ],
-            [
-                'name' => 'Lokesh(PO)',
-                'email' => 'admin@complianceprincipleofficer.com',
-                'password' => bcrypt('password'),
-            ],
+
         ]);
         Role::insert([
             [
@@ -114,7 +75,49 @@ class DatabaseSeeder extends Seeder
         ]);
         Country::insert([
             [
+                'name' => 'Kenya',
+                'status' => '1',
+                'created_by' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Tanzania',
+                'status' => '1',
+                'created_by' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'IVC',
+                'status' => '1',
+                'created_by' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'name' => 'South Africa',
+                'status' => '1',
+                'created_by' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Mozambique',
+                'status' => '1',
+                'created_by' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Zambia',
+                'status' => '1',
+                'created_by' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Mauritius',
                 'status' => '1',
                 'created_by' => '1',
                 'created_at' => now(),
@@ -127,22 +130,8 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'name' => 'Kenya',
-                'status' => '1',
-                'created_by' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ]);
         CalendarYear::insert([
-            [
-                'name' => '2023',
-                'country_id' => '["1","2","3"]',
-                'status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
             [
                 'name' => '2024',
                 'country_id' => '["1","2","3"]',

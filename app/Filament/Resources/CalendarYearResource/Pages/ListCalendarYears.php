@@ -1593,8 +1593,8 @@ class ListCalendarYears extends ListRecords
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->name = 'Proof of Payment';
                         $complianceUploadDocument->folder_type = 'Upload';
-                        $compliancePrimarySubMenu->is_expired = 1;
-                        $compliancePrimarySubMenu->expired_date = Carbon::now();
+                        $complianceUploadDocument->is_expired = 1;
+                        $complianceUploadDocument->expired_date = Carbon::now();
                         $complianceUploadDocument->is_uploaded = 0;
                         $complianceUploadDocument->save();
 
@@ -1622,8 +1622,8 @@ class ListCalendarYears extends ListRecords
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->name = 'Certificate';
                         $complianceUploadDocument->folder_type = 'Upload';
-                        $compliancePrimarySubMenu->is_expired = 1;
-                        $compliancePrimarySubMenu->expired_date = Carbon::now();
+                        $complianceUploadDocument->is_expired = 1;
+                        $complianceUploadDocument->expired_date = Carbon::now();
                         $complianceUploadDocument->is_uploaded = 0;
                         $complianceUploadDocument->save();
 

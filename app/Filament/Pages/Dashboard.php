@@ -22,7 +22,7 @@ class Dashboard extends BasePage
         return [
 
             ComplianceSummary::class,
-            ComplianceEventSummary::class,
+//            ComplianceEventSummary::class,
         ];
     }
 }
