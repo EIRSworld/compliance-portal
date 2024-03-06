@@ -322,22 +322,8 @@ class DatabaseSeeder extends Seeder
         $user = User::find(1);
         $user->assignRole('Super Admin');
         $user = User::find(2);
-        $user->assignRole('Management');
-        $user = User::find(3);
-        $user->assignRole('Business Head');
-        $user = User::find(4);
-        $user->assignRole('Cluster Head');
-        $user = User::find(5);
-        $user->assignRole('Country Head');
-        $user = User::find(6);
         $user->assignRole('Compliance Head');
-        $user = User::find(7);
+        $user = User::find(2);
         $user->assignRole('Compliance Finance Manager');
-        $user = User::find(8);
-        $user->assignRole('Compliance Principle Manager');
-        $user = User::find(9);
-        $user->assignRole('Compliance Finance Officer');
-        $user = User::find(10);
-        $user->assignRole('Compliance Principle Officer');
     }
 }
