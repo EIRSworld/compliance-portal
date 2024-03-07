@@ -58,7 +58,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -370,7 +369,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -682,7 +680,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -995,7 +992,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1010,7 +1006,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1025,7 +1020,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1040,7 +1034,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1055,7 +1048,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1211,7 +1203,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1224,7 +1215,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1237,7 +1227,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1250,7 +1239,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1263,7 +1251,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1276,7 +1263,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1289,7 +1275,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1302,7 +1287,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1316,7 +1300,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1386,7 +1369,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1423,7 +1405,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1460,7 +1441,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1472,7 +1452,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1484,7 +1463,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1499,7 +1477,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1534,7 +1511,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;
@@ -1546,7 +1522,6 @@ class ListCalendarYears extends ListRecords
 
                         $complianceUploadDocument = new UploadDocument();
                         $complianceUploadDocument->calendar_year_id = $record->id;
-                        $complianceUploadDocument->country_id = $countryId;
                         $complianceUploadDocument->year = $record->name;
                         $complianceUploadDocument->document_id = $document->id;
                         $complianceUploadDocument->country_id = $countryId;
@@ -1559,7 +1534,6 @@ class ListCalendarYears extends ListRecords
 
                         $compliantSubMenu = new ComplianceSubMenu();
                         $compliantSubMenu->calendar_year_id = $record->id;
-                        $compliantSubMenu->country_id = $countryId;
                         $compliantSubMenu->year = $record->name;
                         $compliantSubMenu->document_id = $document->id;
                         $compliantSubMenu->country_id = $countryId;

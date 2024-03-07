@@ -131,1047 +131,1078 @@ class CalendarYearResource extends Resource
 
                         // Handle new countries
                         try {
-
-                            foreach ($toAdd as $countryId) {
-//                dd($record->id);
-                                // Compliance docs with due dates
-                                $document = new Document();
-                                $country = Country::find($countryId);
-                                $document->country_id = $countryId;
-                                $document->calendar_year_id = $record->id;
-                                $document->name = $country->name;
-                                $document->save();
-
-                                // Agencies
-                                $compliantMenu = new ComplianceMenu();
-                                $compliantMenu->calendar_year_id = $record->id;
-                                $compliantMenu->document_id = $document->id;
-                                $compliantMenu->country_id = $countryId;
-                                $compliantMenu->year = $record->name;
-                                $compliantMenu->name = 'Agencies';
-                                $compliantMenu->folder_type = 'Sub Folder';
-                                $compliantMenu->save();
-
-
-                                // Finance
-                                $compliantMenu = new ComplianceMenu();
-                                $compliantMenu->calendar_year_id = $record->id;
-                                $compliantMenu->document_id = $document->id;
-                                $compliantMenu->country_id = $countryId;
-                                $compliantMenu->year = $record->name;
-                                $compliantMenu->name = 'Finance';
-                                $compliantMenu->folder_type = 'Sub Folder';
-                                $compliantMenu->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Bank Statements';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Jan';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Jan';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Feb';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Feb';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Mar';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Mar';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Apr';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Apr';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'May';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'May';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'June';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'June';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'July';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'July';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Aug';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Aug';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Sep';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Sep';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Oct';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Oct';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Nov';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Nov';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Dec';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Dec';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Expenses';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Jan';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Jan';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Feb';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Feb';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Mar';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Mar';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Apr';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Apr';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'May';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'May';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'June';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'June';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'July';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'July';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Aug';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Aug';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Sep';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Sep';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Oct';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Oct';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Nov';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Nov';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Dec';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Dec';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Income';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Jan';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Jan';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Feb';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Feb';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Mar';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Mar';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Apr';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Apr';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'May';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'May';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'June';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'June';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'July';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'July';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Aug';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Aug';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Sep';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Sep';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Oct';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Oct';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Nov';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Nov';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Dec';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Dec';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Annual Return';
-                                $compliantSubMenu->is_expired = 1;
-                                $compliantSubMenu->expired_date = Carbon::now();
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'Annual Return';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = Carbon::now();
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Audited Financials';
-                                $compliantSubMenu->is_expired = 1;
-                                $compliantSubMenu->expired_date = Carbon::now();
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'Audited Financials';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = Carbon::now();
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Broker Qtr Submissions';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
+                            foreach ($newCountryIds as $countryId) {
+                                // Find or create the document
+                                $document = Document::updateOrCreate(
+                                    ['calendar_year_id' => $record->id, 'country_id' => $countryId],
+                                    ['name' => Country::find($countryId)->name]
+                                );
+
+                                // Update or create ComplianceMenu for "Agencies"
+                                ComplianceMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Agencies'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'folder_type' => 'Sub Folder',
+                                    ]
+                                );
+
+                                // Update or create ComplianceMenu for "Finance"
+                                ComplianceMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Finance'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'folder_type' => 'Sub Folder',
+                                    ]
+                                );
+
+                                // Update or create a ComplianceSubMenu under "Finance"
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Bank Statements'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Jan'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Jan'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Jan')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Feb'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Feb'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Feb')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Mar'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Mar'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Mar')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Apr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Apr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Apr')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'May'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'May'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'May')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'June'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'June'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'June')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'July'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'July'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'July')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Aug'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Aug'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Aug')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Sep'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Sep'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Sep')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Oct'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Oct'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Oct')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Nov'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Nov'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Nov')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Dec'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Dec'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Bank Statements')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Dec')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                // Update or create a ComplianceSubMenu under "Finance"
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Expenses'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Jan'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Jan'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Jan')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Feb'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Feb'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Feb')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Mar'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Mar'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Mar')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Apr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Apr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Apr')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'May'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'May'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'May')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'June'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'June'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'June')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'July'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'July'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'July')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Aug'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Aug'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Aug')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Sep'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Sep'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Sep')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Oct'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Oct'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Oct')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Nov'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Nov'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Nov')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Dec'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Dec'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Expenses')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Dec')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                // Update or create a ComplianceSubMenu under "Finance"
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Income'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Jan'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Jan'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Jan')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Feb'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Feb'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Feb')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Mar'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Mar'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Mar')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Apr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Apr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Apr')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'May'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'May'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'May')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'June'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'June'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'June')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'July'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'July'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'July')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Aug'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Aug'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Aug')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Sep'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Sep'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Sep')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Oct'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Oct'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Oct')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Nov'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Nov'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Nov')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Dec'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Dec'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Income')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Dec')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                // Update or create a ComplianceSubMenu under "Finance"
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Annual Return'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Annual Return'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Annual Return')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Audited Financials'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Audited Financials'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Audited Financials')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Broker Qtr Submissions'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
                                 $year = $record->name;
                                 $endOfMarchForYear = Carbon::create($year, 3)->endOfMonth();
@@ -1179,580 +1210,583 @@ class CalendarYearResource extends Resource
                                 $endOfSepForYear = Carbon::create($year, 9)->endOfMonth();
                                 $endOfDecForYear = Carbon::create($year, 12)->endOfMonth();
 
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = '1st Qtr';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = $endOfMarchForYear;
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => '1st Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfMarchForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => '1st Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', '1st Qtr')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfMarchForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = '1st Qtr';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = $endOfMarchForYear;
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => '2nd Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfJuneForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => '2nd Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', '2nd Qtr')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfJuneForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => '3rd Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfSepForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => '3rd Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', '3rd Qtr')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfSepForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = '2nd Qtr';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = $endOfJuneForYear;
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => '4th Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfDecForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => '4th Qtr'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Finance')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Broker Qtr Submissions')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', '4th Qtr')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => $endOfDecForYear,
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = '2nd Qtr';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = $endOfJuneForYear;
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
+                                ComplianceMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Client Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'folder_type' => 'Sub Folder',
+                                    ]
+                                );
 
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = '3rd Qtr';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = $endOfSepForYear;
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = '3rd Qtr';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = $endOfSepForYear;
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = '4th Qtr';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = $endOfDecForYear;
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = '4th Qtr';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = $endOfDecForYear;
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                // Client Documents
-                                $compliantMenu = new ComplianceMenu();
-                                $compliantMenu->calendar_year_id = $record->id;
-                                $compliantMenu->document_id = $document->id;
-                                $compliantMenu->country_id = $countryId;
-                                $compliantMenu->year = $record->name;
-                                $compliantMenu->name = 'Client Documents';
-                                $compliantMenu->folder_type = 'Sub Folder';
-                                $compliantMenu->save();
-
-                                // Company Registration
-                                $compliantMenu = new ComplianceMenu();
-                                $compliantMenu->calendar_year_id = $record->id;
-                                $compliantMenu->document_id = $document->id;
-                                $compliantMenu->country_id = $countryId;
-                                $compliantMenu->year = $record->name;
-                                $compliantMenu->name = 'Company Registration';
-                                $compliantMenu->folder_type = 'Sub Folder';
-                                $compliantMenu->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'SOP';
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
+                                ComplianceMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Company Registration'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'folder_type' => 'Sub Folder',
+                                    ]
+                                );
 
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'SOP';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'SOP'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'SOP'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'SOP')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Certificate of Corporation';
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Certificate of Corporation'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Certificate of Corporation'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Certificate of Corporation')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Shareholder Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Shareholder Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Shareholder Documents')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'Certificate of Corporation';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Director Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Director Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Director Documents')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Shareholder Documents';
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'PI/Fidelity/3rd Party Cover'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'PI Cover'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'PI/Fidelity/3rd Party Cover')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'PI Cover'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'PI/Fidelity/3rd Party Cover')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'PI Cover')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'Shareholder Documents';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Director Documents';
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'Director Documents';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'PI/Fidelity/3rd Party Cover';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'PI Cover';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = Carbon::now();
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'PI Cover';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = Carbon::now();
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Fidelity';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = Carbon::now();
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Fidelity';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = Carbon::now();
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'VAT Registration Documents';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'VAT';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'VAT';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Tax Registration Documents';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Tax';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
-
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Tax';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Public Officer Documents';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Bank Account';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
-
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Registration Documents';
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_expired = 1;
-                                $compliantSubMenu->expired_date = Carbon::now();
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Fidelity'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'PI/Fidelity/3rd Party Cover')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Fidelity'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'PI/Fidelity/3rd Party Cover')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Fidelity')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'Registration Documents';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_expired = 1;
-                                $complianceUploadDocument->expired_date = Carbon::now();
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'VAT Registration Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                // Employee Documents
-                                $compliantMenu = new ComplianceMenu();
-                                $compliantMenu->calendar_year_id = $record->id;
-                                $compliantMenu->document_id = $document->id;
-                                $compliantMenu->country_id = $countryId;
-                                $compliantMenu->year = $record->name;
-                                $compliantMenu->name = 'Employee Documents';
-                                $compliantMenu->folder_type = 'Sub Folder';
-                                $compliantMenu->save();
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'VAT'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'VAT Registration Documents')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'VAT'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'VAT Registration Documents')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'VAT')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                // Licence
-                                $compliantMenu = new ComplianceMenu();
-                                $compliantMenu->calendar_year_id = $record->id;
-                                $compliantMenu->document_id = $document->id;
-                                $compliantMenu->country_id = $countryId;
-                                $compliantMenu->year = $record->name;
-                                $compliantMenu->name = 'Licence';
-                                $compliantMenu->folder_type = 'Sub Folder';
-                                $compliantMenu->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Tax Registration Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Licence Registration Documents';
-                                $compliantSubMenu->folder_type = 'Upload';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Tax'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Tax Registration Documents')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Tax'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Tax Registration Documents')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Tax')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->name = 'Licence Registration Documents';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
 
-                                $compliantSubMenu = new ComplianceSubMenu();
-                                $compliantSubMenu->calendar_year_id = $record->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->year = $record->name;
-                                $compliantSubMenu->document_id = $document->id;
-                                $compliantSubMenu->country_id = $countryId;
-                                $compliantSubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliantSubMenu->sub_menu_name = 'Licence Certificate';
-                                $compliantSubMenu->folder_type = 'Sub Folder';
-                                $compliantSubMenu->is_uploaded = 0;
-                                $compliantSubMenu->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Public Officer Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Bank Account'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Proof of Payment';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = Carbon::now();
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Registration Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Registration Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Company Registration')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Registration Documents')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Proof of Payment';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = Carbon::now();
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
 
-                                $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
-                                $compliancePrimarySubMenu->country_id = $countryId;
-                                $compliancePrimarySubMenu->document_id = $document->id;
-                                $compliancePrimarySubMenu->compliance_menu_id = $compliantMenu->id;
-                                $compliancePrimarySubMenu->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $compliancePrimarySubMenu->calendar_year_id = $record->id;
-                                $compliancePrimarySubMenu->year = $record->name;
-                                $compliancePrimarySubMenu->primary_name = 'Certificate';
-                                $compliancePrimarySubMenu->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = Carbon::now();
-                                $compliancePrimarySubMenu->is_uploaded = 0;
-                                $compliancePrimarySubMenu->save();
+                                ComplianceMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Employee Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'folder_type' => 'Sub Folder',
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->compliance_sub_menu_id = $compliantSubMenu->id;
-                                $complianceUploadDocument->compliance_primary_sub_menu_id = $compliancePrimarySubMenu->id;
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Certificate';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $compliancePrimarySubMenu->is_expired = 1;
-                                $compliancePrimarySubMenu->expired_date = Carbon::now();
-                                $complianceUploadDocument->is_uploaded = 0;
-                                $complianceUploadDocument->save();
+                                ComplianceMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Licence'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'folder_type' => 'Sub Folder',
+                                    ]
+                                );
 
-                                // Internal Policies
-                                $compliantMenu = new ComplianceMenu();
-                                $compliantMenu->calendar_year_id = $record->id;
-                                $compliantMenu->document_id = $document->id;
-                                $compliantMenu->country_id = $countryId;
-                                $compliantMenu->year = $record->name;
-                                $compliantMenu->name = 'Internal Policies';
-                                $compliantMenu->folder_type = 'Upload';
-                                $compliantMenu->save();
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Licence Registration Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Licence')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Licence Registration Documents'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Licence')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Licence Registration Documents')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
 
-                                $complianceUploadDocument = new UploadDocument();
-                                $complianceUploadDocument->calendar_year_id = $record->id;
-                                $complianceUploadDocument->document_id = $document->id;
-                                $complianceUploadDocument->compliance_menu_id = $compliantMenu->id;
-                                $complianceUploadDocument->country_id = $countryId;
-                                $complianceUploadDocument->year = $record->name;
-                                $complianceUploadDocument->name = 'Internal Policies';
-                                $complianceUploadDocument->folder_type = 'Upload';
-                                $complianceUploadDocument->save();
+
+
+                                ComplianceSubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'sub_menu_name' => 'Licence Certificate'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Licence')->value('id'),
+                                        'folder_type' => 'Sub Folder',
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Proof of Payment'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Licence')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Licence Certificate')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Proof of Payment'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Licence')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Licence Certificate')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Proof of Payment')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+                                CompliancePrimarySubMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'primary_name' => 'Certificate'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Licence')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Licence Certificate')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Certificate'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Licence')->value('id'),
+                                        'compliance_sub_menu_id' => ComplianceSubMenu::where('document_id', $document->id)->where('sub_menu_name', 'Licence Certificate')->value('id'),
+                                        'compliance_primary_sub_menu_id' => CompliancePrimarySubMenu::where('document_id', $document->id)->where('primary_name', 'Certificate')->value('id'),
+                                        'folder_type' => 'Upload',
+                                        'is_expired' => 1,
+                                        'expired_date' => Carbon::now(),
+                                        'is_uploaded' => 0,
+                                    ]
+                                );
+
+
+                                ComplianceMenu::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Internal Policies'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'folder_type' => 'Upload',
+                                    ]
+                                );
+                                UploadDocument::updateOrCreate(
+                                    ['document_id' => $document->id, 'name' => 'Internal Policies'],
+                                    [
+                                        'calendar_year_id' => $record->id,
+                                        'country_id' => $countryId,
+                                        'year' => $record->name,
+                                        'compliance_menu_id' => ComplianceMenu::where('document_id', $document->id)->where('name', 'Internal Policies')->value('id'),
+                                        'folder_type' => 'Upload',
+                                    ]
+                                );
 
                             }
                         } catch (\Exception $e) {
@@ -1767,10 +1801,10 @@ class CalendarYearResource extends Resource
                             if ($document) {
 //                                dd($document);
 
-                                $complianceMenu = ComplianceMenu::where('document_id',$document->id)->delete();
-                                $complianceSubMenu = ComplianceSubMenu::where('document_id',$document->id)->delete();
-                                $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('document_id',$document->id)->delete();
-                                $complianceUploadDocument = UploadDocument::where('document_id',$document->id)->delete();
+                                $complianceMenu = ComplianceMenu::where('document_id', $document->id)->delete();
+                                $complianceSubMenu = ComplianceSubMenu::where('document_id', $document->id)->delete();
+                                $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('document_id', $document->id)->delete();
+                                $complianceUploadDocument = UploadDocument::where('document_id', $document->id)->delete();
                                 // Assuming you have cascading deletes set up in your database or you manually delete related records
                                 $document->delete();
                             }
