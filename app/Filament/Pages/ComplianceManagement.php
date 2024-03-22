@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Exports\ManagementExport;
 use App\Models\CalendarYear;
 use App\Models\ComplianceMenu;
 use App\Models\ComplianceSubMenu;
@@ -31,6 +32,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ComplianceManagement extends Page implements HasTable
@@ -51,6 +53,17 @@ class ComplianceManagement extends Page implements HasTable
         return auth()->user()->can('view Compliance Management');
     }
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Filament\Actions\Action::make('export')
+                ->label('Download')->color('success')
+                ->icon('heroicon-o-arrow-down-circle')
+                ->action(function () {
+                    return Excel::download(new ManagementExport($this->getFilteredTableQuery()->get()), 'Management.xlsx',);
+                }),
+        ];
+    }
 
     public function table(Table $table): Table
     {
@@ -158,17 +171,47 @@ class ComplianceManagement extends Page implements HasTable
                 ViewColumn::make('id')->label('Documents')->view('document.compliance-management'),
                 TextColumn::make('upload_comment')->label('Comment')
                     ->getStateUsing(function (UploadDocument $record) {
+                        if ($record->reject_comment == null || $record->reject_comment == '') {
                         return Str::limit($record->upload_comment, 20);
+                        }
+                        elseif ($record->reject_comment != null || $record->reject_comment != ''){
+                            return Str::limit($record->reject_comment, 20);
+                        }
+                        else{
+                            return '-';
+                        }
+
                     })
-                    ->tooltip(fn(UploadDocument $record): string|null => $record->upload_comment),
+                    ->tooltip(function (UploadDocument $record): ?string {
+                        if (!empty($record->reject_comment)) {
+                            // If there's a reject_comment, use it for the tooltip, and no need to limit since it's a tooltip
+                            return $record->reject_comment;
+                        } elseif (!empty($record->upload_comment)) {
+                            // Use the upload_comment for the tooltip if reject_comment is empty
+                            return $record->upload_comment;
+                        }
+                        // Return null or a default tooltip text if both comments are empty
+                        return null; // or use a string like 'No comments' if you prefer
+                    }),
+//                    ->tooltip(fn(UploadDocument $record): string|null => $record->upload_comment),
 //                    ->visible(function (UploadDocument $record) {
-//                        return empty($record->reject_comment);
+//                        if ($record->reject_comment == null || $record->reject_comment == '') {
+//                            return true;
+//                        }
+//                        return false;
 //                    }),
-                TextColumn::make('reject_comment')->label('Comment')
-                    ->getStateUsing(function (UploadDocument $record) {
-                        return Str::limit($record->reject_comment, 20);
-                    })
-                    ->tooltip(fn(UploadDocument $record): string|null => $record->reject_comment),
+//                TextColumn::make('reject_comment')->label('Reject Comment')
+//                    ->getStateUsing(function (UploadDocument $record) {
+//                        return Str::limit($record->reject_comment, 20);
+//                    })
+//                    ->tooltip(fn(UploadDocument $record): string|null => $record->reject_comment),
+//                    ->visible(function (UploadDocument $record) {
+//
+//                        if ($record->reject_comment != null || $record->reject_comment != ''){
+//                            return true;
+//                        }
+//                        return false;
+//                    }),
 
                 TextColumn::make('uploadBy.name')->label('Uploaded By')
                     ->visible(function () {
@@ -210,8 +253,8 @@ class ComplianceManagement extends Page implements HasTable
                     ->label('Country'),
                 SelectFilter::make('is_uploaded')->searchable()
                     ->options([
-                        '1' => 'Approve',
-                        '0' => 'Reject',
+                        '1' => 'Upload',
+                        '0' => 'Not Upload',
                     ])
                     ->placeholder('Select the Status')
                     ->label('Upload Status'),
