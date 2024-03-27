@@ -19,7 +19,7 @@
                 &nbsp  - &nbsp
             </li>
             <li>
-                <h1> <b> {{ $this->year->name }}</b></h1>
+                <h1> {{ $this->year->name }}</h1>
             </li>
         </ol>
     </nav>

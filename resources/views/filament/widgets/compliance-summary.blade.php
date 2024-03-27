@@ -325,7 +325,7 @@
                                 <td class="text-center">{{$compliance_event->status ?? ''}}</td>
                             </tr>
                         @elseif($compliance_event->status == 'Blue')
-                            <tr style="background-color: #a5a5ff;color:black;">
+                            <tr style="background-color: #1f9ab2;color:black;">
                                 <td class="text-center">{{$compliance_event->country->name ?? ''}}</td>
                                 <td class="text-center">{{$compliance_event->name ?? ''}}</td>
                                 <td class="text-center">{{$compliance_event->description ?? ''}}</td>
