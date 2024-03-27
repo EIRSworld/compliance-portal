@@ -469,6 +469,13 @@ class ComplianceManagement extends Page implements HasTable
                                 ->send();
                         }
                     })
+                    ->visible(function () {
+
+                        if (auth()->user()->can('delete Compliance Management')) {
+                            return true;
+                        }
+                        return false;
+                    }),
 //                 Action::make('approved_status')->button()->modalWidth('sm')
 //                     ->label('Change Status')->color('danger')
 //                     ->visible(function ($record) {
