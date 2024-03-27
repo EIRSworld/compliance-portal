@@ -4,7 +4,6 @@
 {{--    '/admin/compliance-list' => $this->compliance_menu->country->name,--}}
 {{--    '/admin/compliance-menu-list?country_id=' . $this->compliance_menu->country->id => $this->compliance_menu->name,--}}
 {{--]" />--}}
-
     <nav aria-label="Breadcrumb" class="flex" >
         <ol class="flex space-x-1 rtl:space-x-reverse">
             <li>
@@ -16,7 +15,12 @@
             <li>
                 <a href="/admin/compliance-menu-list?document_id={{$this->compliance_menu->document->id}}& calendar_year_id={{$this->calendar_year_id}}" style="color: #000000;">{{$this->compliance_menu->name}}</a>
             </li>
-
+            <li>
+                &nbsp  - &nbsp
+            </li>
+            <li>
+                <h1> <b> {{ $this->year->name }}</b></h1>
+            </li>
         </ol>
     </nav>
     {{ $this->table }}

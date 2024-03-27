@@ -17,6 +17,12 @@
             <li>
                 <a href="/admin/compliance-sub-menu-list?compliance_menu_id={{$this->compliance_sub_menu->compliance_menu_id}}& calendar_year_id={{$this->calendar_year_id}}" style="color: #000000;">{{$this->compliance_sub_menu->sub_menu_name}}</a>
             </li>
+            <li>
+                &nbsp  - &nbsp
+            </li>
+            <li>
+                <h1> <b> {{ $this->year->name }}</b></h1>
+            </li>
 
         </ol>
     </nav>

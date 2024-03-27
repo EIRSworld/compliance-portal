@@ -454,6 +454,21 @@ class ComplianceManagement extends Page implements HasTable
                         }
                         return false;
                     }),
+
+                Action::make('delete_uploaded_file')->button()->color('danger')
+                    ->label('Delete Uploaded File')
+                    ->icon('heroicon-o-trash')->button()
+                    ->requiresConfirmation()
+                    ->action(function ($record): void{
+                        $document = \Spatie\MediaLibrary\MediaCollections\Models\Media::whereModelId($record->id);
+                        if ($document) {
+                            $document->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully')
+                                ->success()
+                                ->send();
+                        }
+                    })
 //                 Action::make('approved_status')->button()->modalWidth('sm')
 //                     ->label('Change Status')->color('danger')
 //                     ->visible(function ($record) {

@@ -91,6 +91,18 @@ class UserResource extends Resource
                                 $query->get();
                             })
                         ->columnSpan(1),
+
+                    Forms\Components\Select::make('menu_access')->label('Access')
+                        ->searchable()->multiple()
+                        ->options([
+                            'Agencies' => 'Agencies',
+                            'Finance' => 'Finance',
+                            'Client Documents' => 'Client Documents',
+                            'Company Registration' => 'Company Registration',
+                            'Employee Documents' => 'Employee Documents',
+                            'Licence' => 'Licence',
+                            'Internal Policies' => 'Internal Policies',
+                        ]),
                     Forms\Components\Select::make('country_id')->label('Country')->multiple()
 
                         ->options(Country::pluck('name', 'id')->toArray())

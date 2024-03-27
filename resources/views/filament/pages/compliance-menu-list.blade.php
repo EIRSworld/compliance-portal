@@ -2,11 +2,10 @@
 {{--    <x-filament::breadcrumbs :breadcrumbs="[--}}
 {{--    '/admin/compliance-list' => $this->country->name,--}}
 {{--]"/>--}}
-
     <nav aria-label="Breadcrumb" class="flex" >
         <ol class="flex space-x-1 rtl:space-x-reverse">
                 <li>
-                    <a href="/admin/compliance-list" style="color: #000000;">{{$this->document->name}}</a>
+                    <a href="/admin/compliance-list" style="color: #000000;">{{$this->document->name}} - {{ $this->year->name }}</a>
                 </li>
 
         </ol>

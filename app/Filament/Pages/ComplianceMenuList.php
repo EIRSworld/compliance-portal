@@ -10,6 +10,7 @@ use App\Models\Country;
 use App\Models\Document;
 use App\Models\Lead;
 use App\Models\UploadDocument;
+use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\ComponentContainer;
@@ -56,7 +57,7 @@ class ComplianceMenuList extends Page implements HasTable
     protected static bool $shouldRegisterNavigation = false;
 
 
-    public $document_id, $document, $calendar_year_id, $year;
+    public $document_id, $document, $calendar_year_id, $year, $user_document;
 
 //    protected ?string $maxContentWidth = '7xl';
 
@@ -67,8 +68,6 @@ class ComplianceMenuList extends Page implements HasTable
         $this->document_id = $request->get('document_id');
 //        dd($this->calendar_year_id);
         $this->document = Document::find($this->document_id);
-
-
     }
 //    public function getBreadcrumbs(): array
 //    {
@@ -194,8 +193,9 @@ class ComplianceMenuList extends Page implements HasTable
 
     public function table(Table $table): Table
     {
+        $user = User::whereId(auth()->user()->id)->first();
         return $table
-            ->query(\App\Models\ComplianceMenu::query()->where('document_id', $this->document_id))
+            ->query(\App\Models\ComplianceMenu::query()->where('document_id', $this->document_id)->whereIn('name',$user->menu_access))
             ->columns([
                 TextColumn::make('name')->label('Name')
                     ->url(function (\App\Models\ComplianceMenu $record) {

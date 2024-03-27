@@ -28,6 +28,7 @@ class User extends Authenticatable implements FilamentUser
         'country_id',
         'finance_manager_id',
         'principal_manager_id',
+        'menu_access',
     ];
 
     /**
@@ -49,6 +50,7 @@ class User extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'country_id' => 'array',
+        'menu_access' => 'array',
     ];
 
     public function canAccessPanel(Panel $panel): bool
