@@ -65,6 +65,9 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Masters'),
             ])
+            ->sidebarCollapsibleOnDesktop()
+//            ->sidebarWidth('15%')
+//            ->buildNavigation()
             ->maxContentWidth('full');
 //            ->plugins([
 //            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());

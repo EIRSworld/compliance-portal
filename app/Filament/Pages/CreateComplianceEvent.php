@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -51,7 +52,7 @@ class CreateComplianceEvent extends Page implements HasForms
 //        return false;
 //    }
 
-    public $calendar_year_id, $country_id, $name, $description, $status, $status_text;
+    public $calendar_year_id, $country_id, $name, $description, $status, $status_text,$due_date;
 
     public function mount()
     {
@@ -86,8 +87,13 @@ class CreateComplianceEvent extends Page implements HasForms
                     ->options(Country::pluck('name', 'id')),
                 TextInput::make('name')
                     ->columnSpan(1)
-                    ->label('Name')
+                    ->label('Event Name')
                     ->required(),
+                DatePicker::make('due_date')
+                    ->label('Due Date')->displayFormat('d-m-Y')
+                    ->suffixIcon('heroicon-o-calendar')
+                    ->closeOnDateSelection()
+                    ->native(false),
                 Textarea::make('description')
                     ->columnSpan(1)
                     ->label('Description')
@@ -150,6 +156,7 @@ class CreateComplianceEvent extends Page implements HasForms
             $complianceEvent->name = $this->name;
             $complianceEvent->description = $this->description;
             $complianceEvent->status = $this->status;
+            $complianceEvent->due_date = $this->due_date;
             $complianceEvent->save();
 
             DB::commit();

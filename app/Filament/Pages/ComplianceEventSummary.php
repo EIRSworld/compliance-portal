@@ -124,6 +124,7 @@ class ComplianceEventSummary extends Page implements HasTable
                     }),
                 TextColumn::make('calendarYear.name')->label('Calendar Year'),
                 TextColumn::make('name')->label('Event Name'),
+                TextColumn::make('due_date')->label('Due Date')->date('d-m-Y'),
                 TextColumn::make('description')->label('Description')
                     ->wrap()
                     ->getStateUsing(function (ComplianceEvent $record) {

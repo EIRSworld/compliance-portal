@@ -1,5 +1,7 @@
 
-
+body {
+    zoom: 75%;
+}
 .custom-bg-red-event {
     background-color: #fcc4c4;
 }

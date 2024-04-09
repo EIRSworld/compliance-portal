@@ -44,7 +44,7 @@
         }
     </style>
     {{ $this->form }}
-    <div class="filament-tables-component" style="margin: 0; margin-top: 10px;">
+    <div class="filament-tables-component" style="margin: 0; margin-top: 40px;">
         <div class="border border-gray-300 shadow-sm bg-white rounded-xl filament-tables-container">
 
             <div class="overflow-y-auto relative rounded-t-xl">
@@ -276,7 +276,7 @@
     </div>
 
 
-    <div class="filament-tables-component" style="margin: 0; margin-top: 10px;">
+    <div class="filament-tables-component" style="margin: 0; margin-top: 50px;">
         <div class="border border-gray-300 shadow-sm bg-white rounded-xl filament-tables-container">
 
             <div class="overflow-y-auto relative rounded-t-xl">
