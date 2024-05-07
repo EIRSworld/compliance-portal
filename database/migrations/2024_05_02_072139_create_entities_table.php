@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('entities', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('entity_name')->nullable();
             $table->foreignId('country_id')->nullable();
-            $table->json('entity_id')->nullable();
-            $table->foreignId('calendar_year_id')->nullable();
             $table->boolean('status')->nullable()->default(1);
             $table->auditTrail();
         });
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('entities');
     }
 };

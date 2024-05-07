@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\CompliancePrimarySubMenu;
 use App\Models\ComplianceSubMenu;
 use Filament\Forms\ComponentContainer;
 use Filament\Notifications\Notification;
@@ -18,11 +19,12 @@ use Illuminate\Http\Request;
 class CompliantView extends Page implements HasTable
 {
     use InteractsWithTable;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.compliant-view';
     protected static bool $shouldRegisterNavigation = false;
-    public $compliant_sub_menu_id,$compliance_sub_menu,$calendar_year_id;
+    public $compliant_primary_sub_menu_id,$compliance_sub_menu,$calendar_year_id;
 
     public function getHeading(): string|Htmlable
     {
@@ -32,8 +34,8 @@ class CompliantView extends Page implements HasTable
     public function mount(Request $request)
     {
         $this->calendar_year_id = $request->get('calendar_year_id');
-        $this->compliant_sub_menu_id = $request->get('compliant_sub_menu_id');
-        $this->compliance_sub_menu = ComplianceSubMenu::find($this->compliant_sub_menu_id);
+        $this->compliant_primary_sub_menu_id = $request->get('compliant_primary_sub_menu_id');
+        $this->compliance_primary_sub_menu = CompliancePrimarySubMenu::find($this->compliant_primary_sub_menu_id);
     }
 //    public function getBreadcrumbs(): array
 //    {
@@ -42,7 +44,7 @@ class CompliantView extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(\App\Models\ComplianceSubMenu::query()->whereId($this->compliant_sub_menu_id))
+            ->query(\App\Models\CompliancePrimarySubMenu::query()->whereId($this->compliant_primary_sub_menu_id))
             ->columns([
                 ViewColumn::make('upload_file')->label('Upload Files')->view('upload_file'),
             ]);

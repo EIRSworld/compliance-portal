@@ -1,12 +1,12 @@
 <div class="p-2 " >
     <?php
     $policy = $getRecord();
-    $uploadDocument = \App\Models\UploadDocument::whereCompliancePrimarySubMenuId($policy->id)->first();
-    if($uploadDocument){
-        $documents = $uploadDocument->getMedia('upload_documents');
+    $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($policy->id);
+    if($compliancePrimarySubMenu){
+        $documents = $compliancePrimarySubMenu->getMedia('compliance_primary_attachments');
     }
     ?>
-    @if($uploadDocument)
+    @if($compliancePrimarySubMenu)
 
         @foreach($documents as $document)
             <a href="{{ $document->getUrl() ?? ''}}" target="_blank" style="float: left">

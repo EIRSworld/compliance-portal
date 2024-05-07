@@ -17,13 +17,14 @@ return new class extends Migration
             $table->foreignId('compliance_menu_id')->nullable();
             $table->foreignId('compliance_sub_menu_id')->nullable();
             $table->foreignId('country_id')->nullable();
+            $table->foreignId('entity_id')->nullable();
             $table->foreignId('calendar_year_id')->nullable();
+            $table->foreignId('assign_id')->nullable();
             $table->string('year')->nullable();
-            $table->string('primary_name')->nullable();
-            $table->date('renewed_date')->nullable();
-            $table->boolean('is_expired')->nullable()->default(0);
-            $table->date('expired_date')->nullable();
-            $table->string('folder_type')->nullable();
+            $table->string('occurrence')->nullable();
+            $table->string('event_name')->nullable();
+            $table->text('description')->nullable();
+            $table->date('due_date')->nullable();
             $table->boolean('is_uploaded')->nullable()->default(0);
             $table->foreignId('upload_by')->nullable();
             $table->date('upload_date')->nullable();
@@ -32,7 +33,8 @@ return new class extends Migration
             $table->foreignId('approve_by')->nullable();
             $table->date('approve_date')->nullable();
             $table->text('reject_comment')->nullable();
-            $table->boolean('status')->nullable()->default(1);
+            $table->string('status')->nullable();
+            $table->string('status_text')->nullable();
             $table->auditTrail();
         });
     }

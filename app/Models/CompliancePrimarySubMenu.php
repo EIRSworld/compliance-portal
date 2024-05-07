@@ -18,13 +18,14 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
         'compliance_menu_id',
         'compliance_sub_menu_id',
         'country_id',
+        'entity_id',
         'calendar_year_id',
+        'assign_id',
         'year',
-        'primary_name',
-        'renewed_date',
-        'is_expired',
-        'expired_date',
-        'folder_type',
+        'occurrence',
+        'event_name',
+        'description',
+        'due_date',
         'is_uploaded',
         'upload_by',
         'upload_date',
@@ -34,11 +35,16 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
         'approve_date',
         'reject_comment',
         'status',
+        'status_text',
     ];
 
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('compliance_primary_attachments');
+    }
+    public function entity(): BelongsTo
+    {
+        return $this->belongsTo(Entity::class, 'entity_id');
     }
     public function document(): BelongsTo
     {
@@ -68,5 +74,9 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
     public function uploadBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'upload_by');
+    }
+    public function approveBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approve_by');
     }
 }

@@ -50,6 +50,8 @@ class ComplianceEventSummary extends Page implements HasTable
 
     protected static ?int $navigationSort = 2;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function canAccess(): bool
     {
         return auth()->user()->can('view Compliance Event Summary');

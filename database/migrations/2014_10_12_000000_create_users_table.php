@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->json('country_id')->nullable();
-            $table->string('finance_manager_id')->nullable();
-            $table->string('principal_manager_id')->nullable();
+            $table->string('compliance_type')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -19,20 +19,9 @@ class ComplianceMenu extends Model implements HasMedia
     protected $fillable = [
         'document_id',
         'country_id',
+        'entity_id',
         'calendar_year_id',
         'year',
-        'name',
-        'folder_type',
-        'is_expired',
-        'expired_date',
-        'is_uploaded',
-        'upload_by',
-        'upload_date',
-        'upload_comment',
-        'approve_status',
-        'approve_by',
-        'approve_date',
-        'reject_comment',
         'status',
     ];
 
@@ -42,7 +31,10 @@ class ComplianceMenu extends Model implements HasMedia
 //        $this->addMediaCollection('compliance_documents');
 //    }
 
-
+    public function entity(): BelongsTo
+    {
+        return $this->belongsTo(Entity::class, 'entity_id');
+    }
     public function complianceSubMenus()
     {
         return $this->hasMany(ComplianceSubMenu::class, 'compliance_menu_id');

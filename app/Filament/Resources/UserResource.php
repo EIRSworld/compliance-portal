@@ -8,6 +8,7 @@ use App\Models\Country;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -91,18 +92,37 @@ class UserResource extends Resource
                                 $query->get();
                             })
                         ->columnSpan(1),
-
-                    Forms\Components\Select::make('menu_access')->label('Access')
-                        ->searchable()->multiple()
+                    Radio::make('compliance_type')->inline()->reactive()
                         ->options([
-                            'Agencies' => 'Agencies',
+                            'Operations' => 'Operations',
                             'Finance' => 'Finance',
-                            'Client Documents' => 'Client Documents',
-                            'Company Registration' => 'Company Registration',
-                            'Employee Documents' => 'Employee Documents',
-                            'Licence' => 'Licence',
-                            'Internal Policies' => 'Internal Policies',
-                        ]),
+                            'HR' => 'HR'
+                        ])
+                        ->visible(function (callable $get) {
+                            // Fetches the array of role IDs selected in the form
+                            $roleIds = $get('roles');
+
+                            // Check if any selected roles include 'Compliance Manager'
+                            if (!empty($roleIds)) {
+                                $roles = Role::whereIn('id', $roleIds)->pluck('name');
+                                return $roles->contains('Compliance Manager');
+                            }
+
+                            return false;
+                        })
+                        ->columnSpan(2),
+
+//                    Forms\Components\Select::make('menu_access')->label('Access')
+//                        ->searchable()->multiple()
+//                        ->options([
+//                            'Agencies' => 'Agencies',
+//                            'Finance' => 'Finance',
+//                            'Client Documents' => 'Client Documents',
+//                            'Company Registration' => 'Company Registration',
+//                            'Employee Documents' => 'Employee Documents',
+//                            'Licence' => 'Licence',
+//                            'Internal Policies' => 'Internal Policies',
+//                        ]),
                     Forms\Components\Select::make('country_id')->label('Country')->multiple()
 
                         ->options(Country::pluck('name', 'id')->toArray())

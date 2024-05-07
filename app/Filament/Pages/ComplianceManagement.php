@@ -5,19 +5,24 @@ namespace App\Filament\Pages;
 use App\Exports\ManagementExport;
 use App\Models\CalendarYear;
 use App\Models\ComplianceMenu;
+use App\Models\CompliancePrimarySubMenu;
 use App\Models\ComplianceSubMenu;
 use App\Models\Country;
+use App\Models\Entity;
 use App\Models\UploadDocument;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
@@ -25,6 +30,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -68,44 +74,44 @@ class ComplianceManagement extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
+//            ->query(function (Builder $query) {
+//
+//                $query = CompliancePrimarySubMenu::query();
+//
+//                return $query;
+//            })
             ->query(function () {
 
                 $user = auth()->user();
-//                $query = UploadDocument::where('is_expired', '=', 1);
-                $query = UploadDocument::query();
+                $query = CompliancePrimarySubMenu::query();
 
-                if ($user->hasAnyRole([
-                        'Country Head',
-                        'Cluster Head',
-                        'Compliance Finance Manager',
-                        'Compliance Principle Manager',
-                        'Compliance Finance Officer',
-                        'Compliance Principle Officer'
-                    ]) && !is_null($user->country_id)) {
-                    $countryId = $user->country_id;
-//                    dd($query->whereIn('country_id', $user->country_id)->get());
+                if ($user->hasRole('Compliance Manager')) {
+                    $userId = User::find($user->id);
+                    $complianceSubMenu = ComplianceSubMenu::where('sub_menu_name', $userId->compliance_type)->pluck('id');
 
-                    $query->whereIn('country_id', $user->country_id);
+                    return $query->whereIn('compliance_sub_menu_id', $complianceSubMenu);
+                }
+                if ($user->hasAnyRole(['Country Head', 'Cluster Head',])) {
+                    $userId = User::find($user->id);
+                    return $query->whereIn('country_id', $userId->country_id);
+                }
+                if ($user->hasRole('Compliance Officer')) {
+                    $userId = User::find($user->id);
+
+                    return $query->where('assign_id', $userId->id);
                 }
 
-
-                return $query->where('is_expired', '=', 1);
+                return $query;
             })
             ->columns([
 
                 TextColumn::make('country.name')->label('Country'),
-//                TextColumn::make('complianceSubMenu.sub_menu_name')->label('Name'),
-//                Tables\Columns\TextColumn::make('complianceMenu.name')->label('Folder Name'),
-                TextColumn::make('name')->label('Document Name'),
-//                    ->url(fn(\App\Models\ComplianceSubMenu $record): string => CompliantView::getUrl([
-//                        'compliant_sub_menu_id' => $record->id,
-//                        'calendar_year_id' => $record->calendar_year_id,
-//
-//                    ]))->openUrlInNewTab(),
-//                TextColumn::make('expired_date')->label('Expired Date')->date('d-m-Y'),
-                TextColumn::make('expired_date')->label('Due Date')
-                    ->formatStateUsing(function (UploadDocument $record) {
-                        $complianceExpiredDate = Carbon::parse($record->expired_date);
+                TextColumn::make('entity.entity_name')->label('Entity Name'),
+                TextColumn::make('complianceSubMenu.sub_menu_name')->label('Compliance Type'),
+                TextColumn::make('event_name')->label('Event Name'),
+                TextColumn::make('due_date')->label('Due Date')
+                    ->formatStateUsing(function (CompliancePrimarySubMenu $record) {
+                        $complianceExpiredDate = Carbon::parse($record->due_date);
                         $currentDate = Carbon::now();
                         if ($complianceExpiredDate > $currentDate) {
 
@@ -113,39 +119,17 @@ class ComplianceManagement extends Page implements HasTable
                         } else {
                             $daysDiff = '-' . $complianceExpiredDate->diffInDays($currentDate);
                         }
-//dd($daysDiff);
-//                    return $daysDiff . ' days';
-//
-//                }),
+
                         return $complianceExpiredDate->format('d-M-Y') . ' (' . $daysDiff . ' days)';
                     }),
-//                    ->extraAttributes(function (UploadDocument $record) {
-//                        $complianceExpiredDate = Carbon::parse($record->expired_date);
-//                        $currentDate = Carbon::now();
-////                        if ($complianceExpiredDate > $currentDate) {
-////                        dd($record->approve_status == 1 && $record->is_uploaded == 1);
-//                        if ($record->approve_status == 1 && $record->is_uploaded == 1) {
-//                            return [
-//                                'class' => 'custom-bg-green',
-//                            ];
-//                        } elseif ($record->is_uploaded == 1) {
-//                            return [
-//                                'class' => 'custom-bg-yellow',
-//                            ];
-//                        }
-//                        else {
-//                            return [
-//                                'class' => 'custom-bg-red',
-//                            ];
-//                        }
-//                    }),
+
                 IconColumn::make('is_uploaded')
                     ->label('Upload Status')
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->boolean(),
                 BadgeColumn::make('approve_status')->label('Approve Status')
-                    ->color(function (UploadDocument $record) {
+                    ->color(function (CompliancePrimarySubMenu $record) {
                         if ($record->approve_status == 1) {
                             return 'success';
 
@@ -154,7 +138,7 @@ class ComplianceManagement extends Page implements HasTable
                         }
                         return '';
                     })
-                    ->formatStateUsing(function (UploadDocument $record) {
+                    ->formatStateUsing(function (CompliancePrimarySubMenu $record) {
                         if ($record->approve_status == 1) {
                             return 'Approved';
 
@@ -163,54 +147,31 @@ class ComplianceManagement extends Page implements HasTable
                         }
                         return '';
                     }),
-//                IconColumn::make('approve_status')
-//                    ->label('Approve Status')
-//                    ->trueIcon('heroicon-o-check-circle')
-//                    ->falseIcon('heroicon-o-x-circle'),
 
-                ViewColumn::make('id')->label('Documents')->view('document.compliance-management'),
-                TextColumn::make('upload_comment')->label('Comment')
-                    ->getStateUsing(function (UploadDocument $record) {
-                        if ($record->reject_comment == null || $record->reject_comment == '') {
-                        return Str::limit($record->upload_comment, 20);
-                        }
-                        elseif ($record->reject_comment != null || $record->reject_comment != ''){
-                            return Str::limit($record->reject_comment, 20);
-                        }
-                        else{
-                            return '-';
-                        }
-
-                    })
-                    ->tooltip(function (UploadDocument $record): ?string {
-                        if (!empty($record->reject_comment)) {
-                            // If there's a reject_comment, use it for the tooltip, and no need to limit since it's a tooltip
-                            return $record->reject_comment;
-                        } elseif (!empty($record->upload_comment)) {
-                            // Use the upload_comment for the tooltip if reject_comment is empty
-                            return $record->upload_comment;
-                        }
-                        // Return null or a default tooltip text if both comments are empty
-                        return null; // or use a string like 'No comments' if you prefer
-                    }),
-//                    ->tooltip(fn(UploadDocument $record): string|null => $record->upload_comment),
-//                    ->visible(function (UploadDocument $record) {
+                ViewColumn::make('id')->label('Documents')->view('document.compliance-primary-sub-menu'),
+//                TextColumn::make('upload_comment')->label('Comment')
+//                    ->getStateUsing(function (CompliancePrimarySubMenu $record) {
 //                        if ($record->reject_comment == null || $record->reject_comment == '') {
-//                            return true;
+//                        return Str::limit($record->upload_comment, 20);
 //                        }
-//                        return false;
-//                    }),
-//                TextColumn::make('reject_comment')->label('Reject Comment')
-//                    ->getStateUsing(function (UploadDocument $record) {
-//                        return Str::limit($record->reject_comment, 20);
-//                    })
-//                    ->tooltip(fn(UploadDocument $record): string|null => $record->reject_comment),
-//                    ->visible(function (UploadDocument $record) {
+//                        elseif ($record->reject_comment != null || $record->reject_comment != ''){
+//                            return Str::limit($record->reject_comment, 20);
+//                        }
+//                        else{
+//                            return '-';
+//                        }
 //
-//                        if ($record->reject_comment != null || $record->reject_comment != ''){
-//                            return true;
+//                    })
+//                    ->tooltip(function (CompliancePrimarySubMenu $record): ?string {
+//                        if (!empty($record->reject_comment)) {
+//                            // If there's a reject_comment, use it for the tooltip, and no need to limit since it's a tooltip
+//                            return $record->reject_comment;
+//                        } elseif (!empty($record->upload_comment)) {
+//                            // Use the upload_comment for the tooltip if reject_comment is empty
+//                            return $record->upload_comment;
 //                        }
-//                        return false;
+//                        // Return null or a default tooltip text if both comments are empty
+//                        return null; // or use a string like 'No comments' if you prefer
 //                    }),
 
                 TextColumn::make('uploadBy.name')->label('Uploaded By')
@@ -241,16 +202,16 @@ class ComplianceManagement extends Page implements HasTable
                     ->label('Year'),
                 SelectFilter::make('country_id')->searchable()
                     ->options(function () {
-//                        $role = auth()->user()->roles()->pluck('name')[0];
-//                        if ($role === 'country_head'){
-//                            $userCountry = User::whereId(auth()->id())->value('country_id');
-////                            dd($userCountry);
-//                            return Country::whereIn('id',$userCountry)->pluck('name', 'id')->toArray();
-//                        }
                         return Country::pluck('name', 'id')->toArray();
                     })
                     ->placeholder('Select the Country')
                     ->label('Country'),
+                SelectFilter::make('entity_id')->searchable()
+                    ->options(function () {
+                        return Entity::pluck('entity_name', 'id')->toArray();
+                    })
+                    ->placeholder('Select the Entity')
+                    ->label('Entity Name'),
                 SelectFilter::make('is_uploaded')->searchable()
                     ->options([
                         '1' => 'Upload',
@@ -271,88 +232,52 @@ class ComplianceManagement extends Page implements HasTable
                 Action::make('upload_file')->color('success')
                     ->icon('heroicon-o-clipboard-document')->button()
                     ->label('Upload File')
-//                    ->mountUsing(function (ComponentContainer $form) {
-//                        $form->fill([
-//                            'media' => $form->getRecord()->getMedia('compliant_attachments'),
-//                        ]);
-//                    })
+                    ->mountUsing(function (ComponentContainer $form) {
+                        $form->fill([
+                            'media' => $form->getRecord()->getMedia('compliance_primary_attachments'),
+                        ]);
+                    })
                     ->form([
                         Card::make()
                             ->schema([
-                                FileUpload::make('document')
+                                SpatieMediaLibraryFileUpload::make('media')
                                     ->label('Upload File')
                                     ->model()
-//                                    ->collection('compliant_attachments')
+                                    ->collection('compliance_primary_attachments')
                                     ->preserveFilenames()
                                     ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
-                                        return (string)str($file->getClientOriginalName())->prepend('compliant_attachments-');
+                                        return (string)str($file->getClientOriginalName())->prepend('compliance_primary_attachments-');
                                     })
+//                                        ->acceptedFileTypes(['application/pdf'])
                                     ->appendFiles()
-                                    ->required()
                                     ->downloadable()
                                     ->openable()
                                     ->multiple(),
-
-
                                 Textarea::make('upload_comment')->rows(2)
                                     ->label('Comment'),
                             ])
                     ])
                     ->action(function (array $data, $record, $form): void {
 
-//                        dd($record);
-                        $complianceUploadDocument = UploadDocument::find($record->id);
+                        $mediaFile = Media::whereModelType('App\Models\CompliancePrimarySubMenu')->whereModelId($record->id)->whereCollectionName('compliance_primary_attachments')->get();
 
-                        foreach ($data['document'] as $document) {
-                            $complianceUploadDocument->addMedia(storage_path('app/public/' . $document))->toMediaCollection('upload_documents');
-                        }
-                        if (($record->compliance_primary_sub_menu_id === null || $record->compliance_primary_sub_menu_id === '') && ($record->compliance_sub_menu_id === null || $record->compliance_sub_menu_id === '')) {
-
-                            $complianceMenu = \App\Models\ComplianceMenu::find($record->compliance_menu_id);
-                            $complianceMenu->upload_comment = $data['upload_comment'];
-                            $complianceMenu->is_uploaded = 1;
-                            $complianceMenu->upload_by = auth()->id();
-                            $complianceMenu->upload_date = Carbon::now();
-                            $complianceMenu->save();
-                        } elseif (($record->compliance_primary_sub_menu_id === null || $record->compliance_primary_sub_menu_id === '')) {
-
-                            $complianceSubMenu = \App\Models\ComplianceSubMenu::find($record->compliance_sub_menu_id);
-                            $complianceSubMenu->upload_comment = $data['upload_comment'];
-                            $complianceSubMenu->is_uploaded = 1;
-                            $complianceSubMenu->upload_by = auth()->id();
-                            $complianceSubMenu->upload_date = Carbon::now();
-                            $complianceSubMenu->save();
-                        } else {
-
-                            $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($record->compliance_primary_sub_menu_id);
+                        if ($mediaFile) {
+                            $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($record->id);
                             $compliancePrimarySubMenu->upload_comment = $data['upload_comment'];
                             $compliancePrimarySubMenu->is_uploaded = 1;
-                            $compliancePrimarySubMenu->upload_by = auth()->id();
-                            $compliancePrimarySubMenu->upload_date = Carbon::now();
+                            $compliancePrimarySubMenu->upload_by = auth()->user()->id;
+                            $compliancePrimarySubMenu->upload_date = Carbon::now()->format('Y-m-d');
                             $compliancePrimarySubMenu->save();
+                            Notification::make()
+                                ->title('File Update Successfully')
+                                ->success()
+                                ->send();
                         }
 
-                        $complianceUploadDocument = \App\Models\UploadDocument::find($record->id);
-                        $complianceUploadDocument->upload_comment = $data['upload_comment'];
-                        $complianceUploadDocument->is_uploaded = 1;
-                        $complianceUploadDocument->upload_by = auth()->id();
-                        $complianceUploadDocument->upload_date = Carbon::now();
-                        $complianceUploadDocument->save();
-                        Notification::make()
-                            ->title('File Update Successfully')
-                            ->success()
-                            ->send();
 
-
-                    })
-                    ->visible(function () {
-
-                        if (auth()->user()->can('upload Compliance Management')) {
-                            return true;
-                        }
-                        return false;
                     })
                     ->modalWidth('md'),
+
                 Action::make('approve_status')->button()->modalWidth('sm')
                     ->label('Change Status')
                     ->disabled(function ($record) {
@@ -374,35 +299,47 @@ class ComplianceManagement extends Page implements HasTable
                                     ->options([
                                         '1' => 'Approve',
                                         '2' => 'Reject',
-                                    ]),
+                                    ])->required(),
 
 
                                 Textarea::make('reject_comment')->rows(2)->reactive()
-                                    ->label('Reason')
-//                                    ->visible(function (callable $get) {
-//                                        $approveStatus = $get('approve_status');
-//                                        if ($approveStatus === '2') {
+                                    ->label('Reason'),
+                                Select::make('status')->required()
+                                    ->options([
+                                        'Green' => 'Green',
+                                        'Blue' => 'Blue',
+                                    ])
+//                                    ->required(function (callable $get) {
+//                                        if($get('approve_status') === '1'){
 //                                            return true;
 //                                        }
 //                                        return false;
 //                                    })
+                                    ->visible(function (callable $get) {
+                                        if ($get('approve_status') === '1') {
+                                            return true;
+                                        }
+                                        return false;
+                                    })
+                                    ->searchable()->reactive(),
                             ])
                     ])
                     ->action(function (array $data, $record): void {
 
-                        $complianceUploadDocument = \App\Models\UploadDocument::find($record->id);
-                        $complianceUploadDocument->approve_status = $data['approve_status'];
-                        $complianceUploadDocument->approve_by = auth()->id();
-                        $complianceUploadDocument->approve_date = Carbon::now();
-                        $complianceUploadDocument->reject_comment = $data['reject_comment'];
-                        $complianceUploadDocument->save();
+                        $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($record->id);
+                        $compliancePrimarySubMenu->approve_status = $data['approve_status'];
+                        $compliancePrimarySubMenu->status = $data['status'] ?? $record->status;
+                        $compliancePrimarySubMenu->approve_by = auth()->id();
+                        $compliancePrimarySubMenu->approve_date = Carbon::now();
+                        $compliancePrimarySubMenu->reject_comment = $data['reject_comment'];
+                        $compliancePrimarySubMenu->save();
 
                         $user = User::find($record->upload_by);
                         $da = [
                             'subject' => 'Reminder Email',
                             'name' => $user->name,
                             'email' => $user->email,
-                            'complianceUploadDocument' => $complianceUploadDocument,
+                            'complianceUploadDocument' => $compliancePrimarySubMenu,
                         ];
                         Mail::send('mail.management-status', $da, function ($message) use ($da, $user) {
                             $message->to($user->email, config('app.name'));
@@ -412,34 +349,6 @@ class ComplianceManagement extends Page implements HasTable
                             ->success()
                             ->send();
 
-
-                        if (($record->compliance_primary_sub_menu_id === null || $record->compliance_primary_sub_menu_id === '') && ($record->compliance_sub_menu_id === null || $record->compliance_sub_menu_id === '')) {
-                            $complianceMenu = \App\Models\ComplianceMenu::find($record->compliance_menu_id);
-
-                            $complianceMenu->approve_status = $data['approve_status'];
-                            $complianceMenu->approve_by = auth()->id();
-                            $complianceMenu->approve_date = Carbon::now();
-                            $complianceMenu->reject_comment = $data['reject_comment'];
-
-                            $complianceMenu->save();
-                        } elseif (($record->compliance_primary_sub_menu_id === null || $record->compliance_primary_sub_menu_id === '')) {
-                            $complianceSubMenu = \App\Models\ComplianceSubMenu::find($record->compliance_sub_menu_id);
-
-                            $complianceSubMenu->approve_status = $data['approve_status'];
-                            $complianceSubMenu->approve_by = auth()->id();
-                            $complianceSubMenu->approve_date = Carbon::now();
-                            $complianceSubMenu->reject_comment = $data['reject_comment'];
-
-                            $complianceSubMenu->save();
-                        } else {
-                            $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($record->compliance_primary_sub_menu_id);
-                            $compliancePrimarySubMenu->approve_status = $data['approve_status'];
-                            $compliancePrimarySubMenu->approve_by = auth()->id();
-                            $compliancePrimarySubMenu->approve_date = Carbon::now();
-                            $compliancePrimarySubMenu->reject_comment = $data['reject_comment'];
-
-                            $compliancePrimarySubMenu->save();
-                        }
 
                         Notification::make()
                             ->title('Successfully Updated')
@@ -455,38 +364,29 @@ class ComplianceManagement extends Page implements HasTable
                         return false;
                     }),
 
-                Action::make('delete_uploaded_file')->button()->color('danger')
-                    ->label('Delete Uploaded File')
-                    ->icon('heroicon-o-trash')->button()
-                    ->requiresConfirmation()
-                    ->action(function ($record): void{
-                        $document = \Spatie\MediaLibrary\MediaCollections\Models\Media::whereModelId($record->id);
-                        if ($document) {
-                            $document->delete();
-                            Notification::make()
-                                ->title('Deleted Successfully')
-                                ->success()
-                                ->send();
-                        }
-                    })
-                    ->visible(function () {
+//                Action::make('delete_uploaded_file')->button()->color('danger')
+//                    ->label('Delete Uploaded File')
+//                    ->icon('heroicon-o-trash')->button()
+//                    ->requiresConfirmation()
+//                    ->action(function ($record): void{
+//                        $document = \Spatie\MediaLibrary\MediaCollections\Models\Media::whereModelId($record->id);
+//                        if ($document) {
+//                            $document->delete();
+//                            Notification::make()
+//                                ->title('Deleted Successfully')
+//                                ->success()
+//                                ->send();
+//                        }
+//                    })
+//                    ->visible(function () {
+//
+//                        if (auth()->user()->can('delete Compliance Management')) {
+//                            return true;
+//                        }
+//                        return false;
+//                    }),
 
-                        if (auth()->user()->can('delete Compliance Management')) {
-                            return true;
-                        }
-                        return false;
-                    }),
-//                 Action::make('approved_status')->button()->modalWidth('sm')
-//                     ->label('Change Status')->color('danger')
-//                     ->visible(function ($record) {
-//                         if (auth()->user()->hasRole('Super Admin')) {
-//                             if ($record->is_uploaded === 0){
-//                             return true;
-//                             }
-//                         }
-//                         return false;
-//                     })
 
-            ]);
+            ], position: ActionsPosition::BeforeColumns);
     }
 }

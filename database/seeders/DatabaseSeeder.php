@@ -154,14 +154,6 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Management',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Business Head',
-                'guard_name' => 'web',
-            ],
-            [
                 'name' => 'Cluster Head',
                 'guard_name' => 'web',
             ],
@@ -170,23 +162,11 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Compliance Head',
+                'name' => 'Compliance Manager',
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Compliance Finance Manager',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Compliance Principle Manager',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Compliance Finance Officer',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Compliance Principle Officer',
+                'name' => 'Compliance Officer',
                 'guard_name' => 'web',
             ],
         ];
@@ -257,6 +237,22 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
+                'name' => 'view Entity',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'create Entity',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'update Entity',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'delete Entity',
+                'guard_name' => 'web',
+            ],
+            [
                 'name' => 'view Year',
                 'guard_name' => 'web',
             ],
@@ -304,6 +300,22 @@ class DatabaseSeeder extends Seeder
                 'name' => 'change Status Compliance Management',
                 'guard_name' => 'web',
             ],
+            [
+                'name' => 'view Compliance Email',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'edit Compliance Email',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'delete Compliance Email',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'delete Compliance Management',
+                'guard_name' => 'web',
+            ],
 
         ];
 
@@ -322,8 +334,6 @@ class DatabaseSeeder extends Seeder
         $user = User::find(1);
         $user->assignRole('Super Admin');
         $user = User::find(2);
-        $user->assignRole('Compliance Head');
-        $user = User::find(2);
-        $user->assignRole('Compliance Finance Manager');
+        $user->assignRole('Compliance Manager');
     }
 }

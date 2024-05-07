@@ -13,7 +13,7 @@
                 &nbsp  > &nbsp
             </li>
             <li>
-                <a href="/admin/compliance-menu-list?document_id={{$this->compliance_menu->document->id}}& calendar_year_id={{$this->calendar_year_id}}" style="color: #000000;">{{$this->compliance_menu->name}}</a>
+                <a href="/admin/compliance-menu-list?document_id={{$this->compliance_menu->document->id}}& calendar_year_id={{$this->calendar_year_id}}" style="color: #000000;">{{$this->compliance_menu->entity->entity_name}}</a>
             </li>
             <li>
                 &nbsp  - &nbsp
