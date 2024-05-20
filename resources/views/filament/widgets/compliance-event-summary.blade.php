@@ -80,6 +80,7 @@
                                 <td class="text-center">{{$compliance_event->description ?? ''}}</td>
                                 <td class="text-center">{{$compliance_event->status ?? ''}}</td>
                             </tr>
+
                         @elseif($compliance_event->status == 'Amber')
                             <tr style="background-color: #efefaa;color:black;">
                             <td class="text-center">{{$compliance_event->country->name ?? ''}}</td>

@@ -1,4 +1,7 @@
-
+body {
+    /*zoom: 75%;*/
+    /*Not working*/
+}
 
 .custom-bg-red-event {
     background-color: #fcc4c4;

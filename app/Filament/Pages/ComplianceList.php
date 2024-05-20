@@ -74,8 +74,17 @@ class ComplianceList extends Page implements HasTable
                     })
 
                     ->default(function(){
-                        $currentYear = Carbon::now()->year;
-                        return CalendarYear::where('name', $currentYear)->value('id');
+                        $now = Carbon::now();
+                        $currentYear = $now->year;
+                        if ($now->format('Y-m-d') <= $currentYear . "-03-31") {
+                            $previousYear = $currentYear - 1;
+                            $financeYear = $previousYear . '-' . $currentYear;
+                        } else {
+                            $nextYear = $currentYear + 1;
+                            $financeYear = $currentYear . '-' . $nextYear;
+                        }
+
+                        return CalendarYear::where('name', $financeYear)->value('id');
                     })
                     ->placeholder('Select the Year')
                     ->label('Year'),

@@ -103,11 +103,8 @@ class ComplianceMenuList extends Page implements HasTable
                     ->button()
                     ->requiresConfirmation()
                     ->action(function (array $data, $record, $form): void {
-//                        $document = Document::whereJsonContains('entity_id',$record->id)->first();
-//                       if ($document && count($document->entity_id) > 1){
-//                          $entity = $document->entity_id;
-//                          $newEntity =
-//                       }
+                        $complianceSubMenu = ComplianceSubMenu::where('compliance_menu_id',$record->id)->delete();
+                        $compliancePrimarySubMenu = CompliancePrimarySubMenu::where('compliance_menu_id', $record->id)->delete();
                         $complianceMenu = ComplianceMenu::find($record->id)->delete();
                         Notification::make()
                             ->title('Deleted Successfully')
@@ -118,7 +115,7 @@ class ComplianceMenuList extends Page implements HasTable
 
                     })
                     ->visible(function () {
-                        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
+                        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Manager')) {
 
                             return true;
                         }
@@ -193,7 +190,7 @@ class ComplianceMenuList extends Page implements HasTable
 
                     })
                     ->visible(function (ComplianceMenu $record) {
-
+return false;
 
                         if ($record->folder_type === 'Upload') {
                             return true;

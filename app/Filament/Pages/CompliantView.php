@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\CalendarYear;
 use App\Models\CompliancePrimarySubMenu;
 use App\Models\ComplianceSubMenu;
 use Filament\Forms\ComponentContainer;
@@ -24,17 +25,19 @@ class CompliantView extends Page implements HasTable
 
     protected static string $view = 'filament.pages.compliant-view';
     protected static bool $shouldRegisterNavigation = false;
-    public $compliant_primary_sub_menu_id,$compliance_sub_menu,$calendar_year_id;
+    public $compliant_primary_sub_menu_id,$compliance_sub_menu,$calendar_year_id,$year;
 
     public function getHeading(): string|Htmlable
     {
-        return $this->compliance_sub_menu->name . ' view';
+        return $this->compliance_primary_sub_menu->event_name . ' view';
     }
 
     public function mount(Request $request)
     {
         $this->calendar_year_id = $request->get('calendar_year_id');
+        $this->year = CalendarYear::find($this->calendar_year_id);
         $this->compliant_primary_sub_menu_id = $request->get('compliant_primary_sub_menu_id');
+//        dd($this->compliant_primary_sub_menu_id);
         $this->compliance_primary_sub_menu = CompliancePrimarySubMenu::find($this->compliant_primary_sub_menu_id);
     }
 //    public function getBreadcrumbs(): array

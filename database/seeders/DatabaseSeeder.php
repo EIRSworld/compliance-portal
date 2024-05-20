@@ -133,9 +133,19 @@ class DatabaseSeeder extends Seeder
         ]);
         CalendarYear::insert([
             [
-                'name' => '2024',
+                'name' => '2023-2024',
+                'start_date' => '2023-04-01',
+                'end_date' => '2024-03-31',
                 'country_id' => '["1","2","3"]',
                 'status' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], [
+                'name' => '2024-2025',
+                'start_date' => '2024-04-01',
+                'end_date' => '2025-03-31',
+                'country_id' => '["1","2","3"]',
+                'status' => '2',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -277,45 +287,33 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'view Compliance Event Summary',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'edit Compliance Event Summary',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'delete Compliance Event Summary',
-                'guard_name' => 'web',
-            ],
-            [
                 'name' => 'view Compliance Management',
                 'guard_name' => 'web',
             ],
-            [
-                'name' => 'upload Compliance Management',
-                'guard_name' => 'web',
-            ],
+//            [
+//                'name' => 'upload Compliance Management',
+//                'guard_name' => 'web',
+//            ],
             [
                 'name' => 'change Status Compliance Management',
                 'guard_name' => 'web',
             ],
-            [
-                'name' => 'view Compliance Email',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'edit Compliance Email',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'delete Compliance Email',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'delete Compliance Management',
-                'guard_name' => 'web',
-            ],
+//            [
+//                'name' => 'view Compliance Email',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'edit Compliance Email',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'delete Compliance Email',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'delete Compliance Management',
+//                'guard_name' => 'web',
+//            ],
 
         ];
 

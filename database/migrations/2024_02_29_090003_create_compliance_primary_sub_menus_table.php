@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('event_name')->nullable();
             $table->text('description')->nullable();
             $table->date('due_date')->nullable();
+            $table->string('event_type')->nullable();
+            $table->string('subject')->nullable();
             $table->boolean('is_uploaded')->nullable()->default(0);
             $table->foreignId('upload_by')->nullable();
             $table->date('upload_date')->nullable();

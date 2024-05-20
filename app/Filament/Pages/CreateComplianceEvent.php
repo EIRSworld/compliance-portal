@@ -23,6 +23,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
@@ -40,9 +41,9 @@ class CreateComplianceEvent extends Page implements HasForms
 
     protected static string $view = 'filament.pages.create-compliance-event';
 
-    protected static ?string $navigationLabel = 'Create Compliance Event';
+    protected static ?string $navigationLabel = 'Create Event';
 
-    protected static ?string $title = 'Create Compliance Event';
+    protected static ?string $title = 'Create Event';
 
     public $event_details = [];
 
@@ -61,7 +62,7 @@ class CreateComplianceEvent extends Page implements HasForms
 //        return false;
 //    }
 
-    public $calendar_year_id, $country_id, $event_name, $description, $status, $status_text, $due_date, $entity_id, $type, $occurrence, $assign_id, $compliance_sub_menu_id;
+    public $calendar_year_id, $country_id, $event_name, $status, $status_text, $due_date, $entity_id, $type, $occurrence, $assign_id, $compliance_sub_menu_id, $event_type, $statusColor;
 
     public function mount()
     {
@@ -77,42 +78,36 @@ class CreateComplianceEvent extends Page implements HasForms
     public function updated($value)
     {
         if ($value === 'occurrence') {
-            if ($this->occurrence == 'Monthly'){
+            if ($this->occurrence == 'Monthly') {
                 $this->event_details = [];
                 for ($i = 1; $i <= 12; $i++) {
                     $this->event_details[] =
                         [
                             'due_date' => '',
-                            'event_name' => '',
-                            'description' => '',
                             'assign_id' => null,
-                            'status' => '',
+                            'status' => 'Amber',
                         ];
                 }
             }
-            if ($this->occurrence == 'Yearly'){
+            if ($this->occurrence == 'Yearly') {
                 $this->event_details = [];
                 for ($i = 1; $i <= 1; $i++) {
                     $this->event_details[] =
                         [
                             'due_date' => '',
-                            'event_name' => '',
-                            'description' => '',
                             'assign_id' => null,
-                            'status' => '',
+                            'status' => 'Amber',
                         ];
                 }
             }
-            if ($this->occurrence == 'Qtr'){
+            if ($this->occurrence == 'Qtr') {
                 $this->event_details = [];
                 for ($i = 1; $i <= 4; $i++) {
                     $this->event_details[] =
                         [
                             'due_date' => '',
-                            'event_name' => '',
-                            'description' => '',
                             'assign_id' => null,
-                            'status' => '',
+                            'status' => 'Amber',
                         ];
                 }
             }
@@ -127,15 +122,23 @@ class CreateComplianceEvent extends Page implements HasForms
     protected function getFormSchema(): array
     {
         return [
+//            Card::make([
 
             Card::make([
-                Select::make('calendar_year_id')
-                    ->label('Calendar Year')->searchable()->preload()
-                    ->options(CalendarYear::pluck('name', 'id')),
-                Select::make('country_id')
+                Select::make('calendar_year_id')->reactive()
+                    ->label('Financial Year')->searchable()->preload()
+                    ->options(CalendarYear::pluck('name', 'id'))->columnSpan(3),
+                Select::make('country_id')->columnSpan(3)
                     ->label('Country')->searchable()->preload()->reactive()
-                    ->options(Country::pluck('name', 'id')),
-                Select::make('entity_id')
+                    ->options(function (Get $get) {
+                        if ($get('calendar_year_id')) {
+                            $countryId = CalendarYear::where('id', $get('calendar_year_id'))->pluck('country_id')->flatten()->toArray();
+                            return Country::whereIn('id', $countryId)->pluck('name', 'id');
+                        } else {
+                            return [];
+                        }
+                    }),
+                Select::make('entity_id')->columnSpan(3)
                     ->label('Entity Name')->searchable()->preload()->reactive()
                     ->options(function (Get $get) {
                         if ($get('country_id')) {
@@ -144,70 +147,146 @@ class CreateComplianceEvent extends Page implements HasForms
                             return [];
                         }
                     }),
-                Select::make('compliance_sub_menu_id')
+                Select::make('compliance_sub_menu_id')->columnSpan(3)
                     ->label('Compliance Type')->searchable()->reactive()
                     ->options(function (callable $get) {
 //                        dd($get('entity_id'));
-                        if ($get('entity_id') && $get('country_id')) {
 
-                            return ComplianceSubMenu::where('calendar_year_id',$this->calendar_year_id)->where('entity_id', $get('entity_id'))->pluck('sub_menu_name', 'id');
+                        if ($get('entity_id') && $get('country_id')) {
+                            if (auth()->user()->hasRole('Super Admin')) {
+
+                                return ComplianceSubMenu::where('calendar_year_id', $this->calendar_year_id)->where('entity_id', $get('entity_id'))->pluck('sub_menu_name', 'id');
+                            } elseif (auth()->user()->hasRole('Compliance Manager')) {
+                                $user = User::whereId(auth()->user()->id)->first();
+                                return ComplianceSubMenu::where('calendar_year_id', $this->calendar_year_id)->where('entity_id', $get('entity_id'))->where('sub_menu_name','=',$user->compliance_type )->pluck('sub_menu_name', 'id');
+                            }
                         } else {
                             return [];
                         }
                     }),
+                TextInput::make('event_name')->columnSpan(3)
+                    ->label('Event Name')
+                    ->required(),
+                Radio::make('event_type')->inline()->reactive()
+                    ->options([
+                        'Regular' => 'Regular',
+                        'Add-Hoc' => 'Add-Hoc',
+                    ])->columnSpan(3),
+//                    Textarea::make('description')
+//                        ->columnSpan(3)
+//                        ->rows(2)
+//                        ->label('Description')
+//                        ->required(),
+
                 Radio::make('occurrence')->inline()->reactive()
                     ->options([
                         'Monthly' => 'Monthly',
                         'Yearly' => 'Yearly',
                         'Qtr' => 'Qtr'
-                    ])->columnSpan(2),
+                    ])->columnSpan(3),
 
+            ])->columns(12)->columnSpan(12),
 
+            Card::make([
                 TableRepeater::make('event_details')->schema([
-                DatePicker::make('due_date')
-                    ->label('Due Date')->displayFormat('d-m-Y')
-                    ->suffixIcon('heroicon-o-calendar')
-                    ->closeOnDateSelection()
-                    ->native(false),
-                TextInput::make('event_name')
-                    ->columnSpan(1)
-                    ->label('Event Name')
-                    ->required(),
-                Textarea::make('description')
-                    ->columnSpan(1)
-                    ->rows(1)
-                    ->label('Description')
-                    ->required(),
-                Select::make('assign_id')
-                    ->label('Assign to')->searchable()->preload()->reactive()
-                    ->options(function (Get $get) {
-                        if ($get('../../country_id')) {
-                            return User::whereJsonContains('country_id', $get('../../country_id'))->role(['Compliance Officer', 'Cluster Head', 'Country Head'])->pluck('name', 'id');
-                        } else {
+                    DatePicker::make('due_date')->reactive()
+                        ->label('Due Date')->displayFormat('d-m-Y')
+                        ->suffixIcon('heroicon-o-calendar')
+                        ->closeOnDateSelection()->columnSpan(2)
+                        ->afterStateUpdated(function (Get $get, Set $set){
+                            if($get('due_date') <= Carbon::now()){
+                                $set('status','Red');
+                            }
+                            else{
+                                $set('status','Amber');
+                            }
+                        })
+                        ->native(false)
+                        ->extraAttributes(function (Get $get) {
+                            if ($get('status') == EventStatus::Red) {
+                                return ['style' => 'background:#fcc4c4;width:500px'];
+                            } elseif ($get('status') == EventStatus::Amber) {
+                                return ['style' => 'background:#ffeec7;width:500px'];
+                            }
                             return [];
-                        }
-                    }),
+                        }),
 
-                Select::make('status')
-                    ->options([
-                             'Red' => 'Red',
-                             'Amber' => 'Amber',
-                         ])
-                    ->searchable()->reactive(),
+                    Select::make('assign_id')
+                        ->label('Assign to')->searchable()->preload()->reactive()
+                        ->options(function (Get $get) {
+                            if ($get('../../country_id')) {
+                                return User::whereJsonContains('country_id', $get('../../country_id'))->role(['Compliance Officer', 'Cluster Head', 'Country Head'])->pluck('name', 'id');
+                            } else {
+                                return [];
+                            }
+                        })->placeholder('Select')->columnSpan(2)
+                        ->extraAttributes(function (Get $get) {
+                            if ($get('status') == EventStatus::Red) {
+                                return ['style' => 'background:#fcc4c4;width:500px'];
+                            } elseif ($get('status') == EventStatus::Amber) {
+                                return ['style' => 'background:#ffeec7;width:500px'];
+                            }
+                            return [];
+                        }),
 
+                    Select::make('status')
+                        ->columnSpan(2)
+                        ->options([
+                            'Red' => 'Red (Very Critical)',
+                            'Amber' => 'Amber (Event needs attention)',
+                        ])
+                        ->default('Amber')
+                        ->reactive()
+                        ->searchable()
+                        ->placeholder('Select Status')
+                        ->extraAttributes(function (Get $get) {
+                            if ($get('status') == EventStatus::Red) {
+                                return ['style' => 'background:#fcc4c4;width:500px'];
+                            } elseif ($get('status') == EventStatus::Amber) {
+                                return ['style' => 'background:#ffeec7;width:500px'];
+                            }
+                            return [];
+                        }),
+
+//                        Select::make('status')->columnSpan(2)
+//                            ->options([
+//
+//                                'Red' => 'Red (Very Critical)',
+//                                'Amber' => 'Amber (Event needs attention)',
+//                            ])
+//                            ->default('Amber')
+//                            ->afterStateUpdated(function (callable $set, $state) {
+//                                $set('statusColor', match($state) {
+//                                    'Red' => 'class' => 'custom-bg-yellow',
+//                                    'Amber' => 'class' => 'custom-bg-red-event',
+//                                });
+//                            })
+//                            ->searchable()->reactive()->placeholder('Select'),
+//                        TextInput::make('statusColor')->disabled(),
+//                    TextInput::make('red')->disabled()
+//                        ->label('(Very Critical)')
+////                        ->content(new HtmlString('<h1 style="color:#fa3e3e; font-size: 15px;text-align: Left;margin-top: 36px;"> (Very Critical) </h1>'))
+//                        ->visible(function (callable $get) {
+//                            if ($get('status') == EventStatus::Red) {
+//                                return true;
+//                            }
+//                            return false;
+//                        }),
+//
+//                    TextInput::make('amber')->disabled()
+//                        ->label('(Event needs attention)')
+////                        ->content(new HtmlString('<h1 style="color:#d5b94d; font-size: 15px;text-align: Left;margin-top: 36px;"> (Event needs attention) </h1>'))
+//                        ->visible(function (callable $get) {
+//                            if ($get('status') == EventStatus::Amber) {
+//                                return true;
+//                            }
+//                            return false;
+//                        }),
                 ]),
 
+            ])->columns(6)->columnSpan(6)
+//            ])->columns(12)->columnSpan(12)
 
-
-                Placeholder::make('red')
-                    ->label('')
-                    ->content(new HtmlString('<h1 style="color:#fa3e3e; font-size: 15px;text-align: Left;margin-top: 36px;"> (Very Critical) </h1>'))
-                    ->visible(fn(callable $get) => $get('status') === EventStatus::Red),
-
-                Placeholder::make('amber')
-                    ->label('')
-                    ->content(new HtmlString('<h1 style="color:#d5b94d; font-size: 15px;text-align: Left;margin-top: 36px;"> (Event needs attention) </h1>'))
-                    ->visible(fn(callable $get) => $get('status') === EventStatus::Amber),
 
 //                Placeholder::make('green')
 //                    ->label('')
@@ -219,7 +298,6 @@ class CreateComplianceEvent extends Page implements HasForms
 //                    ->content(new HtmlString('<h1 style="color:#73abec; font-size: 15px;text-align: Left;margin-top: 36px;"> (Event happened but its not a risk anymore) </h1>'))
 //                    ->visible(fn(callable $get) => $get('status') === EventStatus::Blue),
 
-            ])->columns(5)
 
         ];
     }
@@ -245,9 +323,10 @@ class CreateComplianceEvent extends Page implements HasForms
                 $compliancePrimarySubMenu->compliance_menu_id = $complianceSubMenu->compliance_menu_id;
                 $compliancePrimarySubMenu->compliance_sub_menu_id = $this->compliance_sub_menu_id;
                 $compliancePrimarySubMenu->occurrence = $this->occurrence;
+                $compliancePrimarySubMenu->event_name = $this->event_name;
+//                $compliancePrimarySubMenu->description = $this->description;
+                $compliancePrimarySubMenu->event_type = $this->event_type;
                 $compliancePrimarySubMenu->due_date = $event_detail['due_date'];
-                $compliancePrimarySubMenu->event_name = $event_detail['event_name'];
-                $compliancePrimarySubMenu->description = $event_detail['description'];
                 $compliancePrimarySubMenu->assign_id = $event_detail['assign_id'];
                 $compliancePrimarySubMenu->status = $event_detail['status'];
                 $compliancePrimarySubMenu->save();

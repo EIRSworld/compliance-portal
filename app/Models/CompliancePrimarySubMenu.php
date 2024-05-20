@@ -26,6 +26,8 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
         'event_name',
         'description',
         'due_date',
+        'event_type',
+        'subject',
         'is_uploaded',
         'upload_by',
         'upload_date',
@@ -41,7 +43,10 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('compliance_primary_attachments');
+        $this->addMediaCollection('mail_document');
     }
+
+
     public function entity(): BelongsTo
     {
         return $this->belongsTo(Entity::class, 'entity_id');

@@ -7,8 +7,9 @@ function getParentByTagName(obj, tagName) {
     return obj;
 }
 
+/*Not working*/
 setInterval(function(){
-    var list = document.getElementsByClassName("custom-bg-green");
+    var list = document.getElementsByClassName("custom-bg-green1");
     for (var i=0; i<list.length; i++) {
         getParentByTagName(list[i],"tr").classList.add('custom-bg-green');
         // list[i].parentElement.parentElement.parentElement.parentElement.classList.add('custom-bg-red');

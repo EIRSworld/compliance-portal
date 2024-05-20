@@ -33,6 +33,32 @@ Route::get('dashboard-event-summary/{id}', function ($calendar_year_id) {
     return Excel::download(new \App\Exports\DashboardEventSummaryExport($calendar_year_id), 'Dashboard Event Summary Report.xlsx');
 })->name('report.dashboard-event-summary');
 
+//Regular
+Route::get('dashboard-regular-operations/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
+    return Excel::download(new \App\Exports\DashboardRegularOperation($calendar_year_id,$country_id,$entity_id), 'Dashboard Regular Operations Report.xlsx');
+})->name('report.dashboard-regular-operations');
+
+Route::get('dashboard-regular-finance/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
+    return Excel::download(new \App\Exports\DashboardRegularFinance($calendar_year_id,$country_id,$entity_id), 'Dashboard Regular Finance Report.xlsx');
+})->name('report.dashboard-regular-finance');
+
+Route::get('dashboard-regular-hr/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
+    return Excel::download(new \App\Exports\DashboardRegularHr($calendar_year_id,$country_id,$entity_id), 'Dashboard Regular Hr Report.xlsx');
+})->name('report.dashboard-regular-hr');
+
+//Add-Hoc
+Route::get('dashboard-add-hoc-operations/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
+    return Excel::download(new \App\Exports\DashboardAddHocOperation($calendar_year_id,$country_id,$entity_id), 'Dashboard Add-Hoc Operations Report.xlsx');
+})->name('report.dashboard-add-hoc-operations');
+
+Route::get('dashboard-add-hoc-finance/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
+    return Excel::download(new \App\Exports\DashboardAddHocFinance($calendar_year_id,$country_id,$entity_id), 'Dashboard Add-Hoc Finance Report.xlsx');
+})->name('report.dashboard-add-hoc-finance');
+
+Route::get('dashboard-add-hoc-hr/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
+    return Excel::download(new \App\Exports\DashboardAddHocHr($calendar_year_id,$country_id,$entity_id), 'Dashboard Add-Hoc Hr Report.xlsx');
+})->name('report.dashboard-add-hoc-hr');
+
 Route::get('/', function () {
     return redirect('admin');
 })->name('login');
@@ -65,6 +91,56 @@ Route::get('/document/delete/{id}',function ($id){
 
 
 Route::get('/test', function () {
+
+    $today = now()->startOfDay(); // Only the date part for comparison
+
+    $uploadDocuments = UploadDocument::whereNotNull('expired_date')
+        ->where('is_expired', '=', '0') // Assuming you want documents that are NOT yet expired
+        ->get();
+
+    foreach ($uploadDocuments as $document) {
+        $expiredDate = Carbon::parse($document->expired_date);
+        // Adding intervals for 4 weeks, 3 weeks, 2 weeks, 1 week, 1 day before, and 1 day after
+        $intervals = [42, 35, 28, 21, 14, 7, 1, -1]; // Added days for the additional intervals
+
+        foreach ($intervals as $interval) {
+            if ($interval == -1) { // Special case for 1 day after
+                $reminderDate = $expiredDate->copy()->addDay();
+            } else {
+                $reminderDate = $expiredDate->copy()->subDays($interval);
+            }
+
+            if ($today->equalTo($reminderDate)) {
+                if ($interval == -1) {
+                    // Fetch users with 'management' role for 1 day after the expiry date
+                    $users = User::role('management')->get();
+                } else {
+                    // For other reminders, fetch users with the specified compliance roles
+                    $users = User::role(['Compliance Finance Officer', 'Compliance Principle Officer'])->get();
+                }
+
+                foreach ($users as $user) {
+                    $emails = $user->email; // Assuming this is the user's email address
+                    $timeFrame = $interval == -1 ? '1 day after' : abs($interval) . ' day(s) before';
+                    $data = [
+                        'subject' => 'Compliance Reminder Email',
+                        // You might want to customize this message further based on the recipient's role
+                        'message' => "Your compliance document with ID: {$document->id} is nearing its expiry date on {$document->expired_date}. Reminder: $timeFrame.",
+                    ];
+
+                    // Sending email
+                    Mail::send('emails.reminder', $data, function ($message) use ($data, $emails) {
+                        $message->to($emails)
+                            ->cc(['harish@nordicsolutions.in'])
+                            ->subject($data['subject']);
+                    });
+                }
+            }
+        }
+    }
+
+
+
 
     $currentDate = \Carbon\Carbon::now()->format('Y-m-d');
     $currentYear = \Carbon\Carbon::now()->format('Y');

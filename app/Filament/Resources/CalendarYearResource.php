@@ -34,9 +34,9 @@ class CalendarYearResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
     protected static ?string $navigationGroup = 'Masters';
-    protected static ?string $navigationLabel = 'Calendar Years';
+    protected static ?string $navigationLabel = 'Financial Years';
     protected static ?int $navigationSort = 1;
-    protected static ?string $label = 'Calendar Years';
+    protected static ?string $label = 'Financial Years';
 
     public static function canAccess(): bool
     {
@@ -87,21 +87,24 @@ class CalendarYearResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label('Year')
                         ->unique(ignoreRecord: true),
+
+//                    Forms\Components\DatePicker::make('start_date')
+//                        ->closeOnDateSelection()->suffixIcon('heroicon-o-calendar')
+//                        ->displayFormat('d-m-Y')
+//                        ->label('Start date')
+//                        ->unique(ignoreRecord: true)
+//                        ->native(false),
+//
+//                    Forms\Components\DatePicker::make('end_date')
+//                        ->closeOnDateSelection()->suffixIcon('heroicon-o-calendar')
+//                        ->displayFormat('d-m-Y')
+//                        ->label('End date')
+//                        ->unique(ignoreRecord: true)
+//                        ->native(false),
                     Select::make('country_id')->label('Countries')->multiple()
                         ->options(Country::pluck('name', 'id')->toArray())
                         ->default(Country::pluck('id')->toArray())
                         ->searchable(),
-//                Forms\Components\DatePicker::make('start_date')
-//                    ->closeOnDateSelection()
-//                    ->displayFormat('d-m-Y')
-//                    ->label('Start date')
-//                    ->unique(ignoreRecord: true),
-//
-//                Forms\Components\DatePicker::make('end_date')
-//                    ->closeOnDateSelection()
-//                    ->displayFormat('d-m-Y')
-//                    ->label('End date')
-//                    ->unique(ignoreRecord: true),
                 ])->columns(1)
             ]);
     }

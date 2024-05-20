@@ -1,10 +1,11 @@
 
 <div class="p-2" style="margin-top: 1%">
     <?php
-    $compliantMenuDetailId = $getRecord()->id;
+    $compliancePrimarySubMenuId = $getRecord()->id;
 
-    $compliantMenuDetail = \App\Models\ComplianceSubMenu::find($compliantMenuDetailId);
-    $documents = $compliantMenuDetail->getMedia('compliant_attachments');
+    $compliancePrimarySubMenu = \App\Models\CompliancePrimarySubMenu::find($compliancePrimarySubMenuId);
+    $documents = $compliancePrimarySubMenu->getMedia('compliance_primary_attachments');
+//    dd($documents);
     ?>
     @forelse($documents as $document)
         <div style="margin-top: 7%; display: flex; justify-content: space-between; align-items: center;">
@@ -17,7 +18,7 @@
 
             <!-- Delete Button Section -->
             <div>
-                <a href="{{ route('document.delete', $document->id) }}" style="color: red;margin-left: 2585%;" onclick="return confirm('Are you sure you want to delete this document?')">Delete</a>
+                <a href="{{ route('document.delete', $document->id) }}" style="color: red;margin-left: 1173px;" onclick="return confirm('Are you sure you want to delete this document?')">Delete</a>
             </div>
         </div>
 {{--        <div style="margin-top: 7%;">--}}

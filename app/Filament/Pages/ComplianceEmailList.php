@@ -39,6 +39,7 @@ class ComplianceEmailList extends Page implements HasTable
     protected static ?string $title = 'Compliance Email';
 
     protected static ?int $navigationSort = 5;
+    protected static bool $shouldRegisterNavigation = false;
 
 //    public static function canAccess(): bool
 //    {
