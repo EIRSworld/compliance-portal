@@ -1,7 +1,8 @@
-
 body {
-    zoom: 75%;
+    zoom: 75%!important;
+    /*Not working*/
 }
+
 .custom-bg-red-event {
     background-color: #fcc4c4;
 }
