@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\CalendarYear;
 use App\Models\Country;
+use App\Models\Entity;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -23,11 +24,19 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Super Admin',
                 'email' => 'admin@compliance.com',
                 'password' => bcrypt('password'),
+                'country_id' => '["1","2","3","4","5","6","7","8"]',
             ],
             [
                 'name' => 'Rakhee',
                 'email' => 'rakhee@compliance.com',
                 'password' => bcrypt('password'),
+                'country_id' => '["1","2","3","4","5","6","7","8"]',
+            ],
+            [
+                'name' => 'Nigel',
+                'email' => 'Nigel@compliance.com',
+                'password' => bcrypt('password'),
+                'country_id' => '["1","2","3","4","7","8"]',
             ],
 
         ]);
@@ -37,11 +46,7 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Management',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Business Head',
+                'name' => 'Compliance Manager',
                 'guard_name' => 'web',
             ],
             [
@@ -53,23 +58,7 @@ class DatabaseSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'Compliance Head',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Compliance Finance Manager',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Compliance Principle Manager',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Compliance Finance Officer',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'Compliance Principle Officer',
+                'name' => 'Compliance Officer',
                 'guard_name' => 'web',
             ],
         ]);
@@ -146,6 +135,30 @@ class DatabaseSeeder extends Seeder
                 'end_date' => '2025-03-31',
                 'country_id' => '["1","2","3"]',
                 'status' => '2',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        Entity::insert([
+            [
+                'entity_name' => 'ETG Insurance & Risk Solutions',
+                'country_id' => 7,
+                'status' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'entity_name' => 'ETG Insurance Brokers',
+                'country_id' => 1,
+                'status' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'entity_name' => 'ETG Insurance & Risk Solutions',
+                'country_id' => 4,
+                'status' => '1',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -333,5 +346,7 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('Super Admin');
         $user = User::find(2);
         $user->assignRole('Compliance Manager');
+        $user = User::find(3);
+        $user->assignRole('Compliance Officer');
     }
 }
