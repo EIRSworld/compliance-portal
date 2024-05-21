@@ -31,10 +31,24 @@ class DatabaseSeeder extends Seeder
                 'email' => 'rakhee@compliance.com',
                 'password' => bcrypt('password'),
                 'country_id' => '["1","2","3","4","5","6","7","8"]',
+                'compliance_type' => 'Operations',
+            ],
+            [
+                'name' => 'Pranita ',
+                'email' => 'pranita@compliance.com',
+                'password' => bcrypt('password'),
+                'country_id' => '["1","2","3","4","5","6","7","8"]',
+                'compliance_type' => 'Finance ',
             ],
             [
                 'name' => 'Nigel',
-                'email' => 'Nigel@compliance.com',
+                'email' => 'nigel@compliance.com',
+                'password' => bcrypt('password'),
+                'country_id' => '["1","2","3","4","7","8"]',
+            ],
+            [
+                'name' => 'Bebin',
+                'email' => 'bebin@compliance.com',
                 'password' => bcrypt('password'),
                 'country_id' => '["1","2","3","4","7","8"]',
             ],
@@ -347,6 +361,10 @@ class DatabaseSeeder extends Seeder
         $user = User::find(2);
         $user->assignRole('Compliance Manager');
         $user = User::find(3);
+        $user->assignRole('Compliance Manager');
+        $user = User::find(3);
         $user->assignRole('Compliance Officer');
+        $user = User::find(3);
+        $user->assignRole('Cluster Head');
     }
 }
