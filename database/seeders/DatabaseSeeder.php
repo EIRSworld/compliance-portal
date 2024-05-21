@@ -142,7 +142,7 @@ class DatabaseSeeder extends Seeder
 
         Entity::insert([
             [
-                'entity_name' => 'ETG Insurance & Risk Solutions',
+                'entity_name' => 'ETC Mgt Services',
                 'country_id' => 7,
                 'status' => '1',
                 'created_at' => now(),

@@ -84,4 +84,8 @@ class CompliancePrimarySubMenu extends Model implements HasMedia
     {
         return $this->belongsTo(User::class, 'approve_by');
     }
+    public function assignId(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assign_id');
+    }
 }
