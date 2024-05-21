@@ -31,14 +31,12 @@ class DatabaseSeeder extends Seeder
                 'email' => 'rakhee@compliance.com',
                 'password' => bcrypt('password'),
                 'country_id' => '["1","2","3","4","5","6","7","8"]',
-                'compliance_type' => 'Operations',
             ],
             [
                 'name' => 'Pranita ',
                 'email' => 'pranita@compliance.com',
                 'password' => bcrypt('password'),
                 'country_id' => '["1","2","3","4","5","6","7","8"]',
-                'compliance_type' => 'Finance ',
             ],
             [
                 'name' => 'Nigel',
