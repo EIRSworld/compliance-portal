@@ -362,9 +362,9 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('Compliance Manager');
         $user = User::find(3);
         $user->assignRole('Compliance Manager');
-        $user = User::find(3);
+        $user = User::find(4);
         $user->assignRole('Compliance Officer');
-        $user = User::find(3);
+        $user = User::find(5);
         $user->assignRole('Cluster Head');
     }
 }
