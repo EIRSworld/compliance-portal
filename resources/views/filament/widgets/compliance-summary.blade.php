@@ -85,11 +85,11 @@
         </div>
         <div class="legend-item">
             <div class="legend-color green"></div>
-            <span>Solved - It is a risk, but it keeps happening</span>
+            <span>Uploaded</span>
         </div>
         <div class="legend-item">
             <div class="legend-color blue"></div>
-            <span>Event happened but its not a risk anymore</span>
+            <span>Approved</span>
         </div>
     </div>
 
