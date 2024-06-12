@@ -21,6 +21,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Enums\ActionSize;
@@ -35,7 +36,7 @@ use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -210,6 +211,40 @@ class ComplianceManagement extends Page implements HasTable
                     }),
             ])
             ->filters([
+
+                SelectFilter::make('country')->label('')
+                    ->form([
+                        Select::make('country_id')
+                            ->searchable()
+                            ->options(function () {
+                                return Country::pluck('name', 'id')->toArray();
+                            })
+                            ->placeholder('Select the Country')
+                            ->reactive()
+                            ->label('Country'),
+
+                        Select::make('entity_id')
+                            ->label('Entity Name')
+                            ->searchable()
+                            ->reactive()
+                            ->options(function (Get $get) {
+                                if ($get('country_id')) {
+                                    return Entity::where('country_id', $get('country_id'))->pluck('entity_name', 'id');
+                                } else {
+                                    return [];
+                                }
+                            })
+                    ])
+                    ->query(function (Builder $query, array $data):Builder {
+                        return $query
+                            ->when($data['country_id'],
+                                fn(Builder $query, $date): Builder => $query->where('country_id', $data['country_id']),
+                            )
+                            ->when($data['entity_id'],
+                                fn(Builder $query, $date): Builder => $query->where('entity_id', $data['entity_id']),
+                            );
+                    }),
+
                 SelectFilter::make('calendar_year_id')->searchable()
                     ->options(function () {
                         return CalendarYear::pluck('name', 'id')->toArray();
@@ -228,18 +263,18 @@ class ComplianceManagement extends Page implements HasTable
                     })
                     ->placeholder('Select the Year')
                     ->label('Year'),
-                SelectFilter::make('country_id')->searchable()
-                    ->options(function () {
-                        return Country::pluck('name', 'id')->toArray();
-                    })
-                    ->placeholder('Select the Country')
-                    ->label('Country'),
-                SelectFilter::make('entity_id')->searchable()
-                    ->options(function () {
-                        return Entity::pluck('entity_name', 'id')->toArray();
-                    })
-                    ->placeholder('Select the Entity')
-                    ->label('Entity Name'),
+//                SelectFilter::make('country_id')->searchable()
+//                    ->options(function () {
+//                        return Country::pluck('name', 'id')->toArray();
+//                    })
+//                    ->placeholder('Select the Country')
+//                    ->label('Country'),
+//                SelectFilter::make('entity_id')->searchable()
+//                    ->options(function () {
+//                        return Entity::pluck('entity_name', 'id')->toArray();
+//                    })
+//                    ->placeholder('Select the Entity')
+//                    ->label('Entity Name'),
                 SelectFilter::make('is_uploaded')->searchable()
                     ->options([
                         '1' => 'Upload',
