@@ -23,6 +23,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -308,17 +309,18 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
                     ->label('Edit')
                     ->mountUsing(function (ComponentContainer $form, $record) {
                         $form->fill([
-                            'compliance_menu_id' => $this->compliance_menu->id,
-                            'compliance_sub_menu_id' => $this->compliance_sub_menu->id,
-                            'calendar_year_id' => $this->calendar_year_id,
-                            'year' => $record->year,
-                            'compliance_name' => $this->compliance_menu->name,
-                            'compliance_sub_name' => $this->compliance_sub_menu->sub_menu_name,
-                            'document_id' => $this->compliance_menu->document_id,
-                            'document_name' => $this->compliance_menu->document->name,
-                            'country_id' => $this->compliance_menu->document->country_id,
-                            'primary_name' => $record->primary_name,
-                            'expired_date' => $record->expired_date,
+//                            'compliance_menu_id' => $this->compliance_menu->id,
+//                            'compliance_sub_menu_id' => $this->compliance_sub_menu->id,
+//                            'calendar_year_id' => $this->calendar_year_id,
+//                            'year' => $record->year,
+//                            'compliance_name' => $this->compliance_menu->name,
+//                            'compliance_sub_name' => $this->compliance_sub_menu->sub_menu_name,
+//                            'document_id' => $this->compliance_menu->document_id,
+//                            'document_name' => $this->compliance_menu->document->name,
+//                            'country_id' => $this->compliance_menu->document->country_id,
+                            'event_name' => $record->event_name,
+                            'due_date' => $record->due_date,
+                            'status' => $record->status,
 
                         ]);
                     })
@@ -326,63 +328,78 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
                         Card::make()
                             ->schema([
                                 Card::make([
-                                    Hidden::make('document_id'),
-                                    Hidden::make('country_id'),
-                                    Hidden::make('calendar_year_id'),
-                                    Hidden::make('year'),
-                                    TextInput::make('document_name')->label('Country')->disabled(),
-                                    Hidden::make('compliance_menu_id'),
-                                    TextInput::make('compliance_name')->label('Folder Name')->disabled(),
-                                    Hidden::make('compliance_sub_menu_id'),
-                                    TextInput::make('compliance_sub_name')->label('Sub Folder Name')->disabled(),
-                                    TextInput::make('primary_name')
-                                        ->columnSpan(1)
-                                        ->label('Task File Title')
+//                                    Hidden::make('document_id'),
+//                                    Hidden::make('country_id'),
+//                                    Hidden::make('calendar_year_id'),
+//                                    Hidden::make('year'),
+//                                    TextInput::make('document_name')->label('Country')->disabled(),
+//                                    Hidden::make('compliance_menu_id'),
+//                                    TextInput::make('compliance_name')->label('Folder Name')->disabled(),
+//                                    Hidden::make('compliance_sub_menu_id'),
+//                                    TextInput::make('compliance_sub_name')->label('Sub Folder Name')->disabled(),
+                                    TextInput::make('event_name')
+//                                        ->columnSpan(1)
+                                        ->label('Event Name')
                                         ->required(),
-                                    DatePicker::make('expired_date')
-                                        ->label('Deadline')->displayFormat('d-m-Y')
-                                        ->required()
+                                    DatePicker::make('due_date')
+                                        ->label('Due Date')->displayFormat('d-m-Y')
+                                        ->required()->reactive()
                                         ->suffixIcon('heroicon-o-calendar')
                                         ->closeOnDateSelection()
                                         ->native(false)
-                                        ->visible(function (CompliancePrimarySubMenu $record) {
-                                            if ($record->is_expired === 1) {
-                                                return true;
+                                        ->afterStateUpdated(function (Get $get, Set $set){
+                                            if($get('due_date') <= Carbon::now()){
+                                                $set('status','Red');
                                             }
-
-                                            return false;
+                                            else{
+                                                $set('status','Amber');
+                                            }
+                                        })
+                                        ->native(false)
+                                        ->extraAttributes(function (Get $get) {
+                                            if ($get('status') == EventStatus::Red) {
+                                                return ['style' => 'background:#fcc4c4;'];
+                                            } elseif ($get('status') == EventStatus::Amber) {
+                                                return ['style' => 'background:#ffeec7;'];
+                                            }
+                                            return [];
+                                        }),
+                                    Select::make('status')
+                                        ->columnSpan(1)
+                                        ->options([
+                                            'Red' => 'Red (Very Critical)',
+                                            'Amber' => 'Amber (Event needs attention)',
+                                        ])
+                                        ->default('Amber')
+                                        ->reactive()
+                                        ->searchable()
+                                        ->placeholder('Select Status')
+                                        ->extraAttributes(function (Get $get) {
+                                            if ($get('status') == EventStatus::Red) {
+                                                return ['style' => 'background:#fcc4c4;'];
+                                            } elseif ($get('status') == EventStatus::Amber) {
+                                                return ['style' => 'background:#ffeec7;'];
+                                            }
+                                            return [];
                                         }),
                                 ])->columns(3)
                             ])
                     ])
                     ->action(function (array $data, $record, $form): void {
                         $compliancePrimarySubMenu = CompliancePrimarySubMenu::find($record->id);
-                        $compliancePrimarySubMenu->document_id = $data['document_id'];
-                        $compliancePrimarySubMenu->country_id = $data['country_id'];
-                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
-                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
-                        $compliancePrimarySubMenu->year = $data['year'];
-                        $compliancePrimarySubMenu->primary_name = $data['primary_name'];
-                        if ($record->is_expired === 1) {
+//                        $compliancePrimarySubMenu->document_id = $data['document_id'];
+//                        $compliancePrimarySubMenu->country_id = $data['country_id'];
+//                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
+//                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
+//                        $compliancePrimarySubMenu->year = $data['year'];
+                        $compliancePrimarySubMenu->event_name = $data['event_name'];
+                        $compliancePrimarySubMenu->due_date = $data['due_date'];
+                        $compliancePrimarySubMenu->status = $data['status'];
 
-                            $compliancePrimarySubMenu->expired_date = $data['expired_date'];
-                        }
                         $compliancePrimarySubMenu->save();
 
-                        $complianceUploadDocument = UploadDocument::whereCompliancePrimarySubMenuId($record->id)->first();
-                        $complianceUploadDocument->document_id = $data['document_id'];
-                        $complianceUploadDocument->country_id = $data['country_id'];
-                        $complianceUploadDocument->compliance_menu_id = $data['compliance_menu_id'];
-                        $complianceUploadDocument->calendar_year_id = $data['calendar_year_id'];
-                        $complianceUploadDocument->year = $data['year'];
-                        $complianceUploadDocument->name = $data['primary_name'];
-                        if ($record->is_expired === 1) {
-
-                            $complianceUploadDocument->expired_date = $data['expired_date'];
-                        }
-                        $complianceUploadDocument->save();
                         Notification::make()
-                            ->title('Folder Successfully Updated')
+                            ->title('Event Update Successfully')
                             ->success()
                             ->send();
 //                        }
@@ -390,8 +407,10 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
 
                     })
                     ->visible(function () {
-                        return false;
-                        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager')) {
+//                        return false;
+                        if (auth()->user()->hasRole('Super Admin'))
+//                            || auth()->user()->hasRole('Compliance Finance Manager') || auth()->user()->hasRole('Compliance Principle Manager'))
+                        {
 
                             return true;
                         }
