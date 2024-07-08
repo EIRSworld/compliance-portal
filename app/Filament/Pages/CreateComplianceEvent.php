@@ -189,7 +189,7 @@ class CreateComplianceEvent extends Page implements HasForms
                         }
                     }),
                 TextInput::make('event_name')->columnSpan(3)
-                    ->label('Event Name')
+                    ->label('Event Name')->maxLength(30)
                     ->required(),
                 Radio::make('event_type')->inline()->reactive()
                     ->options([

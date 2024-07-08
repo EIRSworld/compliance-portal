@@ -2,11 +2,14 @@
 
 use App\Exports\DashboardSummaryExport;
 use App\Exports\EventExport;
+use App\Models\CalendarYear;
 use App\Models\Country;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +22,60 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get('/red', function () {
+
+    $now = Carbon::now();
+    $currentYear = $now->year;
+    if ($now->format('Y-m-d') <= $currentYear . "-03-31") {
+        $previousYear = $currentYear - 1;
+        $financeYear = $previousYear . '-' . $currentYear;
+    } else {
+        $nextYear = $currentYear + 1;
+        $financeYear = $currentYear . '-' . $nextYear;
+    }
+    $calendarYear = CalendarYear::find(2);
+
+    $firstMonday = new \Carbon\Carbon('first monday of this month');
+//dd($firstMonday);
+
+    $now = Carbon::parse('2024-05-06');
+    if ($now->isSameDay($firstMonday)) {
+        $user = User::find(3);
+
+        $file_name = 'Dashboard Summary Report.xlsx';
+        $path = 'reports/' . $file_name;
+        Excel::store(new DashboardSummaryExport($calendarYear->id), $path);
+        $storagePath = storage_path('app/' . $path);
+        $data = [
+            'subject' => 'Compliance Dashboard',
+            'user' => ['harrish.gunasekaran@eirsworld.com'],
+//            'name' => $user->name,
+            'attachment' => $storagePath,
+        ];
+
+        Mail::send('mail.summary-report', $data, function ($message) use ($data, $storagePath) {
+            $message->to($data['user'], config('app.name'))
+//                ->cc(['harish@nordicsolutions.in'])
+                ->subject($data['subject'])
+                ->attach($data['attachment']);
+        });
+    }
+
+
+//    return back()->with('error', 'Document not found.');
+})->name('red');
+
+
+//New Dashboard
+Route::get('new-dashboard-export/{id}/{country_id}/{entity_id}/{red?}', function ($calendar_year_id, $country_id, $entity_id, $red) {
+    return Excel::download(new \App\Exports\NewDashboardExport($calendar_year_id, $country_id, $entity_id, $red), 'Dashboard Report.xlsx');
+})->name('report.new-dashboard-export');
+
 Route::get('/report', function () {
     $countries = Country::get();
 //    dd($countries);
-    return view('test',['countries' => $countries]);
+    return view('test', ['countries' => $countries]);
 });
 
 Route::get('dashboard-summary/{id}', function ($calendar_year_id) {
@@ -34,29 +87,29 @@ Route::get('dashboard-event-summary/{id}', function ($calendar_year_id) {
 })->name('report.dashboard-event-summary');
 
 //Regular
-Route::get('dashboard-regular-operations/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
-    return Excel::download(new \App\Exports\DashboardRegularOperation($calendar_year_id,$country_id,$entity_id), 'Dashboard Regular Operations Report.xlsx');
+Route::get('dashboard-regular-operations/{id}/{country_id}/{entity_id}', function ($calendar_year_id, $country_id, $entity_id) {
+    return Excel::download(new \App\Exports\DashboardRegularOperation($calendar_year_id, $country_id, $entity_id), 'Dashboard Regular Operations Report.xlsx');
 })->name('report.dashboard-regular-operations');
 
-Route::get('dashboard-regular-finance/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
-    return Excel::download(new \App\Exports\DashboardRegularFinance($calendar_year_id,$country_id,$entity_id), 'Dashboard Regular Finance Report.xlsx');
+Route::get('dashboard-regular-finance/{id}/{country_id}/{entity_id}', function ($calendar_year_id, $country_id, $entity_id) {
+    return Excel::download(new \App\Exports\DashboardRegularFinance($calendar_year_id, $country_id, $entity_id), 'Dashboard Regular Finance Report.xlsx');
 })->name('report.dashboard-regular-finance');
 
-Route::get('dashboard-regular-hr/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
-    return Excel::download(new \App\Exports\DashboardRegularHr($calendar_year_id,$country_id,$entity_id), 'Dashboard Regular Hr Report.xlsx');
+Route::get('dashboard-regular-hr/{id}/{country_id}/{entity_id}', function ($calendar_year_id, $country_id, $entity_id) {
+    return Excel::download(new \App\Exports\DashboardRegularHr($calendar_year_id, $country_id, $entity_id), 'Dashboard Regular Hr Report.xlsx');
 })->name('report.dashboard-regular-hr');
 
 //Add-Hoc
-Route::get('dashboard-add-hoc-operations/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
-    return Excel::download(new \App\Exports\DashboardAddHocOperation($calendar_year_id,$country_id,$entity_id), 'Dashboard Add-Hoc Operations Report.xlsx');
+Route::get('dashboard-add-hoc-operations/{id}/{country_id}/{entity_id}', function ($calendar_year_id, $country_id, $entity_id) {
+    return Excel::download(new \App\Exports\DashboardAddHocOperation($calendar_year_id, $country_id, $entity_id), 'Dashboard Add-Hoc Operations Report.xlsx');
 })->name('report.dashboard-add-hoc-operations');
 
-Route::get('dashboard-add-hoc-finance/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
-    return Excel::download(new \App\Exports\DashboardAddHocFinance($calendar_year_id,$country_id,$entity_id), 'Dashboard Add-Hoc Finance Report.xlsx');
+Route::get('dashboard-add-hoc-finance/{id}/{country_id}/{entity_id}', function ($calendar_year_id, $country_id, $entity_id) {
+    return Excel::download(new \App\Exports\DashboardAddHocFinance($calendar_year_id, $country_id, $entity_id), 'Dashboard Add-Hoc Finance Report.xlsx');
 })->name('report.dashboard-add-hoc-finance');
 
-Route::get('dashboard-add-hoc-hr/{id}/{country_id}/{entity_id}', function ($calendar_year_id,$country_id,$entity_id) {
-    return Excel::download(new \App\Exports\DashboardAddHocHr($calendar_year_id,$country_id,$entity_id), 'Dashboard Add-Hoc Hr Report.xlsx');
+Route::get('dashboard-add-hoc-hr/{id}/{country_id}/{entity_id}', function ($calendar_year_id, $country_id, $entity_id) {
+    return Excel::download(new \App\Exports\DashboardAddHocHr($calendar_year_id, $country_id, $entity_id), 'Dashboard Add-Hoc Hr Report.xlsx');
 })->name('report.dashboard-add-hoc-hr');
 
 Route::get('/', function () {
@@ -64,7 +117,7 @@ Route::get('/', function () {
 })->name('login');
 
 
-Route::get('/document/delete/{id}',function ($id){
+Route::get('/document/delete/{id}', function ($id) {
 
     $document = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($id);
 
@@ -81,13 +134,6 @@ Route::get('/document/delete/{id}',function ($id){
 
 //    return back()->with('error', 'Document not found.');
 })->name('document.delete');
-
-
-
-
-
-
-
 
 
 Route::get('/test', function () {
@@ -138,8 +184,6 @@ Route::get('/test', function () {
             }
         }
     }
-
-
 
 
     $currentDate = \Carbon\Carbon::now()->format('Y-m-d');
@@ -202,7 +246,7 @@ Route::get('/test', function () {
 
     // Checking expired date in which week
     foreach ($complianceSubMenus as $complianceSubMenu) {
-        $expiredDate =  \Carbon\Carbon::parse($complianceSubMenu->expired_date);
+        $expiredDate = \Carbon\Carbon::parse($complianceSubMenu->expired_date);
 //        dd($expiredDate);
 
 //        dd((\Carbon\Carbon::parse($expiredDate)->subday(1)->format('d-m-Y') === \Carbon\Carbon::now()->format('d-m-Y')) && (!($complianceSubMenu->is_uploaded)));
@@ -218,25 +262,25 @@ Route::get('/test', function () {
 //        );
 
 
-        if($expiredDate->between($sixthWeekStart,$sixthWeekEnd) && (!($complianceSubMenu->is_uploaded))){
+        if ($expiredDate->between($sixthWeekStart, $sixthWeekEnd) && (!($complianceSubMenu->is_uploaded))) {
             $sixthWeekIds[] = $complianceSubMenu->id;
             $combinedIds[] = $complianceSubMenu->id;
-        }elseif($expiredDate->between($fifthWeekStart,$fifthWeekEnd) && (!($complianceSubMenu->is_uploaded))){
+        } elseif ($expiredDate->between($fifthWeekStart, $fifthWeekEnd) && (!($complianceSubMenu->is_uploaded))) {
             $fifthWeekIds[] = $complianceSubMenu->id;
             $combinedIds[] = $complianceSubMenu->id;
-        }elseif($expiredDate->between($fourthWeekStart,$fourthWeekEnd) && (!($complianceSubMenu->is_uploaded))){
+        } elseif ($expiredDate->between($fourthWeekStart, $fourthWeekEnd) && (!($complianceSubMenu->is_uploaded))) {
             $fourthWeekIds[] = $complianceSubMenu->id;
             $combinedIds[] = $complianceSubMenu->id;
-        }elseif($expiredDate->between($thirdWeekStart,$thirdWeekEnd) && (!($complianceSubMenu->is_uploaded))){
+        } elseif ($expiredDate->between($thirdWeekStart, $thirdWeekEnd) && (!($complianceSubMenu->is_uploaded))) {
             $thirdWeekIds[] = $complianceSubMenu->id;
             $combinedIds[] = $complianceSubMenu->id;
-        }elseif($expiredDate->between($secondWeekStart,$secondWeekEnd) && (!($complianceSubMenu->is_uploaded))){
+        } elseif ($expiredDate->between($secondWeekStart, $secondWeekEnd) && (!($complianceSubMenu->is_uploaded))) {
             $secondWeekIds[] = $complianceSubMenu->id;
             $combinedIds[] = $complianceSubMenu->id;
-        }elseif($expiredDate->between($firstWeekStart,$firstWeekEnd) && (!($complianceSubMenu->is_uploaded))){
+        } elseif ($expiredDate->between($firstWeekStart, $firstWeekEnd) && (!($complianceSubMenu->is_uploaded))) {
             $firstWeekIds[] = $complianceSubMenu->id;
             $combinedIds[] = $complianceSubMenu->id;
-        }elseif((\Carbon\Carbon::parse($expiredDate)->subday(1)->format('d-m-Y') === \Carbon\Carbon::now()->format('d-m-Y')) && (!($complianceSubMenu->is_uploaded)) && (!($complianceSubMenu->is_uploaded))){
+        } elseif ((\Carbon\Carbon::parse($expiredDate)->subday(1)->format('d-m-Y') === \Carbon\Carbon::now()->format('d-m-Y')) && (!($complianceSubMenu->is_uploaded)) && (!($complianceSubMenu->is_uploaded))) {
             $beforeDateIds[] = $complianceSubMenu->id;
             $combinedIds[] = $complianceSubMenu->id;
         }
@@ -246,32 +290,32 @@ Route::get('/test', function () {
 //dd(count(array($fourthWeekIds)) > 0);
 
     // if count greater than 0 isSixthWeek equal to 1 this is for the color
-    if(count($sixthWeekIds) > 0){
+    if (count($sixthWeekIds) > 0) {
         $sixthWeekDate = \Carbon\Carbon::parse($sixthWeekStart)->format('Y-m-d');
 //        dd($sixthWeekDate);
         $isSixthWeek = 1;
     }
-    if(count($fifthWeekIds) > 0){
+    if (count($fifthWeekIds) > 0) {
         $fifthWeekDate = \Carbon\Carbon::parse($fifthWeekStart)->format('Y-m-d');
         $isFifthWeek = 1;
     }
-    if(count($fourthWeekIds) > 0){
+    if (count($fourthWeekIds) > 0) {
         $fourthWeekDate = \Carbon\Carbon::parse($fourthWeekStart)->format('Y-m-d');
         $isFourthWeek = 1;
     }
-    if(count($thirdWeekIds) > 0){
+    if (count($thirdWeekIds) > 0) {
         $thirdWeekDate = \Carbon\Carbon::parse($thirdWeekStart)->format('Y-m-d');
         $isThirdWeek = 1;
     }
-    if(count($secondWeekIds) > 0){
+    if (count($secondWeekIds) > 0) {
         $secondWeekDate = \Carbon\Carbon::parse($secondWeekStart)->format('Y-m-d');
         $isSecondWeek = 1;
     }
-    if(count($firstWeekIds) > 0){
+    if (count($firstWeekIds) > 0) {
         $firstWeekDate = \Carbon\Carbon::parse($firstWeekStart)->format('Y-m-d');
         $isFirstWeek = 1;
     }
-    if(count($beforeDateIds) > 0){
+    if (count($beforeDateIds) > 0) {
         $beforeDate = \Carbon\Carbon::parse($expiredDate)->subday(1)->format('d-m-Y');
 //        dd($sixthWeekDate);
         $isBeforeDay = 1;
@@ -279,24 +323,24 @@ Route::get('/test', function () {
 //dd($isFifthWeek);
 
     // Mail sending date (monday)
-    if($isSixthWeek){
+    if ($isSixthWeek) {
         $mailSendDate = $sixthWeekDate;
-    }elseif($isFifthWeek){
+    } elseif ($isFifthWeek) {
         $mailSendDate = $fifthWeekDate;
-    }elseif($isFourthWeek){
+    } elseif ($isFourthWeek) {
         $mailSendDate = $fourthWeekDate;
-    }elseif($isThirdWeek){
+    } elseif ($isThirdWeek) {
         $mailSendDate = $thirdWeekDate;
-    }elseif($isSecondWeek){
+    } elseif ($isSecondWeek) {
         $mailSendDate = $secondWeekDate;
-    }elseif($isFirstWeek){
+    } elseif ($isFirstWeek) {
         $mailSendDate = $firstWeekDate;
-    }elseif($isBeforeDay){
+    } elseif ($isBeforeDay) {
         $mailSendDate = $beforeDate;
     }
 //    dd(($isBeforeDay));
 //dd(strtotime($mailSendDate),strtotime($currentDate));
-    if($mailSendDate &&  strtotime($mailSendDate) == strtotime($currentDate)) {
+    if ($mailSendDate && strtotime($mailSendDate) == strtotime($currentDate)) {
 //        dd($mailSendDate);
         foreach ($groupedByCountryIds as $key => $groupedByCountryId) {
             //    dd($key,$groupedByCountryId);
@@ -334,14 +378,13 @@ Route::get('/test', function () {
             ];
 
 
-                Mail::send('mail.remainder-mail', $data, function ($message) use ($data, $emails) {
-                    $message->to($emails, config('app.name'))
-                        //                ->cc(['harish@nordicsolutions.in'])
-                        ->subject($data['subject']);
-                });
+            Mail::send('mail.remainder-mail', $data, function ($message) use ($data, $emails) {
+                $message->to($emails, config('app.name'))
+                    //                ->cc(['harish@nordicsolutions.in'])
+                    ->subject($data['subject']);
+            });
         }
     }
-
 
 
 })->name('test');

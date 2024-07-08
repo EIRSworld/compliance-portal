@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -29,7 +30,7 @@ class NewDashboard extends Widget implements HasForms
     protected static string $view = 'filament.widgets.new-dashboard';
     protected static ?string $heading = 'Dashboard Summary Report';
     protected int|string|array $columnSpan = 2;
-    public $calendar_year_id, $country_id, $entity_id, $compliance_sub_menu_id, $country, $entity;
+    public $calendar_year_id, $country_id, $entity_id, $compliance_sub_menu_id, $country, $entity, $is_red, $red;
     public $regular_yearly,$event_name_yearly,$calendarYear;
 
     public function mount()
@@ -141,6 +142,10 @@ class NewDashboard extends Widget implements HasForms
 
             }
         }
+
+        if ($value === 'is_red') {
+            $this->red = $this->is_red;
+        }
     }
 
 
@@ -195,6 +200,7 @@ class NewDashboard extends Widget implements HasForms
                     }
                     return false;
                 }),
+                Checkbox::make('is_red')->inline(true)->reactive()->label('Red Status')
 
 
             ])->columns(5)

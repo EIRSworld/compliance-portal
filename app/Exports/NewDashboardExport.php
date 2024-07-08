@@ -17,13 +17,14 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class NewDashboardExport implements WithMultipleSheets
 {
-    protected $calendar_year_id, $country_id, $entity_id, $regular_id;
+    protected $calendar_year_id, $country_id, $entity_id, $regular_id, $red;
 
-    function __construct($calendar_year_id, $country_id, $entity_id)
+    function __construct($calendar_year_id, $country_id, $entity_id, $red)
     {
         $this->calendar_year_id = $calendar_year_id;
         $this->country_id = $country_id;
         $this->entity_id = $entity_id;
+        $this->red = $red;
 
 
 //        $this->regular_id = $regular_id;
@@ -64,7 +65,7 @@ class NewDashboardExport implements WithMultipleSheets
                     }
 
                     foreach($complianceSubMenus as $complianceSubMenu){
-                        $sheets[] = new DashboardTableSheetExport($this->calendar_year_id,$country->id,$entity->id,$complianceSubMenu->id);
+                        $sheets[] = new DashboardTableSheetExport($this->calendar_year_id,$country->id,$entity->id,$complianceSubMenu->id,$this->red);
                     }
                 }
 

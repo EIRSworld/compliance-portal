@@ -98,7 +98,9 @@
             <span>Approved</span>
         </div>
         <div>
-            <a href="{{ route('report.new-dashboard-export', ['id' => $calendar_year_id, 'country_id' => $country->id ?? 0,  'entity_id' => $entity->id ?? 0 ]) }}" style="padding: 5px;" target="_blank">
+            <a href="{{ route('report.new-dashboard-export', ['id' => $calendar_year_id, 'country_id' => $country->id ?? 0,  'entity_id' => $entity->id ?? 0,
+ 'red' => $red ? 'true' : 'false' ]) }}"
+               style="padding: 5px;" target="_blank">
                 <x-filament::button>Export</x-filament::button>
             </a>
         </div>
@@ -193,6 +195,7 @@
                                                 @foreach($regular_yearly as $regular_year)
 
                                                         <?php
+//                                                            dd($is_red);
                                                         $event_name_yearly_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
                                                             ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
@@ -201,6 +204,12 @@
                                                                 ->where('occurrence', '=', 'Yearly')
                                                                 ->where('event_type', '=', 'Regular')
                                                                 ->whereAssignId(auth()->user()->id)
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
@@ -209,6 +218,12 @@
                                                                 ->whereComplianceSubMenuId($regular_year->id)
                                                                 ->where('occurrence', '=', 'Yearly')
                                                                 ->where('event_type', '=', 'Regular')
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get();
                                                         ?>
@@ -249,52 +264,55 @@
                                                             </tr>
                                                             </thead>
                                                         </table>
-                                                        <table
-                                                            class="w-full text-left rtl:text-right divide-y table-auto filament-tables-table"
-                                                            style="zoom: 90%; margin-top: 16px;">
 
-                                                            <tbody class="divide-y whitespace-nowrap">
+                                                            <table
+                                                                class="w-full text-left rtl:text-right divide-y table-auto filament-tables-table"
+                                                                style="zoom: 90%; margin-top: 16px;">
 
-                                                            <tr>
-                                                                <th class="text-center"
-                                                                    style="background-color: #DDD9C4;color: black;width: 10%;">
-                                                                    Event Name
-                                                                </th>
-                                                                @foreach($event_name_yearly_regular as $event_name_year)
-                                                                    <td style="background-color: #ffffff;font-weight: bold"
-                                                                        class="text-center">{{ $event_name_year->event_name }}</td>
-                                                                @endforeach
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center"
-                                                                    style="background-color: #DDD9C4;color: black;width: 10%;">
-                                                                    Due Date
-                                                                </th>
-                                                                @foreach($event_name_yearly_regular as $event_name_year)
-                                                                    @if($event_name_year->status == 'Red')
-                                                                        <td style="background-color: #F2DCDB"
-                                                                            class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
-                                                                    @elseif($event_name_year->status == 'Amber')
-                                                                        <td style="background-color: #FFFFCC"
-                                                                            class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
-                                                                    @elseif($event_name_year->status == 'Green')
-                                                                        <td style="background-color: #EBF1DE"
-                                                                            class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
-                                                                    @elseif($event_name_year->status == 'Blue')
-                                                                        <td style="background-color: #DCE6F1"
-                                                                            class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
-                                                                    @endif
-                                                                @endforeach
-                                                            </tr>
+                                                                <tbody class="divide-y whitespace-nowrap">
+
+                                                                <tr>
+                                                                    <th class="text-center"
+                                                                        style="background-color: #DDD9C4;color: black;width: 10%;">
+                                                                        Event Name
+                                                                    </th>
+                                                                    @foreach($event_name_yearly_regular as $event_name_year)
+
+                                                                        <td style="background-color: #ffffff;white-space: normal; word-wrap: break-word;width: 16px!important;"
+                                                                            class="text-center">{{ $event_name_year->event_name }}</td>
+                                                                    @endforeach
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="text-center"
+                                                                        style="background-color: #DDD9C4;color: black;width: 10%;">
+                                                                        Due Date
+                                                                    </th>
+                                                                    @foreach($event_name_yearly_regular as $event_name_year)
+                                                                        @if($event_name_year->status == 'Red')
+                                                                            <td style="background-color: #F2DCDB"
+                                                                                class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
+                                                                        @elseif($event_name_year->status == 'Amber')
+                                                                            <td style="background-color: #FFFFCC"
+                                                                                class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
+                                                                        @elseif($event_name_year->status == 'Green')
+                                                                            <td style="background-color: #EBF1DE"
+                                                                                class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
+                                                                        @elseif($event_name_year->status == 'Blue')
+                                                                            <td style="background-color: #DCE6F1"
+                                                                                class="text-center">{{ \Carbon\Carbon::parse($event_name_year->due_date)->format('d-M-Y') }}</td>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </tr>
 
 
-                                                            </tbody>
+                                                                </tbody>
 
-                                                        </table>
+                                                            </table>
+
                                                     @endif
                                                     <br>
                                                         <?php
-                                                        $event_name_qtr_regular = auth()->user()->hasRole('Compliance Officer')  || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
+                                                        $event_name_qtr_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
                                                             ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
                                                                 ->whereEntityId($entity->id)
@@ -302,6 +320,12 @@
                                                                 ->where('occurrence', '=', 'Qtr')
                                                                 ->where('event_type', '=', 'Regular')
                                                                 ->whereAssignId(auth()->user()->id)
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
@@ -310,6 +334,12 @@
                                                                 ->whereComplianceSubMenuId($regular_year->id)
                                                                 ->where('occurrence', '=', 'Qtr')
                                                                 ->where('event_type', '=', 'Regular')
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
@@ -360,7 +390,7 @@
                                                                 </th>
                                                                 @foreach($event_name_qtr_regular as $event_name => $events)
                                                                     <td class="text-center"
-                                                                        style="font-weight: bold">{{ $event_name }}</td>
+                                                                        style="background-color: #ffffff;white-space: normal; word-wrap: break-word;width: 16px!important;">{{ $event_name }}</td>
                                                                 @endforeach
                                                             </tr>
 
@@ -459,6 +489,12 @@
                                                                 ->where('occurrence', '=', 'Monthly')
                                                                 ->where('event_type', '=', 'Regular')
                                                                 ->whereAssignId(auth()->user()->id)
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
@@ -467,6 +503,12 @@
                                                                 ->whereComplianceSubMenuId($regular_year->id)
                                                                 ->where('occurrence', '=', 'Monthly')
                                                                 ->where('event_type', '=', 'Regular')
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
@@ -519,7 +561,7 @@
                                                                 </th>
                                                                 @foreach($event_name_monthly_regular as $event_name => $events)
                                                                     <td class="text-center"
-                                                                        style="font-weight: bold">{{ $event_name }}</td>
+                                                                        style="background-color: #ffffff;white-space: normal; word-wrap: break-word;width: 16px!important;">{{ $event_name }}</td>
                                                                 @endforeach
                                                             </tr>
 
@@ -801,6 +843,12 @@
                                                                 ->where('occurrence', '=', 'Yearly')
                                                                 ->where('event_type', '=', 'Add-Hoc')
                                                                 ->whereAssignId(auth()->user()->id)
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
@@ -809,6 +857,12 @@
                                                                 ->whereComplianceSubMenuId($regular_year->id)
                                                                 ->where('occurrence', '=', 'Yearly')
                                                                 ->where('event_type', '=', 'Add-Hoc')
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get();
                                                         ?>
@@ -861,8 +915,13 @@
                                                                     Event Name
                                                                 </th>
                                                                 @foreach($event_name_yearly_regular as $event_name_year)
-                                                                    <td style="background-color: #ffffff;font-weight: bold"
-                                                                        class="text-center">{{ $event_name_year->event_name }}</td>
+
+                                                                    <td style="background-color: #ffffff;white-space: normal; word-wrap: break-word;"
+                                                                        class="text-center">
+                                                                        {{ $event_name_year->event_name }}
+                                                                    </td>
+                                                                    {{--                                                                    <td style="background-color: #ffffff;font-weight: bold"--}}
+                                                                    {{--                                                                        class="text-center">{{ $event_name_year->event_name }}</td>--}}
                                                                 @endforeach
                                                             </tr>
                                                             <tr>
@@ -902,6 +961,12 @@
                                                                 ->where('occurrence', '=', 'Qtr')
                                                                 ->where('event_type', '=', 'Add-Hoc')
                                                                 ->whereAssignId(auth()->user()->id)
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
@@ -910,6 +975,12 @@
                                                                 ->whereComplianceSubMenuId($regular_year->id)
                                                                 ->where('occurrence', '=', 'Qtr')
                                                                 ->where('event_type', '=', 'Add-Hoc')
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
@@ -960,7 +1031,7 @@
                                                                 </th>
                                                                 @foreach($event_name_qtr_regular as $event_name => $events)
                                                                     <td class="text-center"
-                                                                        style="font-weight: bold">{{ $event_name }}</td>
+                                                                        style="background-color: #ffffff;white-space: normal; word-wrap: break-word;width: 16px!important;">{{ $event_name }}</td>
                                                                 @endforeach
                                                             </tr>
 
@@ -1059,6 +1130,12 @@
                                                                 ->where('occurrence', '=', 'Monthly')
                                                                 ->where('event_type', '=', 'Add-Hoc')
                                                                 ->whereAssignId(auth()->user()->id)
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
@@ -1067,6 +1144,12 @@
                                                                 ->whereComplianceSubMenuId($regular_year->id)
                                                                 ->where('occurrence', '=', 'Monthly')
                                                                 ->where('event_type', '=', 'Add-Hoc')
+                                                                ->when($red, function ($query, $red) {
+                                                                    if ($red == true) {
+                                                                        return $query->whereStatus('Red');
+                                                                    }
+                                                                    return $query;
+                                                                })
                                                                 ->orderBy('event_name', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
@@ -1118,7 +1201,7 @@
                                                                 </th>
                                                                 @foreach($event_name_monthly_regular as $event_name => $events)
                                                                     <td class="text-center"
-                                                                        style="font-weight: bold">{{ $event_name }}</td>
+                                                                        style="background-color: #ffffff;white-space: normal; word-wrap: break-word;width: 16px!important;">{{ $event_name }}</td>
                                                                 @endforeach
                                                             </tr>
 

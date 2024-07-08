@@ -13,10 +13,10 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 
 class DashboardTableSheetExport implements FromView, WithTitle
 {
-    public $country, $entity, $type, $type_id, $compliance_sub_menu_id;
+    public $country, $entity, $type, $type_id, $compliance_sub_menu_id, $red;
     protected $calendar_year_id, $country_id, $entity_id, $regular_id, $regular_yearly;
 
-    public function __construct($calendar_year_id, $country_id, $entity_id, $compliance_sub_menu_id)
+    public function __construct($calendar_year_id, $country_id, $entity_id, $compliance_sub_menu_id,$red)
     {
         $this->calendar_year_id = $calendar_year_id;
         $this->country_id = $country_id;
@@ -25,6 +25,10 @@ class DashboardTableSheetExport implements FromView, WithTitle
         $this->entity = Entity::whereId($this->entity_id)->first();
         $this->compliance_sub_menu_id = $compliance_sub_menu_id;
         $this->compliance_sub_menu = ComplianceSubMenu::whereId($this->compliance_sub_menu_id)->first();
+
+        $this->red = $red;
+
+//        dd($this->red);
 //        $this->regular_yearly = ComplianceSubMenu::whereCalendarYearId($this->calendar_year_id)->where('country_id', $this->country_id)
 //            ->where('entity_id', $this->entity_id)
 //            ->first();
@@ -34,9 +38,13 @@ class DashboardTableSheetExport implements FromView, WithTitle
 
     }
 
+//    public function title(): string
+//    {
+//        return $this->country->name . ' ' . $this->entity->entity_name . ' ' . $this->compliance_sub_menu->sub_menu_name;
+//    }
     public function title(): string
     {
-        return $this->country->name . ' ' . $this->entity->entity_name . ' ' . $this->compliance_sub_menu->sub_menu_name;
+        return substr($this->compliance_sub_menu->sub_menu_name, 0, 1) . '-' . $this->country->name . '-' . $this->entity->entity_name  ;
     }
 
     public function view(): View
@@ -47,7 +55,13 @@ class DashboardTableSheetExport implements FromView, WithTitle
                 ->whereEntityId($this->entity_id)
                 ->whereComplianceSubMenuId($this->compliance_sub_menu_id)
                 ->where('occurrence', '=', 'Yearly')
-                ->where('event_type', '=', 'Regular')
+//                ->where('event_type', '=', 'Regular')
+                ->when($this->red, function($query, $red) {
+                    if ($red == 'true') {
+                        return $query->whereStatus('Red');
+                    }
+                    return $query;
+                })
                 ->orderBy('event_name', 'asc')
                 ->whereAssignId(auth()->user()->id)
                 ->get();
@@ -57,7 +71,13 @@ class DashboardTableSheetExport implements FromView, WithTitle
                 ->whereEntityId($this->entity_id)
                 ->whereComplianceSubMenuId($this->compliance_sub_menu_id)
                 ->where('occurrence', '=', 'Yearly')
-                ->where('event_type', '=', 'Regular')
+//                ->where('event_type', '=', 'Regular')
+                ->when($this->red, function($query, $red) {
+                    if ($red == 'true') {
+                        return $query->whereStatus('Red');
+                    }
+                    return $query;
+                })
                 ->orderBy('event_name', 'asc')
 //                ->whereAssignId(auth()->user()->id)
                 ->get();
@@ -70,7 +90,13 @@ class DashboardTableSheetExport implements FromView, WithTitle
                 ->whereEntityId($this->entity_id)
                 ->whereComplianceSubMenuId($this->compliance_sub_menu_id)
                 ->where('occurrence', '=', 'Qtr')
-                ->where('event_type', '=', 'Regular')
+//                ->where('event_type', '=', 'Regular')
+                ->when($this->red, function($query, $red) {
+                    if ($red == 'true') {
+                        return $query->whereStatus('Red');
+                    }
+                    return $query;
+                })
                 ->orderBy('event_name', 'asc')
                 ->whereAssignId(auth()->user()->id)
                 ->get()->groupBy('event_name');
@@ -80,7 +106,13 @@ class DashboardTableSheetExport implements FromView, WithTitle
                 ->whereEntityId($this->entity_id)
                 ->whereComplianceSubMenuId($this->compliance_sub_menu_id)
                 ->where('occurrence', '=', 'Qtr')
-                ->where('event_type', '=', 'Regular')
+//                ->where('event_type', '=', 'Regular')
+                ->when($this->red, function($query, $red) {
+                    if ($red == 'true') {
+                        return $query->whereStatus('Red');
+                    }
+                    return $query;
+                })
                 ->orderBy('event_name', 'asc')
 //            ->whereAssignId(auth()->user()->id)
                 ->get()->groupBy('event_name');
@@ -93,7 +125,13 @@ class DashboardTableSheetExport implements FromView, WithTitle
                 ->whereEntityId($this->entity_id)
                 ->whereComplianceSubMenuId($this->compliance_sub_menu_id)
                 ->where('occurrence', '=', 'Monthly')
-                ->where('event_type', '=', 'Regular')
+//                ->where('event_type', '=', 'Regular')
+                ->when($this->red, function($query, $red) {
+                    if ($red == 'true') {
+                        return $query->whereStatus('Red');
+                    }
+                    return $query;
+                })
                 ->orderBy('event_name', 'asc')
                 ->whereAssignId(auth()->user()->id)
                 ->get()->groupBy('event_name');
@@ -103,7 +141,13 @@ class DashboardTableSheetExport implements FromView, WithTitle
                 ->whereEntityId($this->entity_id)
                 ->whereComplianceSubMenuId($this->compliance_sub_menu_id)
                 ->where('occurrence', '=', 'Monthly')
-                ->where('event_type', '=', 'Regular')
+//                ->where('event_type', '=', 'Regular')
+                ->when($this->red, function($query, $red) {
+                    if ($red == 'true') {
+                        return $query->whereStatus('Red');
+                    }
+                    return $query;
+                })
                 ->orderBy('event_name', 'asc')
 //            ->whereAssignId(auth()->user()->id)
                 ->get()->groupBy('event_name');
