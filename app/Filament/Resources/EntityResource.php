@@ -37,10 +37,16 @@ class EntityResource extends Resource
             ->schema([
                 Forms\Components\Card::make([
 
+                    Forms\Components\Select::make('entity_type')->searchable()
+                        ->options([
+                            'Insurance' => 'Insurance',
+                            'Reinsurance' => 'Reinsurance',
+                        ])->label('Entity Type'),
                     Forms\Components\TextInput::make('entity_name')
                         ->columnSpan(1)
                         ->label('Name')
                         ->required(),
+
                     Forms\Components\Select::make('country_id')->label('Country')
                         ->options(Country::pluck('name', 'id')->toArray())
                         ->searchable()
@@ -56,6 +62,7 @@ class EntityResource extends Resource
             ->columns([
 
                 Tables\Columns\TextColumn::make('country.name')->searchable(),
+                Tables\Columns\TextColumn::make('entity_type')->searchable(),
                 Tables\Columns\TextColumn::make('entity_name')->searchable(),
             ])
             ->filters([

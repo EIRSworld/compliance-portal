@@ -7,6 +7,7 @@ use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,6 +53,10 @@ class User extends Authenticatable implements FilamentUser
         'menu_access' => 'array',
     ];
 
+    public function countries()
+    {
+        return $this->belongsToMany(Country::class, 'countries'); // Adjust table name if necessary
+    }
     public function canAccessPanel(Panel $panel): bool
     {
         return true;

@@ -28,6 +28,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -131,6 +132,29 @@ class CreateComplianceEvent extends Page implements HasForms
                 Select::make('country_id')->columnSpan(3)
                     ->label('Country')->searchable()->preload()->reactive()
                     ->options(function (Get $get) {
+
+//                        $user = auth()->user();
+//
+//                        if (auth()->user()->hasRole('Compliance Manager')) {
+////                            $userCountry = User::whereId(auth()->user()->id)->first();
+//                            $userCountryIds = $user->countries->pluck('id')->toArray();
+////                            $userCountryIds = $userCountry->pluck('country_id')->toArray(); // Assuming a relation `countries` in User model
+//                            if ($get('calendar_year_id')) {
+//                                $countryId = CalendarYear::where('id', $get('calendar_year_id'))->pluck('country_id')->flatten()->toArray();
+//                                return Country::whereIn('id', $countryId)
+//                                    ->whereIn('id', $userCountryIds) // Filter by user countries
+//                                    ->pluck('name', 'id');
+//                            } else {
+//                                return Country::whereIn('id', $userCountryIds)->pluck('name', 'id'); // Only show user countries
+//                            }
+//                        } else {
+//                            if ($get('calendar_year_id')) {
+//                                $countryId = CalendarYear::where('id', $get('calendar_year_id'))->pluck('country_id')->flatten()->toArray();
+//                                return Country::whereIn('id', $countryId)->pluck('name', 'id');
+//                            } else {
+//                                return [];
+//                            }
+//                        }
                         if ($get('calendar_year_id')) {
                             $countryId = CalendarYear::where('id', $get('calendar_year_id'))->pluck('country_id')->flatten()->toArray();
                             return Country::whereIn('id', $countryId)->pluck('name', 'id');
@@ -155,10 +179,10 @@ class CreateComplianceEvent extends Page implements HasForms
                         if ($get('entity_id') && $get('country_id')) {
                             if (auth()->user()->hasRole('Super Admin')) {
 
-                                return ComplianceSubMenu::where('calendar_year_id', $this->calendar_year_id)->where('entity_id', $get('entity_id'))->pluck('sub_menu_name', 'id');
+                                return ComplianceSubMenu::where('calendar_year_id', $this->calendar_year_id)->where('country_id', $get('country_id'))->where('entity_id', $get('entity_id'))->pluck('sub_menu_name', 'id');
                             } elseif (auth()->user()->hasRole('Compliance Manager')) {
                                 $user = User::whereId(auth()->user()->id)->first();
-                                return ComplianceSubMenu::where('calendar_year_id', $this->calendar_year_id)->where('entity_id', $get('entity_id'))->where('sub_menu_name','=',$user->compliance_type )->pluck('sub_menu_name', 'id');
+                                return ComplianceSubMenu::where('calendar_year_id', $this->calendar_year_id)->where('country_id', $get('country_id'))->where('entity_id', $get('entity_id'))->where('sub_menu_name','=',$user->compliance_type )->pluck('sub_menu_name', 'id');
                             }
                         } else {
                             return [];
@@ -284,7 +308,7 @@ class CreateComplianceEvent extends Page implements HasForms
 //                        }),
                 ]),
 
-            ])->columns(6)->columnSpan(6)
+            ])->columns(12)->columnSpan(12)
 //            ])->columns(12)->columnSpan(12)
 
 
