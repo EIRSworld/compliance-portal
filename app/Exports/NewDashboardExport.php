@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Exports\Sheet\DashboardTableAddhocSheetExport;
 use App\Exports\Sheet\DashboardTableSheetExport;
 use App\Models\ComplianceMenu;
 use App\Models\CompliancePrimarySubMenu;
@@ -35,45 +36,53 @@ class NewDashboardExport implements WithMultipleSheets
     {
         $sheets = [];
         $countriesQuery = Country::query();
+
         if ($this->country_id) {
-            $countries =  $countriesQuery->whereId($this->country_id)->get();
-        }elseif($this->country_id == 0){
-        $countries = $countriesQuery->get();
+            $countries = $countriesQuery->whereId($this->country_id)->get();
+        } elseif ($this->country_id == 0) {
+            $countries = $countriesQuery->get();
         }
-//        dd($countries);
-        foreach($countries as $country){
-//            $entitiesQuery = Entity::whereCountryId($country->id)->get();
+
+        foreach ($countries as $country) {
             $entitiesQuery = Entity::query();
+
             if ($this->entity_id) {
                 $entities = $entitiesQuery->whereCountryId($country->id)->whereId($this->entity_id)->get();
-            }elseif($this->entity_id == 0){
-
-            $entities = $entitiesQuery->whereCountryId($country->id)->get();
+            } elseif ($this->entity_id == 0) {
+                $entities = $entitiesQuery->whereCountryId($country->id)->get();
             }
-//            dd($entities);
-            foreach($entities as $entity){
 
-                $complianceMenu = ComplianceMenu::whereCalendarYearId($this->calendar_year_id)->whereCountryId($country->id)->whereEntityId($entity->id)->first();
-                if ($complianceMenu){
-                    if(auth()->user()->hasRole('Compliance Manager')){
+            foreach ($entities as $entity) {
+                $complianceMenus = ComplianceMenu::whereCalendarYearId($this->calendar_year_id)
+                    ->whereCountryId($country->id)
+                    ->whereEntityId($entity->id)
+                    ->get();
+
+                foreach ($complianceMenus as $complianceMenu) {
+                    // Add DashboardTableAddhocSheetExport
+                    $sheets[] = new DashboardTableAddhocSheetExport($this->calendar_year_id, $country->id, $entity->id, $complianceMenu->id, $this->red);
+
+                    if (auth()->user()->hasRole('Compliance Manager')) {
                         $user = User::find(auth()->user()->id);
-
-                        $complianceSubMenus = ComplianceSubMenu::whereCalendarYearId($this->calendar_year_id)->whereCountryId($country->id)->whereEntityId($entity->id)->whereSubMenuName($user->compliance_type)->get();
-                    }else{
-
-                    $complianceSubMenus = ComplianceSubMenu::whereComplianceMenuId($complianceMenu->id)->get();
+                        $complianceSubMenus = ComplianceSubMenu::whereCalendarYearId($this->calendar_year_id)
+                            ->whereCountryId($country->id)
+                            ->whereEntityId($entity->id)
+                            ->whereSubMenuName($user->compliance_type)
+                            ->get();
+                    } else {
+                        $complianceSubMenus = ComplianceSubMenu::whereComplianceMenuId($complianceMenu->id)->get();
                     }
 
-                    foreach($complianceSubMenus as $complianceSubMenu){
-                        $sheets[] = new DashboardTableSheetExport($this->calendar_year_id,$country->id,$entity->id,$complianceSubMenu->id,$this->red);
+                    foreach ($complianceSubMenus as $complianceSubMenu) {
+                        $sheets[] = new DashboardTableSheetExport($this->calendar_year_id, $country->id, $entity->id, $complianceSubMenu->id, $this->red);
                     }
                 }
-
             }
-
         }
-
 
         return $sheets;
     }
+
+
+
 }
