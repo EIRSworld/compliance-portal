@@ -218,6 +218,7 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
 
 //                TextColumn::make('expired_date')->label('Due Date')->date('d-m-Y'),
                 TextColumn::make('due_date')->label('Due Date')->date('d-m-Y'),
+                TextColumn::make('event_type')->label('Event Type'),
                 TextColumn::make('user.name')->label('Created By'),
                 ViewColumn::make('id')->label('Documents')->view('document.compliance-primary-sub-menu'),
                 ViewColumn::make('ids')->label('Email Documents')->view('document.compliance-mail-document'),
