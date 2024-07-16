@@ -126,10 +126,10 @@ class CreateComplianceEvent extends Page implements HasForms
 //            Card::make([
 
             Card::make([
-                Select::make('calendar_year_id')->reactive()
+                Select::make('calendar_year_id')->reactive()->required()
                     ->label('Financial Year')->searchable()->preload()
                     ->options(CalendarYear::pluck('name', 'id'))->columnSpan(3),
-                Select::make('country_id')->columnSpan(3)
+                Select::make('country_id')->columnSpan(3)->required()
                     ->label('Country')->searchable()->preload()->reactive()
                     ->options(function (Get $get) {
 
@@ -162,7 +162,7 @@ class CreateComplianceEvent extends Page implements HasForms
                             return [];
                         }
                     }),
-                Select::make('entity_id')->columnSpan(3)
+                Select::make('entity_id')->columnSpan(3)->required()
                     ->label('Entity Name')->searchable()->preload()->reactive()
                     ->options(function (Get $get) {
                         if ($get('country_id')) {
@@ -171,7 +171,7 @@ class CreateComplianceEvent extends Page implements HasForms
                             return [];
                         }
                     }),
-                Select::make('compliance_sub_menu_id')->columnSpan(3)
+                Select::make('compliance_sub_menu_id')->columnSpan(3)->required()
                     ->label('Compliance Type')->searchable()->reactive()
                     ->options(function (callable $get) {
 //                        dd($get('entity_id'));
@@ -191,7 +191,7 @@ class CreateComplianceEvent extends Page implements HasForms
                 TextInput::make('event_name')->columnSpan(3)
                     ->label('Event Name')->maxLength(30)
                     ->required(),
-                Radio::make('event_type')->inline()->reactive()
+                Radio::make('event_type')->inline()->reactive()->required()
                     ->options([
                         'Regular' => 'Regular',
                         'Add-Hoc' => 'Add-Hoc',
@@ -202,7 +202,7 @@ class CreateComplianceEvent extends Page implements HasForms
 //                        ->label('Description')
 //                        ->required(),
 
-                Radio::make('occurrence')->inline()->reactive()
+                Radio::make('occurrence')->inline()->reactive()->required()
                     ->options([
                         'Monthly' => 'Monthly',
                         'Yearly' => 'Yearly',
