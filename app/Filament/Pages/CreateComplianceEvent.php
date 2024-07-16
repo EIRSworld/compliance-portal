@@ -328,6 +328,8 @@ class CreateComplianceEvent extends Page implements HasForms
 
     public function submit()
     {
+        $this->validate();
+
         try {
             DB::beginTransaction();
 
