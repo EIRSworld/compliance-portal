@@ -4,6 +4,8 @@
         <th style="font-weight: bold">Country Name</th>
         <th style="font-weight: bold">Entity Name</th>
         <th style="font-weight: bold">Compliance Type</th>
+        <th style="font-weight: bold">Event Type</th>
+        <th style="font-weight: bold">Occurrence</th>
         <th style="font-weight: bold">Event Name</th>
         <th style="font-weight: bold">Due Date</th>
         <th style="font-weight: bold">Upload Status</th>
@@ -31,6 +33,8 @@
             <td> {{  $management->country->name }}</td>
             <td>{{ $management->entity->entity_name }}</td>
             <td>{{ $management->complianceSubMenu->sub_menu_name }}</td>
+            <td>{{ $management->event_type }}</td>
+            <td>{{ $management->occurrence }}</td>
             <td>{{ $management->event_name }}</td>
             <td>{{ \Carbon\Carbon::parse($management->due_date)->format('d-m-Y') }}</td>
 
