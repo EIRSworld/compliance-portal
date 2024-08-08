@@ -211,6 +211,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
@@ -225,6 +226,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get();
                                                         ?>
 
@@ -327,6 +329,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
@@ -341,6 +344,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
 
@@ -496,6 +500,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
@@ -510,6 +515,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
 
@@ -850,6 +856,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
@@ -864,6 +871,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get();
                                                         ?>
 
@@ -968,6 +976,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
@@ -982,6 +991,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
 
@@ -1137,6 +1147,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name')
                                                             : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                                                                 ->whereCountryId($country->id)
@@ -1151,6 +1162,7 @@
                                                                     return $query;
                                                                 })
                                                                 ->orderBy('event_name', 'asc')
+                                                                ->orderBy('due_date', 'asc')
                                                                 ->get()->groupBy('event_name');
                                                         ?>
 
