@@ -9,9 +9,10 @@ use App\Models\Entity;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class DashboardTableSheetExport implements FromView, WithTitle
+class DashboardTableSheetExport implements FromView, WithTitle, ShouldAutoSize
 {
     public $country, $entity, $type, $type_id, $compliance_sub_menu_id, $red;
     protected $calendar_year_id, $country_id, $entity_id, $regular_id, $regular_yearly;
