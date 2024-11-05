@@ -25,7 +25,7 @@ class RedStatusChange extends Command
      */
     public function handle()
     {
-        $compliancePrimarySubMenus = \App\Models\CompliancePrimarySubMenu::where('status','=','Amber')->get();
+        $compliancePrimarySubMenus = \App\Models\CompliancePrimarySubMenu::where('status','=','Amber')->where('is_uploaded','=',0)->get();
         foreach ($compliancePrimarySubMenus as $compliancePrimarySubMenu) {
 
             $current_date = \Carbon\Carbon::now()->format('Y-m-d');

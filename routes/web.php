@@ -388,3 +388,21 @@ Route::get('/test', function () {
 
 
 })->name('test');
+
+
+
+Route::get('/red-status', function () {
+
+    $compliancePrimarySubMenus = \App\Models\CompliancePrimarySubMenu::where('status','=','Amber')->where('is_uploaded','=',0)->get();
+    foreach ($compliancePrimarySubMenus as $compliancePrimarySubMenu) {
+
+        $current_date = \Carbon\Carbon::now()->format('Y-m-d');
+        $due_date = \Carbon\Carbon::parse($compliancePrimarySubMenu->due_date)->format('Y-m-d');
+        if ($current_date > $due_date) {
+            $compliancePrimarySubMenu->update([
+                'status' => 'Red',
+            ]);
+        }
+    }
+    dd('test');
+});
