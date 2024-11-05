@@ -7,6 +7,7 @@ use App\Models\CalendarYear;
 use App\Models\ComplianceMenu;
 use App\Models\CompliancePrimarySubMenu;
 use App\Models\ComplianceSubMenu;
+use App\Models\Country;
 use App\Models\UploadDocument;
 use App\Models\User;
 use Carbon\Carbon;
@@ -311,18 +312,11 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
                     ->label('Edit')
                     ->mountUsing(function (ComponentContainer $form, $record) {
                         $form->fill([
-//                            'compliance_menu_id' => $this->compliance_menu->id,
-//                            'compliance_sub_menu_id' => $this->compliance_sub_menu->id,
-//                            'calendar_year_id' => $this->calendar_year_id,
-//                            'year' => $record->year,
-//                            'compliance_name' => $this->compliance_menu->name,
-//                            'compliance_sub_name' => $this->compliance_sub_menu->sub_menu_name,
-//                            'document_id' => $this->compliance_menu->document_id,
-//                            'document_name' => $this->compliance_menu->document->name,
-//                            'country_id' => $this->compliance_menu->document->country_id,
                             'event_name' => $record->event_name,
                             'due_date' => $record->due_date,
                             'status' => $record->status,
+                            'assign_id' => $record->assign_id,
+                            'country_id' => $record->country_id,
 
                         ]);
                     })
@@ -330,15 +324,7 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
                         Card::make()
                             ->schema([
                                 Card::make([
-//                                    Hidden::make('document_id'),
-//                                    Hidden::make('country_id'),
-//                                    Hidden::make('calendar_year_id'),
-//                                    Hidden::make('year'),
-//                                    TextInput::make('document_name')->label('Country')->disabled(),
-//                                    Hidden::make('compliance_menu_id'),
-//                                    TextInput::make('compliance_name')->label('Folder Name')->disabled(),
-//                                    Hidden::make('compliance_sub_menu_id'),
-//                                    TextInput::make('compliance_sub_name')->label('Sub Folder Name')->disabled(),
+                                    Hidden::make('country_id')->reactive(),
                                     TextInput::make('event_name')
 //                                        ->columnSpan(1)
                                         ->label('Event Name')
@@ -384,18 +370,37 @@ class CompliancePrimarySubMenuList extends Page implements HasTable
                                             }
                                             return [];
                                         }),
+                                    Select::make('assign_id')
+                                        ->label('Assign to')->searchable()->preload()->reactive()
+                                        ->options(function (Get $get) {
+                                            if ($get('country_id')) {
+//                                                $country = Country::whereName($get('country_id'))->first();
+                                            return User::role(['Compliance Officer', 'Cluster Head', 'Country Head'])->
+                                                whereJsonContains('country_id', (string)$get('country_id'))->pluck('name', 'id');
+//                                                return User::
+//                                                whereJsonContains('country_id', $get('country_id'))->
+//                                                pluck('name', 'id');
+                                            } else {
+                                                return [];
+                                            }
+                                        })->placeholder('Select')->columnSpan(2)
+                                        ->extraAttributes(function (Get $get) {
+                                            if ($get('status') == EventStatus::Red) {
+                                                return ['style' => 'background:#fcc4c4;width:500px'];
+                                            } elseif ($get('status') == EventStatus::Amber) {
+                                                return ['style' => 'background:#ffeec7;width:500px'];
+                                            }
+                                            return [];
+                                        }),
+
                                 ])->columns(3)
                             ])
                     ])
                     ->action(function (array $data, $record, $form): void {
                         $compliancePrimarySubMenu = CompliancePrimarySubMenu::find($record->id);
-//                        $compliancePrimarySubMenu->document_id = $data['document_id'];
-//                        $compliancePrimarySubMenu->country_id = $data['country_id'];
-//                        $compliancePrimarySubMenu->compliance_menu_id = $data['compliance_menu_id'];
-//                        $compliancePrimarySubMenu->calendar_year_id = $data['calendar_year_id'];
-//                        $compliancePrimarySubMenu->year = $data['year'];
                         $compliancePrimarySubMenu->event_name = $data['event_name'];
                         $compliancePrimarySubMenu->due_date = $data['due_date'];
+                        $compliancePrimarySubMenu->assign_id = $data['assign_id'];
                         $compliancePrimarySubMenu->status = $data['status'];
 
                         $compliancePrimarySubMenu->save();
