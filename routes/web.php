@@ -67,45 +67,45 @@ Route::get('/test-email', function () {
 //    ];
     $countries = [
         'Tanzania' => [
-            'name' => ['Pranita'],
-            'to' => [ 'manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => [ 'joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'IVC' => [
-            'name' => ['Pranita'],
-            'to' => ['manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => ['joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
 
         'Kenya' => [
-            'name' => ['Pranita'],
-            'to' => ['manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => ['joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
 
         'South Africa' => [
-            'name' => ['Pranita'],
-            'to' => ['manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => ['joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Zambia' => [
-            'name' => ['Pranita'],
-            'to' => ['manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => ['joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Mozambique' => [
-            'name' => ['Pranita'],
-            'to' => ['manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => ['joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Mauritius' => [
-            'name' => ['Pranita'],
-            'to' => ['manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => ['joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Malawi' => [
-            'name' => ['Pranita'],
-            'to' => ['manoj.pachamuthu@eirsworld.com'],
+            'name' => ['Joveil'],
+            'to' => ['joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
     ];
