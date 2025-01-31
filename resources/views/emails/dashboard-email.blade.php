@@ -862,7 +862,7 @@
         ?>
 
     {{--                                                    Qtr Table--}}
-    @if($event_name_qtr_regular)
+    @if(count($event_name_qtr_regular) > 0)
         <table
             class="w-full text-left rtl:text-right divide-y table-auto filament-tables-table"
             style="zoom: 90%; margin-top: 20px;">
@@ -1033,7 +1033,7 @@
         ?>
 
     {{--                                                    Monthly Table--}}
-    @if($event_name_monthly_regular)
+    @if(count($event_name_monthly_regular) > 0)
 
         <table
             class="w-full text-left rtl:text-right divide-y table-auto filament-tables-table"
