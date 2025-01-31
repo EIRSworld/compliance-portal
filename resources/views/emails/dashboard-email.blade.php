@@ -93,7 +93,7 @@
 
             {{--                                                    Yearly Table--}}
             @if(count($event_name_yearly_regular) > 0)
-
+                <h5 style="text-decoration: underline">{{ $entity->entity_name ?? ''}}</h5>
                 <table
                     class="w-full text-left rtl:text-right divide-y table-auto filament-tables-table"
                     style="zoom: 90%; margin-top: 20px;">
@@ -743,8 +743,9 @@
 
 
     {{--                                                    Yearly Table--}}
-    @if($event_name_yearly_regular)
+    @if(count($event_name_yearly_regular) > 0)
 
+        <h5 style="text-decoration: underline">{{ $entity->entity_name ?? ''}}</h5>
         <table
             class="w-full text-left rtl:text-right divide-y table-auto filament-tables-table"
             style="zoom: 90%; margin-top: 20px;">
