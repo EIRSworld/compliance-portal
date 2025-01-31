@@ -68,44 +68,44 @@ Route::get('/test-email', function () {
     $countries = [
         'Tanzania' => [
             'name' => ['Pranita'],
-            'to' => [ 'pranita.jain@etgworld.com'],
+            'to' => [ 'manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'IVC' => [
             'name' => ['Pranita'],
-            'to' => ['pranita.jain@etgworld.com'],
+            'to' => ['manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
 
         'Kenya' => [
             'name' => ['Pranita'],
-            'to' => ['pranita.jain@etgworld.com'],
+            'to' => ['manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
 
         'South Africa' => [
             'name' => ['Pranita'],
-            'to' => ['pranita.jain@etgworld.com'],
+            'to' => ['manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Zambia' => [
             'name' => ['Pranita'],
-            'to' => ['pranita.jain@etgworld.com'],
+            'to' => ['manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Mozambique' => [
             'name' => ['Pranita'],
-            'to' => ['pranita.jain@etgworld.com'],
+            'to' => ['manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Mauritius' => [
             'name' => ['Pranita'],
-            'to' => ['pranita.jain@etgworld.com'],
+            'to' => ['manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
         'Malawi' => [
             'name' => ['Pranita'],
-            'to' => ['pranita.jain@etgworld.com'],
+            'to' => ['manoj.pachamuthu@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
     ];
@@ -123,6 +123,7 @@ Route::get('/test-email', function () {
             ]);
         }
     }
+    dd('done');
 
 });
 
