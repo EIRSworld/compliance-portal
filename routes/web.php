@@ -25,90 +25,89 @@ use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/test-email', function () {
 
-//    $countries = [
-//        'Tanzania' => [
-//            'name' => ['Snehal Sheth', 'Sumantra'],
-//            'to' => ['snehal.sheth@eirsworld.com', 'sumantra.banerjee@etgworld.com'],
-//            'cc' => ['bhagyashri.solanki@eirsworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
-//        ],
-//        'IVC' => [
-//            'name' => ['Alka Verma', 'Sumantra', 'Nolwenn', "Kouakou N'Goran Herve"],
-//            'to' => ['alka.verma@eirsworld.com', 'sumantra.banerjee@etgworld.com', 'nolwenn.allano@etgworld.com', 'herve.kouakou@eirsworld.com'],
-//            'cc' => ['deepak.goyal@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com', 'mahesh.verulkar@etgworld.com']
-////            'cc' => ['harrish.gunasekaran@eirsworld.com','harish@nordicsolutions.in']
-//        ],
-//
-//        'Kenya' => [
-//            'name' => ['Christine Gikunda', 'Gerald Yiminyi', 'Nigel Pillay', 'Nolwenn'],
-//            'to' => ['christine.gikunda@etgworld.com', 'gerald.yiminyi@etgworld.com', 'nigel.pillay@etgworld.com', 'nolwenn.allano@etgworld.com'],
-//            'cc' => ['etglke.accounts@etgworld.com', 'sunil.pulavarthi@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
-//        ],
-//
-//        'South Africa' => [
-//            'name' => ['Nigel Pillay', 'Clinton Brown'],
-//            'to' => ['nigel.pillay@etgworld.com', 'clinton.brown@etgworld.com'],
-//            'cc' => ['preethi.s@etgworld.com', 'rakhee.bhowan@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
-//        ],
-//        'Zambia' => [
-//            'name' => ['Issac', 'Snehal Sheth', 'Margaret Banda'],
-//            'to' => ['isaac.mkandawire@eirsworld.com', 'snehal.sheth@eirsworld.com', 'margaret.banda@eirsworld.com'],
-//            'cc' => ['faiz.ahmad@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
-//        ],
-//        'Mozambique' => [
-//            'name' => ['Rakhee Bhowan'],
-//            'to' => ['rakhee.bhowan@etgworld.com'],
-//            'cc' => ['preethi.s@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
-//        ],
-//        'Mauritius' => [
-//            'name' => ['Sumantra'],
-//            'to' => ['sumantra.banerjee@etgworld.com'],
-//            'cc' => ['vindhyashree.kn@etgworld.com', 'gyana.sanbad@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com']
-//        ]
-//    ];
     $countries = [
         'Tanzania' => [
-            'name' => ['Joveil'],
-            'to' => [ 'joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
+            'name' => ['Snehal Sheth', 'Sumantra'],
+            'to' => ['snehal.sheth@eirsworld.com', 'sumantra.banerjee@etgworld.com'],
+            'cc' => ['bhagyashri.solanki@eirsworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'IVC' => [
-            'name' => ['Joveil'],
-            'to' => ['joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
+            'name' => ['Alka Verma', 'Sumantra', 'Nolwenn', "Kouakou N'Goran Herve"],
+            'to' => ['alka.verma@eirsworld.com', 'sumantra.banerjee@etgworld.com', 'nolwenn.allano@etgworld.com', 'herve.kouakou@eirsworld.com'],
+            'cc' => ['deepak.goyal@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com', 'mahesh.verulkar@etgworld.com']
         ],
 
         'Kenya' => [
-            'name' => ['Joveil'],
-            'to' => ['joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
+            'name' => ['Christine Gikunda', 'Gerald Yiminyi', 'Nigel Pillay', 'Nolwenn'],
+            'to' => ['christine.gikunda@etgworld.com', 'gerald.yiminyi@etgworld.com', 'nigel.pillay@etgworld.com', 'nolwenn.allano@etgworld.com'],
+            'cc' => ['etglke.accounts@etgworld.com', 'sunil.pulavarthi@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
 
         'South Africa' => [
-            'name' => ['Joveil'],
-            'to' => ['joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
+            'name' => ['Nigel Pillay', 'Clinton Brown'],
+            'to' => ['nigel.pillay@etgworld.com', 'clinton.brown@etgworld.com'],
+            'cc' => ['preethi.s@etgworld.com', 'rakhee.bhowan@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'Zambia' => [
-            'name' => ['Joveil'],
-            'to' => ['joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
+            'name' => ['Issac', 'Snehal Sheth', 'Margaret Banda'],
+            'to' => ['isaac.mkandawire@eirsworld.com', 'snehal.sheth@eirsworld.com', 'margaret.banda@eirsworld.com'],
+            'cc' => ['faiz.ahmad@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'Mozambique' => [
-            'name' => ['Joveil'],
-            'to' => ['joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
+            'name' => ['Rakhee Bhowan'],
+            'to' => ['rakhee.bhowan@etgworld.com'],
+            'cc' => ['preethi.s@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'Mauritius' => [
-            'name' => ['Joveil'],
-            'to' => ['joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
-        ],
-        'Malawi' => [
-            'name' => ['Joveil'],
-            'to' => ['joveil.canete@etgworld.com'],
-            'cc' => ['harrish.gunasekaran@eirsworld.com']
-        ],
+            'name' => ['Sumantra'],
+            'to' => ['sumantra.banerjee@etgworld.com'],
+            'cc' => ['vindhyashree.kn@etgworld.com', 'gyana.sanbad@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com']
+        ]
     ];
+//    $countries = [
+//        'Tanzania' => [
+//            'name' => ['Joveil'],
+//            'to' => [ 'joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//        'IVC' => [
+//            'name' => ['Joveil'],
+//            'to' => ['joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//
+//        'Kenya' => [
+//            'name' => ['Joveil'],
+//            'to' => ['joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//
+//        'South Africa' => [
+//            'name' => ['Joveil'],
+//            'to' => ['joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//        'Zambia' => [
+//            'name' => ['Joveil'],
+//            'to' => ['joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//        'Mozambique' => [
+//            'name' => ['Joveil'],
+//            'to' => ['joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//        'Mauritius' => [
+//            'name' => ['Joveil'],
+//            'to' => ['joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//        'Malawi' => [
+//            'name' => ['Joveil'],
+//            'to' => ['joveil.canete@etgworld.com'],
+//            'cc' => ['harrish.gunasekaran@eirsworld.com']
+//        ],
+//    ];
 
     foreach ($countries as $key => $country) {
         $countryModel = Country::whereName($key)->first();
@@ -494,10 +493,9 @@ Route::get('/test', function () {
 })->name('test');
 
 
-
 Route::get('/red-status', function () {
 
-    $compliancePrimarySubMenus = \App\Models\CompliancePrimarySubMenu::where('status','=','Amber')->where('is_uploaded','=',0)->get();
+    $compliancePrimarySubMenus = \App\Models\CompliancePrimarySubMenu::where('status', '=', 'Amber')->where('is_uploaded', '=', 0)->get();
     foreach ($compliancePrimarySubMenus as $compliancePrimarySubMenu) {
 
         $current_date = \Carbon\Carbon::now()->format('Y-m-d');
