@@ -70,7 +70,7 @@ Route::get('/test-email', function () {
     $countries = [
         'Tanzania' => [
             'name' => ['Joveil'],
-            'to' => [ 'harrish.gunasekaran@eirsworld.com'],
+            'to' => [ 'joveil.canete@etgworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
 //        'IVC' => [
