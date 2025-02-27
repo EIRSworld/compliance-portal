@@ -121,7 +121,7 @@ Route::get('/test-email', function () {
             \Illuminate\Support\Facades\Log::info('Email sent successfully.', [
                 'to' => $country['to'],
                 'cc' => $country['cc'] ?? 'No CC',
-                'country' => $country['name'],
+                'country' => $key,
             ]);
         }
     }

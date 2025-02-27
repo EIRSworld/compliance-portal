@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\DashboardSummaryReport;
 use App\Console\Commands\FileRemainder;
 use App\Console\Commands\SummaryReport;
 use Illuminate\Console\Scheduling\Schedule;
@@ -16,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command(FileRemainder::class)->everyMinute();
          $schedule->command(SummaryReport::class)->everyMinute();
+         $schedule->command(DashboardSummaryReport::class)->everyMinute();
     }
 
     /**
