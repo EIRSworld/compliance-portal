@@ -261,24 +261,7 @@
 
                 <?php
 //                                                            dd($is_red);
-                $event_name_yearly_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
-                    ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
-                        ->whereCountryId($country->id)
-                        ->whereEntityId($entity->id)
-                        ->whereComplianceSubMenuId($regular_year->id)
-                        ->where('occurrence', '=', 'Yearly')
-                        ->where('event_type', '=', 'Regular')
-                        ->whereAssignId(auth()->user()->id)
-                        ->when($red, function ($query, $red) {
-                            if ($red == true) {
-                                return $query->whereStatus('Red');
-                            }
-                            return $query;
-                        })
-                        ->orderBy('event_name', 'asc')
-                        ->orderBy('due_date', 'asc')
-                        ->get()
-                    : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
+                $event_name_yearly_regular = \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                         ->whereCountryId($country->id)
                         ->whereEntityId($entity->id)
                         ->whereComplianceSubMenuId($regular_year->id)
@@ -295,24 +278,7 @@
                         ->get();
                 ?>
                 <?php
-                $event_name_qtr_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
-                    ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
-                        ->whereCountryId($country->id)
-                        ->whereEntityId($entity->id)
-                        ->whereComplianceSubMenuId($regular_year->id)
-                        ->where('occurrence', '=', 'Qtr')
-                        ->where('event_type', '=', 'Regular')
-                        ->whereAssignId(auth()->user()->id)
-                        ->when($red, function ($query, $red) {
-                            if ($red == true) {
-                                return $query->whereStatus('Red');
-                            }
-                            return $query;
-                        })
-                        ->orderBy('event_name', 'asc')
-                        ->orderBy('due_date', 'asc')
-                        ->get()->groupBy('event_name')
-                    : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
+                $event_name_qtr_regular = \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                         ->whereCountryId($country->id)
                         ->whereEntityId($entity->id)
                         ->whereComplianceSubMenuId($regular_year->id)
@@ -329,24 +295,7 @@
                         ->get()->groupBy('event_name');
                 ?>
                 <?php
-                $event_name_monthly_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
-                    ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
-                        ->whereCountryId($country->id)
-                        ->whereEntityId($entity->id)
-                        ->whereComplianceSubMenuId($regular_year->id)
-                        ->where('occurrence', '=', 'Monthly')
-                        ->where('event_type', '=', 'Regular')
-                        ->whereAssignId(auth()->user()->id)
-                        ->when($red, function ($query, $red) {
-                            if ($red == true) {
-                                return $query->whereStatus('Red');
-                            }
-                            return $query;
-                        })
-                        ->orderBy('event_name', 'asc')
-                        ->orderBy('due_date', 'asc')
-                        ->get()->groupBy('event_name')
-                    : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
+                $event_name_monthly_regular = \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                         ->whereCountryId($country->id)
                         ->whereEntityId($entity->id)
                         ->whereComplianceSubMenuId($regular_year->id)
@@ -845,24 +794,7 @@
 
                     <?php
 //                                                            dd($is_red);
-                    $event_name_yearly_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
-                        ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
-                            ->whereCountryId($country->id)
-                            ->whereEntityId($entity->id)
-                            ->whereComplianceSubMenuId($regular_year->id)
-                            ->where('occurrence', '=', 'Yearly')
-                            ->where('event_type', '=', 'Add-Hoc')
-                            ->whereAssignId(auth()->user()->id)
-                            ->when($red, function ($query, $red) {
-                                if ($red == true) {
-                                    return $query->whereStatus('Red');
-                                }
-                                return $query;
-                            })
-                            ->orderBy('event_name', 'asc')
-                            ->orderBy('due_date', 'asc')
-                            ->get()
-                        : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
+                    $event_name_yearly_regular = \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                             ->whereCountryId($country->id)
                             ->whereEntityId($entity->id)
                             ->whereComplianceSubMenuId($regular_year->id)
@@ -879,24 +811,7 @@
                             ->get();
                     ?>
                     <?php
-                    $event_name_qtr_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
-                        ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
-                            ->whereCountryId($country->id)
-                            ->whereEntityId($entity->id)
-                            ->whereComplianceSubMenuId($regular_year->id)
-                            ->where('occurrence', '=', 'Qtr')
-                            ->where('event_type', '=', 'Add-Hoc')
-                            ->whereAssignId(auth()->user()->id)
-                            ->when($red, function ($query, $red) {
-                                if ($red == true) {
-                                    return $query->whereStatus('Red');
-                                }
-                                return $query;
-                            })
-                            ->orderBy('event_name', 'asc')
-                            ->orderBy('due_date', 'asc')
-                            ->get()->groupBy('event_name')
-                        : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
+                    $event_name_qtr_regular = \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                             ->whereCountryId($country->id)
                             ->whereEntityId($entity->id)
                             ->whereComplianceSubMenuId($regular_year->id)
@@ -913,24 +828,7 @@
                             ->get()->groupBy('event_name');
                     ?>
                     <?php
-                    $event_name_monthly_regular = auth()->user()->hasRole('Compliance Officer') || auth()->user()->hasRole('Cluster Head') || auth()->user()->hasRole('Country Head')
-                        ? \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
-                            ->whereCountryId($country->id)
-                            ->whereEntityId($entity->id)
-                            ->whereComplianceSubMenuId($regular_year->id)
-                            ->where('occurrence', '=', 'Monthly')
-                            ->where('event_type', '=', 'Add-Hoc')
-                            ->whereAssignId(auth()->user()->id)
-                            ->when($red, function ($query, $red) {
-                                if ($red == true) {
-                                    return $query->whereStatus('Red');
-                                }
-                                return $query;
-                            })
-                            ->orderBy('event_name', 'asc')
-                            ->orderBy('due_date', 'asc')
-                            ->get()->groupBy('event_name')
-                        : \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
+                    $event_name_monthly_regular = \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendar_year_id)
                             ->whereCountryId($country->id)
                             ->whereEntityId($entity->id)
                             ->whereComplianceSubMenuId($regular_year->id)
