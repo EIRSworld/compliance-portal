@@ -70,46 +70,46 @@ Route::get('/test-email', function () {
     $countries = [
         'Tanzania' => [
             'name' => ['Joveil'],
-            'to' => [ 'joveil.canete@etgworld.com'],
+            'to' => [ 'harrish.gunasekaran@eirsworld.com'],
             'cc' => ['harrish.gunasekaran@eirsworld.com']
         ],
-//        'IVC' => [
-//            'name' => ['Joveil'],
-//            'to' => ['joveil.canete@etgworld.com'],
-//            'cc' => ['harrish.gunasekaran@eirsworld.com']
-//        ],
-//
-//        'Kenya' => [
-//            'name' => ['Joveil'],
-//            'to' => ['joveil.canete@etgworld.com'],
-//            'cc' => ['harrish.gunasekaran@eirsworld.com']
-//        ],
-//
-//        'South Africa' => [
-//            'name' => ['Joveil'],
-//            'to' => ['joveil.canete@etgworld.com'],
-//            'cc' => ['harrish.gunasekaran@eirsworld.com']
-//        ],
-//        'Zambia' => [
-//            'name' => ['Joveil'],
-//            'to' => ['joveil.canete@etgworld.com'],
-//            'cc' => ['harrish.gunasekaran@eirsworld.com']
-//        ],
-//        'Mozambique' => [
-//            'name' => ['Joveil'],
-//            'to' => ['joveil.canete@etgworld.com'],
-//            'cc' => ['harrish.gunasekaran@eirsworld.com']
-//        ],
-//        'Mauritius' => [
-//            'name' => ['Joveil'],
-//            'to' => ['joveil.canete@etgworld.com'],
-//            'cc' => ['harrish.gunasekaran@eirsworld.com']
-//        ],
-//        'Malawi' => [
-//            'name' => ['Joveil'],
-//            'to' => ['joveil.canete@etgworld.com'],
-//            'cc' => ['harrish.gunasekaran@eirsworld.com']
-//        ],
+        'IVC' => [
+            'name' => ['Joveil'],
+            'to' => ['harrish.gunasekaran@eirsworld.com'],
+            'cc' => ['harrish.gunasekaran@eirsworld.com']
+        ],
+
+        'Kenya' => [
+            'name' => ['Joveil'],
+            'to' => ['harrish.gunasekaran@eirsworld.com'],
+            'cc' => ['harrish.gunasekaran@eirsworld.com']
+        ],
+
+        'South Africa' => [
+            'name' => ['Joveil'],
+            'to' => ['harrish.gunasekaran@eirsworld.com'],
+            'cc' => ['harrish.gunasekaran@eirsworld.com']
+        ],
+        'Zambia' => [
+            'name' => ['Joveil'],
+            'to' => ['harrish.gunasekaran@eirsworld.com'],
+            'cc' => ['harrish.gunasekaran@eirsworld.com']
+        ],
+        'Mozambique' => [
+            'name' => ['Joveil'],
+            'to' => ['harrish.gunasekaran@eirsworld.com'],
+            'cc' => ['harrish.gunasekaran@eirsworld.com']
+        ],
+        'Mauritius' => [
+            'name' => ['Joveil'],
+            'to' => ['harrish.gunasekaran@eirsworld.com'],
+            'cc' => ['harrish.gunasekaran@eirsworld.com']
+        ],
+        'Malawi' => [
+            'name' => ['Joveil'],
+            'to' => ['harrish.gunasekaran@eirsworld.com'],
+            'cc' => ['harrish.gunasekaran@eirsworld.com']
+        ],
     ];
 
     foreach ($countries as $key => $country) {
