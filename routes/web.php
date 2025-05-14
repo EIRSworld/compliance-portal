@@ -3,6 +3,7 @@
 use App\Exports\DashboardSummaryExport;
 use App\Exports\EventExport;
 use App\Models\CalendarYear;
+use App\Models\CompliancePrimarySubMenu;
 use App\Models\Country;
 use App\Models\User;
 use Carbon\Carbon;
@@ -25,6 +26,51 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::get('/new-email', function () {
     return view('emails.dashboard-email-new1');
 });
+
+
+Route::get('/clone/event', function () {
+
+    $calendarYear = CalendarYear::whereName('2024-2025')->first();
+    $primarySubMenus = \App\Models\CompliancePrimarySubMenu::whereCalendarYearId($calendarYear->id)->get();
+
+    foreach ($primarySubMenus as $primarySubMenu) {
+
+        $calendarYear = CalendarYear::whereName('2025-2026')->first();
+
+        $previousDocument = \App\Models\Document::find($primarySubMenu->document_id);
+        $document = \App\Models\Document::whereName($previousDocument->name)->whereCalendarYearId($calendarYear->id)->first();
+        $complianceMenu = \App\Models\ComplianceMenu::whereCalendarYearId($calendarYear->id)->whereDocumentId($document->id)->first();
+        $complianceSubMenuPrevious = \App\Models\ComplianceSubMenu::whereid($primarySubMenu->compliance_sub_menu_id)->first();
+        $complianceSubMenu = \App\Models\ComplianceSubMenu::whereSubMenuName($complianceSubMenuPrevious->sub_menu_name)->whereCalendarYearId($calendarYear->id)->whereDocumentId($document->id)->whereComplianceMenuId($complianceMenu->id)->first();
+
+        $dueDate = Carbon::parse($primarySubMenu->due_date)->addYear();
+        if ($dueDate <= Carbon::now()) {
+            $status = 'Red';
+        } else {
+            $status = 'Amber';
+        }
+
+        $compliancePrimarySubMenu = new CompliancePrimarySubMenu();
+        $compliancePrimarySubMenu->calendar_year_id = $calendarYear->id;
+        $compliancePrimarySubMenu->year = $calendarYear->name;
+        $compliancePrimarySubMenu->country_id = $primarySubMenu->country_id;
+        $compliancePrimarySubMenu->entity_id = $primarySubMenu->entity_id;
+        $compliancePrimarySubMenu->document_id = $document->id;
+        $compliancePrimarySubMenu->compliance_menu_id = $complianceMenu->id;
+        $compliancePrimarySubMenu->compliance_sub_menu_id = $complianceSubMenu->id;
+        $compliancePrimarySubMenu->occurrence = $primarySubMenu->occurrence;
+        $compliancePrimarySubMenu->event_name = $primarySubMenu->event_name;
+        $compliancePrimarySubMenu->event_type = $primarySubMenu->event_type;
+        $compliancePrimarySubMenu->due_date = $dueDate;
+        $compliancePrimarySubMenu->assign_id = $primarySubMenu->assign_id;
+        $compliancePrimarySubMenu->status = $status;
+        $compliancePrimarySubMenu->save();
+    }
+
+
+    dd('done');
+
+})->name('clone.event');
 
 Route::get('/test-email', function () {
 
@@ -117,47 +163,47 @@ Route::get('/test-email', function () {
 
     $countries = [
         'Tanzania' => [
-            'name' => ['Snehal Sheth','Sumantra'],
-            'to' => ['snehal.sheth@eirsworld.com','sumantra.banerjee@etgworld.com'],
-            'cc' => ['bhagyashri.solanki@eirsworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com','gyana.sanbad@etgworld.com']
+            'name' => ['Snehal Sheth', 'Sumantra'],
+            'to' => ['snehal.sheth@eirsworld.com', 'sumantra.banerjee@etgworld.com'],
+            'cc' => ['bhagyashri.solanki@eirsworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'IVC' => [
-            'name' => ['Alka Verma','Sumantra','Nolwenn','Kouakou N Goran Herve'],
-            'to' => ['alka.verma@eirsworld.com','sumantra.banerjee@etgworld.com','nolwenn.allano@etgworld.com','herve.kouakou@eirsworld.com'],
-            'cc' => ['deepak.goyal@etgworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com','gyana.sanbad@etgworld.com','mahesh.verulkar@etgworld.com']
+            'name' => ['Alka Verma', 'Sumantra', 'Nolwenn', 'Kouakou N Goran Herve'],
+            'to' => ['alka.verma@eirsworld.com', 'sumantra.banerjee@etgworld.com', 'nolwenn.allano@etgworld.com', 'herve.kouakou@eirsworld.com'],
+            'cc' => ['deepak.goyal@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com', 'mahesh.verulkar@etgworld.com']
             //            'cc' => ['harrish.gunasekaran@eirsworld.com','harish@nordicsolutions.in']
         ],
 
         'Kenya' => [
-            'name' => ['Christine Gikunda','Gerald Yiminyi','Nigel Pillay','Nolwenn'],
-            'to' => ['christine.gikunda@etgworld.com','gerald.yiminyi@etgworld.com','nigel.pillay@etgworld.com','nolwenn.allano@etgworld.com'],
-            'cc' => ['etglke.accounts@etgworld.com','sunil.pulavarthi@etgworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com','gyana.sanbad@etgworld.com']
+            'name' => ['Christine Gikunda', 'Gerald Yiminyi', 'Nigel Pillay', 'Nolwenn'],
+            'to' => ['christine.gikunda@etgworld.com', 'gerald.yiminyi@etgworld.com', 'nigel.pillay@etgworld.com', 'nolwenn.allano@etgworld.com'],
+            'cc' => ['etglke.accounts@etgworld.com', 'sunil.pulavarthi@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
 
         'South Africa' => [
-            'name' => ['Nigel Pillay','Clinton Brown'],
-            'to' => ['nigel.pillay@etgworld.com','clinton.brown@etgworld.com'],
-            'cc' => ['preethi.s@etgworld.com','rakhee.bhowan@etgworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com','gyana.sanbad@etgworld.com']
+            'name' => ['Nigel Pillay', 'Clinton Brown'],
+            'to' => ['nigel.pillay@etgworld.com', 'clinton.brown@etgworld.com'],
+            'cc' => ['preethi.s@etgworld.com', 'rakhee.bhowan@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'Zambia' => [
-            'name' => ['Issac','Snehal Sheth','Margaret Banda'],
-            'to' => ['isaac.mkandawire@eirsworld.com','snehal.sheth@eirsworld.com','margaret.banda@eirsworld.com'],
-            'cc' => ['faiz.ahmad@etgworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com','gyana.sanbad@etgworld.com']
+            'name' => ['Issac', 'Snehal Sheth', 'Margaret Banda'],
+            'to' => ['isaac.mkandawire@eirsworld.com', 'snehal.sheth@eirsworld.com', 'margaret.banda@eirsworld.com'],
+            'cc' => ['faiz.ahmad@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'Mozambique' => [
             'name' => ['Rakhee Bhowan'],
             'to' => ['rakhee.bhowan@etgworld.com'],
-            'cc' => ['preethi.s@etgworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com','gyana.sanbad@etgworld.com']
+            'cc' => ['preethi.s@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com', 'gyana.sanbad@etgworld.com']
         ],
         'Mauritius' => [
             'name' => ['Sumantra'],
             'to' => ['sumantra.banerjee@etgworld.com'],
-            'cc' => ['vindhyashree.kn@etgworld.com','gyana.sanbad@etgworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com']
+            'cc' => ['vindhyashree.kn@etgworld.com', 'gyana.sanbad@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com']
         ],
         'Malawi' => [
-            'name' => ['Sumantra','Margaret Banda'],
-            'to' => ['sumantra.banerjee@etgworld.com','margaret.banda@eirsworld.com'],
-            'cc' => ['gyana.sanbad@etgworld.com','joveil.canete@etgworld.com','pranita.jain@etgworld.com','abhishek.jain@etgworld.com','nathan.govender@etgworld.com']
+            'name' => ['Sumantra', 'Margaret Banda'],
+            'to' => ['sumantra.banerjee@etgworld.com', 'margaret.banda@eirsworld.com'],
+            'cc' => ['gyana.sanbad@etgworld.com', 'joveil.canete@etgworld.com', 'pranita.jain@etgworld.com', 'abhishek.jain@etgworld.com', 'nathan.govender@etgworld.com']
         ],
 
     ];
