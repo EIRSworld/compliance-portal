@@ -39,7 +39,7 @@ Route::get('/clone/event', function () {
 
         $previousDocument = \App\Models\Document::find($primarySubMenu->document_id);
         $document = \App\Models\Document::whereName($previousDocument->name)->whereCalendarYearId($calendarYear->id)->first();
-        $complianceMenu = \App\Models\ComplianceMenu::whereCalendarYearId($calendarYear->id)->whereDocumentId($document->id)->first();
+        $complianceMenu = \App\Models\ComplianceMenu::whereCalendarYearId($calendarYear->id)->whereDocumentId($document->id)->whereEntityId($primarySubMenu->entity_id)->first();
         $complianceSubMenuPrevious = \App\Models\ComplianceSubMenu::whereid($primarySubMenu->compliance_sub_menu_id)->first();
         $complianceSubMenu = \App\Models\ComplianceSubMenu::whereSubMenuName($complianceSubMenuPrevious->sub_menu_name)->whereCalendarYearId($calendarYear->id)->whereDocumentId($document->id)->whereComplianceMenuId($complianceMenu->id)->first();
 
