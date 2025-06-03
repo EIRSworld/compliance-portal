@@ -22,14 +22,18 @@
     <style>
         table {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             font-family: Arial, sans-serif;
-            text-align: center;
+            font-size: 11px;
+            table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 4px; /* reduced padding */
+            text-align: center;
+            word-wrap: break-word;
         }
 
         th {
@@ -37,25 +41,27 @@
             font-weight: bold;
         }
 
-        /* Color-coded background */
         .red { background-color: #F2DCDB; }
         .amber { background-color: #FFFFCC; }
         .green { background-color: #EBF1DE; }
         .blue { background-color: #DCE6F1; }
 
-        /* Center align for numerical values */
-        td {
-            text-align: center;
-        }
-
-        /* Styling for section headers */
-        th[rowspan] {
+        th[rowspan], td[rowspan] {
             background-color: #4A90E2;
             color: white;
-            font-size: 16px;
+            font-size: 12px;
             text-transform: uppercase;
+            text-align: left;
+            padding-left: 4px;
+        }
+
+        /* Optional: Reduce margin/padding around the table container */
+        .table-container {
+            margin: 0;
+            padding: 0;
         }
     </style>
+
 </head>
 <body>
 {{--<h1>Dashboard Report for {{ $countryName }}</h1>--}}
@@ -125,7 +131,7 @@ $entities = \App\Models\Entity::where('country_id', $country->id)->get();
         $regular_yearly = \App\Models\ComplianceMenu::whereCalendarYearId($calendar_year_id)->whereCountryId($country->id)->whereEntityId($entity->id)->get();
 //dd($regular_yearly);
         ?>
-
+        <div class="table-container">
     <table>
         <thead>
         <tr>
@@ -756,7 +762,7 @@ $entities = \App\Models\Entity::where('country_id', $country->id)->get();
         </tr>
         </tbody>
     </table>
-
+        </div>
     <br>
     <br>
 @endforeach
