@@ -60,7 +60,56 @@
 <body>
 {{--<h1>Dashboard Report for {{ $countryName }}</h1>--}}
 {{--<p>Country ID: {{ $countryName }}</p>--}}
-<p>This is your dashboard summary report.</p>
+@php
+    $country = \App\Models\Country::find($countryID);
+    $entities = \App\Models\Entity::where('country_id', $country->id)->get();
+
+    $complianceTypes = ['Operations', 'Finance', 'HR'];
+    $allSummaries = [];
+
+    foreach ($complianceTypes as $type) {
+        $redSummary = [];
+
+        foreach ($entities as $entity) {
+            $menu = \App\Models\ComplianceSubMenu::where([
+                ['calendar_year_id', $calendar_year_id],
+                ['country_id', $country->id],
+                ['entity_id', $entity->id],
+                ['sub_menu_name', $type],
+            ])->first();
+
+            if (!$menu) continue;
+
+            $redCount = \App\Models\CompliancePrimarySubMenu::where([
+                ['calendar_year_id', $calendar_year_id],
+                ['country_id', $country->id],
+                ['entity_id', $entity->id],
+                ['compliance_sub_menu_id', $menu->id],
+                ['event_type', 'Regular'],
+                ['status', 'Red'],
+            ])->count();
+
+            if ($redCount > 0) {
+             $redSummary[] = "<span style='color: red; font-weight: bold;'>{$redCount} critical compliance events</span> for <span style='color: green;'> {$entity->entity_name} </span>";
+            }
+
+        }
+
+        if (count($redSummary)) {
+            $allSummaries[$type] = $redSummary;
+        }
+    }
+@endphp
+
+<p>Dear All,</p>
+
+@foreach($allSummaries as $type => $summary)
+    <p>
+        Compliance Type: <strong>{{ $type }}</strong><br>
+        Kindly note there are {!! implode(' & ', $summary) !!} not being attended requiring your urgent attention.
+    </p>
+@endforeach
+
 
 <br>
 
@@ -622,180 +671,94 @@ $entities = \App\Models\Entity::where('country_id', $country->id)->get();
 
 
             ?>
-{{--        <tr>--}}
-{{--            <th rowspan="4">Operations</th>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Annual</td>--}}
-{{--            <td>{{count($event_name_yearly_regular_operation_annual)}}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_operation_annual_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_operation_annual_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_operation_annual_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_operation_annual_blue) }}</td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Quarterly</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_operation_quarterly) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_operation_quarterly_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_operation_quarterly_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_operation_quarterly_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_operation_quarterly_blue) }}</td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Monthly</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_operation_monthly) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_operation_monthly_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_operation_monthly_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_operation_monthly_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_operation_monthly_blue) }}</td>--}}
-{{--        </tr>--}}
+        <tr>
+            <th rowspan="4">Operations</th>
+        </tr>
+        <tr>
+            <td>Annual</td>
+            <td>{{ count($event_name_yearly_regular_operation_annual) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_operation_annual_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_operation_annual_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_operation_annual_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_operation_annual_blue) }}</td>
+        </tr>
+        <tr>
+            <td>Quarterly</td>
+            <td>{{ count($event_name_yearly_regular_operation_quarterly) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_operation_quarterly_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_operation_quarterly_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_operation_quarterly_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_operation_quarterly_blue) }}</td>
+        </tr>
+        <tr>
+            <td>Monthly</td>
+            <td>{{ count($event_name_yearly_regular_operation_monthly) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_operation_monthly_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_operation_monthly_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_operation_monthly_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_operation_monthly_blue) }}</td>
+        </tr>
 
-{{--        <tr>--}}
-{{--            <th rowspan="4">Finance</th>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Annual</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_finance_annual) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_finance_annual_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_finance_annual_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_finance_annual_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_finance_annual_blue) }}</td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Quarterly</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_finance_quarterly) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_finance_quarterly_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_finance_quarterly_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_finance_quarterly_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_finance_quarterly_blue) }}</td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Monthly</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_finance_monthly) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_finance_monthly_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_finance_monthly_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_finance_monthly_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_finance_monthly_blue) }}</td>--}}
-{{--        </tr>--}}
+        <tr>
+            <th rowspan="4">Finance</th>
+        </tr>
+        <tr>
+            <td>Annual</td>
+            <td>{{ count($event_name_yearly_regular_finance_annual) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_finance_annual_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_finance_annual_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_finance_annual_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_finance_annual_blue) }}</td>
+        </tr>
+        <tr>
+            <td>Quarterly</td>
+            <td>{{ count($event_name_yearly_regular_finance_quarterly) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_finance_quarterly_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_finance_quarterly_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_finance_quarterly_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_finance_quarterly_blue) }}</td>
+        </tr>
+        <tr>
+            <td>Monthly</td>
+            <td>{{ count($event_name_yearly_regular_finance_monthly) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_finance_monthly_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_finance_monthly_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_finance_monthly_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_finance_monthly_blue) }}</td>
+        </tr>
 
-{{--        <tr>--}}
-{{--            <th rowspan="4">HR</th>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Annual</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_hr_annual) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_hr_annual_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_hr_annual_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_hr_annual_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_hr_annual_blue) }}</td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Quarterly</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_hr_quarterly) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_hr_quarterly_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_hr_quarterly_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_hr_quarterly_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_hr_quarterly_blue) }}</td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td>Monthly</td>--}}
-{{--            <td>{{ count($event_name_yearly_regular_hr_monthly) }}</td>--}}
-{{--            <td style="background-color: #F2DCDB">{{ count($event_name_yearly_regular_hr_monthly_red) }}</td>--}}
-{{--            <td style="background-color: #FFFFCC">{{ count($event_name_yearly_regular_hr_monthly_amber) }}</td>--}}
-{{--            <td style="background-color: #EBF1DE">{{ count($event_name_yearly_regular_hr_monthly_green) }}</td>--}}
-{{--            <td style="background-color: #DCE6F1">{{ count($event_name_yearly_regular_hr_monthly_blue) }}</td>--}}
-{{--        </tr>--}}
-
-{{--        </tbody>--}}
-
-            <tr>
-                <th rowspan="4">Operations</th>
-            </tr>
-            <tr>
-                <td>Annual</td>
-                <td>{{ count($event_name_yearly_regular_operation_annual) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_operation_annual_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_operation_annual_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_operation_annual_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_operation_annual_blue) }}</td>
-            </tr>
-            <tr>
-                <td>Quarterly</td>
-                <td>{{ count($event_name_yearly_regular_operation_quarterly) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_operation_quarterly_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_operation_quarterly_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_operation_quarterly_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_operation_quarterly_blue) }}</td>
-            </tr>
-            <tr>
-                <td>Monthly</td>
-                <td>{{ count($event_name_yearly_regular_operation_monthly) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_operation_monthly_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_operation_monthly_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_operation_monthly_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_operation_monthly_blue) }}</td>
-            </tr>
-
-            <tr>
-                <th rowspan="4">Finance</th>
-            </tr>
-            <tr>
-                <td>Annual</td>
-                <td>{{ count($event_name_yearly_regular_finance_annual) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_finance_annual_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_finance_annual_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_finance_annual_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_finance_annual_blue) }}</td>
-            </tr>
-            <tr>
-                <td>Quarterly</td>
-                <td>{{ count($event_name_yearly_regular_finance_quarterly) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_finance_quarterly_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_finance_quarterly_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_finance_quarterly_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_finance_quarterly_blue) }}</td>
-            </tr>
-            <tr>
-                <td>Monthly</td>
-                <td>{{ count($event_name_yearly_regular_finance_monthly) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_finance_monthly_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_finance_monthly_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_finance_monthly_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_finance_monthly_blue) }}</td>
-            </tr>
-
-            <tr>
-                <th rowspan="4">HR</th>
-            </tr>
-            <tr>
-                <td>Annual</td>
-                <td>{{ count($event_name_yearly_regular_hr_annual) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_hr_annual_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_hr_annual_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_hr_annual_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_hr_annual_blue) }}</td>
-            </tr>
-            <tr>
-                <td>Quarterly</td>
-                <td>{{ count($event_name_yearly_regular_hr_quarterly) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_hr_quarterly_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_hr_quarterly_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_hr_quarterly_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_hr_quarterly_blue) }}</td>
-            </tr>
-            <tr>
-                <td>Monthly</td>
-                <td>{{ count($event_name_yearly_regular_hr_monthly) }}</td>
-                <td class="red">{{ count($event_name_yearly_regular_hr_monthly_red) }}</td>
-                <td class="amber">{{ count($event_name_yearly_regular_hr_monthly_amber) }}</td>
-                <td class="green">{{ count($event_name_yearly_regular_hr_monthly_green) }}</td>
-                <td class="blue">{{ count($event_name_yearly_regular_hr_monthly_blue) }}</td>
-            </tr>
+        <tr>
+            <th rowspan="4">HR</th>
+        </tr>
+        <tr>
+            <td>Annual</td>
+            <td>{{ count($event_name_yearly_regular_hr_annual) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_hr_annual_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_hr_annual_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_hr_annual_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_hr_annual_blue) }}</td>
+        </tr>
+        <tr>
+            <td>Quarterly</td>
+            <td>{{ count($event_name_yearly_regular_hr_quarterly) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_hr_quarterly_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_hr_quarterly_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_hr_quarterly_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_hr_quarterly_blue) }}</td>
+        </tr>
+        <tr>
+            <td>Monthly</td>
+            <td>{{ count($event_name_yearly_regular_hr_monthly) }}</td>
+            <td class="red">{{ count($event_name_yearly_regular_hr_monthly_red) }}</td>
+            <td class="amber">{{ count($event_name_yearly_regular_hr_monthly_amber) }}</td>
+            <td class="green">{{ count($event_name_yearly_regular_hr_monthly_green) }}</td>
+            <td class="blue">{{ count($event_name_yearly_regular_hr_monthly_blue) }}</td>
+        </tr>
         </tbody>
     </table>
 
-        <br>
-        <br>
+    <br>
+    <br>
 @endforeach
 
 <br>
@@ -1442,5 +1405,13 @@ $entities = \App\Models\Entity::where('country_id', $country->id)->get();
 @endforeach
 
 
+<p>
+    Enclosed detailed report for your reference.
+</p>
+<p>
+    Regards,<br>
+    Compliance Team -EIRS
+
+</p>
 </body>
 </html>
