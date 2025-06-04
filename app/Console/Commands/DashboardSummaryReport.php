@@ -30,45 +30,45 @@ class DashboardSummaryReport extends Command
         $countries = [
             'Tanzania' => [
                 'name' => ['Snehal Sheth', 'Sumantra'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com']
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com']
             ],
             'IVC' => [
                 'name' => ['Alka Verma', 'Sumantra'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com']
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com']
             ],
 
             'Kenya' => [
                 'name' => ['Christine Gikunda', 'Gerald Yiminyi', 'Nigel Pillay'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com']
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com']
             ],
 
             'South Africa' => [
                 'name' => ['Nigel Pillay', 'Clinton Brown'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com']
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com']
             ],
             'Zambia' => [
                 'name' => ['Issac', 'Snehal Sheth', 'Saviraj Shetty'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com']
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com']
             ],
             'Mozambique' => [
                 'name' => ['Jose Suaze', 'Saviraj Shetty'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com'],
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com'],
             ],
             'Mauritius' => [
                 'name' => ['Saviraj Shetty', 'Sumantra'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com'],
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com'],
             ],
             'Malawi' => [
                 'name' => ['Sumantra','Margaret Banda'],
-                'to' => ['harrish.gunasekaran@eirsworld.com'],
-                'cc' => ['harrish.gunasekaran@eirsworld.com'],
+                'to' => ['pranita.jain@etgworld.com'],
+                'cc' => ['harrish.gunasekaran@eirsworld.com','joveil.canete@etgworld.com'],
             ],
 
         ];
