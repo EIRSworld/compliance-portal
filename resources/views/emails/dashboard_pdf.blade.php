@@ -115,16 +115,12 @@
         Kindly note there are {!! implode(' & ', $summary) !!} not being attended requiring your urgent attention.
     </p>
 @endforeach
-
-
-<br>
-
 <?php
 $country = \App\Models\Country::find($countryID);
 $entities = \App\Models\Entity::where('country_id', $country->id)->get();
 ?>
 
-<h3>Regular Dashboard Summary</h3>
+<h5>Regular Dashboard Summary</h5>
 
 @foreach($entities as $entity)
         <?php
@@ -763,13 +759,11 @@ $entities = \App\Models\Entity::where('country_id', $country->id)->get();
         </tbody>
     </table>
         </div>
-    <br>
-    <br>
 @endforeach
 
 <br>
 
-<h3>Add-Hoc Dashboard Summary</h3>
+<h5>Add-Hoc Dashboard Summary</h5>
 @foreach($entities as $entity)
         <?php
         $regular_yearly = \App\Models\ComplianceMenu::whereCalendarYearId($calendar_year_id)->whereCountryId($country->id)->whereEntityId($entity->id)->get();
