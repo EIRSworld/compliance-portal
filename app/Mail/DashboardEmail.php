@@ -122,7 +122,7 @@ class DashboardEmail extends Mailable
                 'margin-right' => 30,
             ]);
 
-        return $this->subject("'Compliance Report - ' . {$this->countryName} . ' - YTD ' . $this->current_month_year . ''")
+        return $this->subject("Compliance Report -  {$this->countryName}  - YTD   $this->current_month_year ")
             ->view('emails.dashboard_pdf') // Email content view (optional)
             ->with([
                 'countryName' => $this->countryName,
