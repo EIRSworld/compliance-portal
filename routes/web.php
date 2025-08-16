@@ -607,3 +607,41 @@ Route::get('/red-status', function () {
     }
     dd('test');
 });
+
+Route::get('/export_media', function () {
+
+    $compliances = CompliancePrimarySubMenu::with('media')
+//        ->whereIn('lead_no',['PC10093','PC12203'])
+        ->get();
+
+    \Illuminate\Support\Facades\Storage::put('compliances_with_media.json', json_encode($compliances, JSON_PRETTY_PRINT));
+    dd('Compliance with media exported successfully to storage/compliances_with_media.json');
+});
+
+Route::get('/user_mail_change', function () {
+    $excludedEmails = [
+        'admin@compliance.com',
+        'pranita.jain@etgworld.com',
+        'joveil.canete@etgworld.com',
+    ];
+
+    $users = User::whereNotIn('email', $excludedEmails)->get();
+
+    foreach ($users as $user) {
+        // Split email into username and domain
+        [$name, $domain] = explode('@', $user->email);
+
+        // Example: add prefix "lpm." before the domain
+        $newEmail = $name . '@compliance.' . $domain;
+
+        // Skip if new email already exists (to avoid unique constraint errors)
+        if (User::where('email', $newEmail)->exists()) {
+            continue;
+        }
+
+        $user->email = $newEmail;
+        $user->save();
+    }
+
+    return 'User emails updated successfully.';
+});
